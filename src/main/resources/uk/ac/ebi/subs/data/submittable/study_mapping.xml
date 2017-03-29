@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml-bindings xmlns="http://www.eclipse.org/eclipselink/xsds/persistence/oxm"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/oxm http://www.eclipse.org/eclipselink/xsds/eclipselink_oxm_2_4.xsd"
+              package-name="uk.ac.ebi.subs.data.submittable">
+    <java-types>
+        <java-type name="Submittable" xml-transient="true"/>
+        <java-type name="BaseSubmittable" xml-transient="true"/>
+        <java-type name="ENASubmittable" xml-transient="true"/>
+        <java-type name="Study" xml-transient="true"/>
+        <java-type name="ENAStudy" xml-accessor-type="NONE">
+            <xml-root-element name="STUDY"/>
+            <xml-type prop-order="title studyType description attributes"/>
+            <java-attributes>
+                <xml-attribute java-attribute="accession"/>
+                <xml-attribute java-attribute="alias"/>
+                <xml-attribute java-attribute="teamName" name="center_name"/>
+                <xml-element java-attribute="title" xml-path="DESCRIPTOR/STUDY_TITLE/text()"/>
+                <xml-element java-attribute="studyType" xml-path="DESCRIPTOR/STUDY_TYPE/@existing_study_type"/>
+                <xml-element java-attribute="description" xml-path="DESCRIPTOR/STUDY_DESCRIPTION/text()"/>
+                <xml-element java-attribute="attributes" name="STUDY_ATTRIBUTE"
+                             type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
+                    <xml-element-wrapper name="STUDY_ATTRIBUTES"/>
+                </xml-element>
+            </java-attributes>
+        </java-type>
+    </java-types>
+</xml-bindings>
+
+

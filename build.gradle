@@ -1,0 +1,12 @@
+apply plugin: 'java'
+
+dependencies {
+    compile project(':subs-data-model')
+    compile 'uk.ac.ebi.ena.sra:sra-xml:1.5.30'
+    compile ("org.springframework:spring-oxm")
+    compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.4'
+    compile 'commons-lang:commons-lang:2.6'
+    testCompile("org.springframework.boot:spring-boot-starter-test")
+}
+
+bootRepackage.enabled = false
