@@ -64,12 +64,18 @@ public class SerialisationTest {
         return document;
     }
 
-    String executeXPathQuery (Document document, String xPathExpression) throws XPathExpressionException, TransformerException {
+    Node executeXPathQuery (Document document, String xPathExpression) throws XPathExpressionException, TransformerException {
         final XPath xPath = xPathFactory.newXPath();
         StudySerialisationTest.logger.info(getDocumentString(document));
         final XPathExpression xpe = xPath.compile(xPathExpression);
         Node node = (Node) xpe.evaluate(document, XPathConstants.NODE);
-        return node.getNodeValue();
+        return node;
+    }
+
+    String executeXPathQueryNodeValue (Document document, String xPathExpression) throws XPathExpressionException, TransformerException {
+        Node node = executeXPathQuery(document,xPathExpression);
+        if (node != null) return node.getNodeValue();
+        else return null;
     }
 
     String getDocumentString (Document document) throws TransformerException {

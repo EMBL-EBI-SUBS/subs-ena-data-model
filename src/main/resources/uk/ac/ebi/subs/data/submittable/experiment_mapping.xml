@@ -10,7 +10,7 @@
         <java-type name="Assay" xml-transient="true"/>
         <java-type name="ENAExperiment" xml-accessor-type="NONE">
             <xml-root-element name="EXPERIMENT"/>
-            <xml-type prop-order="title studyRef designDescription libraryName libraryStrategy librarySource librarySelection ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary attributes"/>
+            <xml-type prop-order="title studyRef designDescription libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary attributes"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
@@ -24,6 +24,8 @@
                 <xml-element java-attribute="libraryStrategy" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_STRATEGY/text()"/>
                 <xml-element java-attribute="librarySource" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_SOURCE/text()"/>
                 <xml-element java-attribute="librarySelection" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_SELECTION/text()"/>
+                <xml-element java-attribute="singleLibraryLayout" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_LAYOUT/SINGLE/text()"/>
+                <xml-element java-attribute="pairedLibraryLayout" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_LAYOUT/PAIRED/text()"/>
                 <xml-element java-attribute="ls454" required="false" nillable="false" xml-path="PLATFORM/LS454/INSTRUMENT_MODEL/text()" />
                 <xml-element java-attribute="illumina" required="false" nillable="false" xml-path="PLATFORM/ILLUMINA/INSTRUMENT_MODEL/text()" />
                 <xml-element java-attribute="helicos" required="false" nillable="false" xml-path="PLATFORM/HELICOS/INSTRUMENT_MODEL/text()" />

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import uk.ac.ebi.ena.sra.xml.PlatformType;
 import uk.ac.ebi.subs.data.component.Attribute;
 import uk.ac.ebi.subs.data.component.StudyRef;
@@ -23,6 +24,7 @@ import java.net.URISyntaxException;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 
@@ -58,6 +60,10 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     static String PACBIO_SMRT_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/PACBIO_SMRT[1]/INSTRUMENT_MODEL[1]/text()";
     static String ION_TORRENT_SMRT_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/ION_TORRENT[1]/INSTRUMENT_MODEL[1]/text()";
     static String CAPILLARY_SMRT_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/CAPILLARY[1]/INSTRUMENT_MODEL[1]/text()";
+    static String SINGLE_LIBRARY_LAYOUT_XPATH = "/EXPERIMENT[1]/DESIGN[1]/LIBRARY_DESCRIPTOR[1]/LIBRARY_LAYOUT[1]/SINGLE[1]";
+    static String PAIRED_LIBRARY_LAYOUT_XPATH = "/EXPERIMENT[1]/DESIGN[1]/LIBRARY_DESCRIPTOR[1]/LIBRARY_LAYOUT[1]/PAIRED[1]";
+    static String PAIRED_NOMINAL_LENGTH_XPATH = "/EXPERIMENT[1]/DESIGN[1]/LIBRARY_DESCRIPTOR[1]/LIBRARY_LAYOUT[1]/PAIRED[1]/@NOMINAL_LENGTH";
+    static String PAIRED_NOMINAL_SDEV_XPATH = "/EXPERIMENT[1]/DESIGN[1]/LIBRARY_DESCRIPTOR[1]/LIBRARY_LAYOUT[1]/PAIRED[1]/@NOMINAL_SDEV";
 
     public static final String ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL = "Illumina Genome Analyzer";
     public static final String LS454_454_GS_20_INSTRUMENT_MODEL = "454 GS 20";
@@ -85,7 +91,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String accession = executeXPathQuery(document,EXPERIMENT_ACCESSION_XPATH);
+        String accession = executeXPathQueryNodeValue(document,EXPERIMENT_ACCESSION_XPATH);
         assertThat("experiment accession serialised to XML", enaExperiment.getAccession(), equalTo(accession));
     }
 
@@ -96,7 +102,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String xmlStudyAlias = executeXPathQuery(document,EXPERIMENT_ALIAS_XPATH);
+        String xmlStudyAlias = executeXPathQueryNodeValue(document,EXPERIMENT_ALIAS_XPATH);
         assertThat("experiment alias serialised to XML", enaExperiment.getAlias(), equalTo(xmlStudyAlias));
     }
 
@@ -109,7 +115,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String str = executeXPathQuery(document,EXPERIMENT_CENTER_NAME_XPATH);
+        String str = executeXPathQueryNodeValue(document,EXPERIMENT_CENTER_NAME_XPATH);
         assertThat("experiment center_name to XML", team.getName(), equalTo(str));
     }
 
@@ -120,7 +126,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String str = executeXPathQuery(document,EXPERIMENT_TITLE_XPATH);
+        String str = executeXPathQueryNodeValue(document,EXPERIMENT_TITLE_XPATH);
         assertThat("experiment title to XML", assay.getTitle(), equalTo(str));
     }
 
@@ -133,8 +139,36 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String studyAccession = executeXPathQuery(document,EXPERIMENT_STUDY_REF);
+        String studyAccession = executeXPathQueryNodeValue(document,EXPERIMENT_STUDY_REF);
         assertThat("experiment alias serialised to XML", studyRef.getAccession(), equalTo(studyAccession));
+    }
+
+    @Test
+    public void testMarshalExperimentSingleLibraryLayout() throws Exception {
+        Assay assay = createAssay();
+        Attribute libraryLayoutAttribute = new Attribute();
+        libraryLayoutAttribute.setName(ENAExperiment.LIBRARY_LAYOUT);
+        libraryLayoutAttribute.setValue(ENAExperiment.SINGLE);
+        assay.getAttributes().add(libraryLayoutAttribute);
+        ENAExperiment enaExperiment = new ENAExperiment(assay);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaExperiment,new DOMResult(document));
+        Node node = executeXPathQuery(document,SINGLE_LIBRARY_LAYOUT_XPATH);
+        assertThat("experiment single library layout",node,notNullValue());
+    }
+
+    @Test
+    public void testMarshalExperimentPairedLibraryLayout() throws Exception {
+        Assay assay = createAssay();
+        Attribute libraryLayoutAttribute = new Attribute();
+        libraryLayoutAttribute.setName(ENAExperiment.LIBRARY_LAYOUT);
+        libraryLayoutAttribute.setValue(ENAExperiment.PAIRED);
+        assay.getAttributes().add(libraryLayoutAttribute);
+        ENAExperiment enaExperiment = new ENAExperiment(assay);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaExperiment,new DOMResult(document));
+        Node node = executeXPathQuery(document,PAIRED_LIBRARY_LAYOUT_XPATH);
+        assertThat("experiment paired library layout",node,notNullValue());
     }
 
     @Test
@@ -192,7 +226,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String returnedInstrumentModel = executeXPathQuery(document,platformXpathQuery);
+        String returnedInstrumentModel = executeXPathQueryNodeValue(document,platformXpathQuery);
         assertThat("experiment alias serialised to XML", instrumentModel, equalTo(returnedInstrumentModel));
     }
 

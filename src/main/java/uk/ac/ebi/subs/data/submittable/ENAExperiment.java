@@ -104,6 +104,7 @@ public class ENAExperiment extends Assay implements ENASubmittable {
         super();
         BeanUtils.copyProperties(assay, this);
         serialiseAttributes();
+        serialiseLibraryLayout();
     }
 
     public ENAExperiment() {
@@ -219,6 +220,8 @@ public class ENAExperiment extends Assay implements ENASubmittable {
             this.nominalLength = nominalLength;
             this.nominalSdev = nominalSdev;
         }
+
+        public PairedLibraryLayout () {}
     }
 
 }

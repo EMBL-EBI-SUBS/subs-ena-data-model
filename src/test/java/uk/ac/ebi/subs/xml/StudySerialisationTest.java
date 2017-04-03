@@ -56,7 +56,7 @@ public class StudySerialisationTest extends SerialisationTest {
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
-        String xmlStudyAccession = executeXPathQuery(document,STUDY_ACCESSION_XPATH);
+        String xmlStudyAccession = executeXPathQueryNodeValue(document,STUDY_ACCESSION_XPATH);
         assertThat("study accession serialised to XML", enaStudy.getAccession(), equalTo(xmlStudyAccession));
     }
 
@@ -67,7 +67,7 @@ public class StudySerialisationTest extends SerialisationTest {
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
-        String str = executeXPathQuery(document,STUDY_ALIAS_XPATH);
+        String str = executeXPathQueryNodeValue(document,STUDY_ALIAS_XPATH);
         assertThat("study alias serialised to XML", enaStudy.getAlias(), equalTo(str));
     }
 
@@ -80,7 +80,7 @@ public class StudySerialisationTest extends SerialisationTest {
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
-        String str = executeXPathQuery(document,STUDY_CENTER_NAME_XPATH);
+        String str = executeXPathQueryNodeValue(document,STUDY_CENTER_NAME_XPATH);
         assertThat("study center_name serialised to XML", team.getName(), equalTo(str));
     }
 
@@ -91,7 +91,7 @@ public class StudySerialisationTest extends SerialisationTest {
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
-        String str = executeXPathQuery(document,STUDY_TITLE_XPATH);
+        String str = executeXPathQueryNodeValue(document,STUDY_TITLE_XPATH);
         assertThat("study title serialised to XML", enaStudy.getTitle(), equalTo(str));
     }
 
@@ -102,7 +102,7 @@ public class StudySerialisationTest extends SerialisationTest {
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
-        String str = executeXPathQuery(document,STUDY_DESCRIPTION_XPATH);
+        String str = executeXPathQueryNodeValue(document,STUDY_DESCRIPTION_XPATH);
         assertThat("study description serialised to XML", enaStudy.getDescription(), equalTo(str));
     }
 
@@ -116,7 +116,7 @@ public class StudySerialisationTest extends SerialisationTest {
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
-        String str = executeXPathQuery(document,STUDY_TYPE_XPATH);
+        String str = executeXPathQueryNodeValue(document,STUDY_TYPE_XPATH);
         assertThat("study type attribute serialised to XML", attribute.getValue(), equalTo(str));
     }
 
