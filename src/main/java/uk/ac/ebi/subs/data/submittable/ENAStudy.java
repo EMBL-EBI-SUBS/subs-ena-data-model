@@ -12,7 +12,6 @@ import uk.ac.ebi.subs.ena.annotation.ENAValidation;
 public class ENAStudy extends Study implements ENASubmittable {
 
     public static final String EXISTING_STUDY_TYPE = "existing_study_type";
-    String testString;
     @ENAAttribute(name = EXISTING_STUDY_TYPE)
     String studyType;
 

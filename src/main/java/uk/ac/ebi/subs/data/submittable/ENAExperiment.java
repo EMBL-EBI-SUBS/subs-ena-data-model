@@ -90,7 +90,13 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     String librarySelection;
 
     @ENAAttribute(name = LIBRARY_LAYOUT, allowedValues = {SINGLE,PAIRED})
-    String libraryLayout = "";
+    String libraryLayout = SINGLE;
+
+    @ENAAttribute(name = PAIRED_NOMINAL_LENGTH)
+    String nominalLength = null;
+    @ENAAttribute(name = PAIRED_NOMINAL_SDEV)
+    String nominalSdev = null;
+
     String singleLibraryLayout;
     PairedLibraryLayout pairedLibraryLayout = null;
 
@@ -155,6 +161,13 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     }
 
     public void serialiseLibraryLayout() throws IllegalAccessException {
+        if (libraryLayout.equals(PAIRED)) {
+            this.pairedLibraryLayout = new PairedLibraryLayout(nominalLength, nominalSdev);
+            this.singleLibraryLayout = null;
+        } else if (libraryLayout.equals(SINGLE)) {
+            this.singleLibraryLayout = "";
+            this.pairedLibraryLayout = null;
+        }
     }
 
     public void deSerialiseAttributes () throws IllegalAccessException {
@@ -199,9 +212,6 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     public static class Single {}
 
     public static class PairedLibraryLayout {
-        public static final String SINGLE = "SINGLE";
-        public static final String PAIRED = "PAIRED";
-
         String nominalLength = null;
         String nominalSdev = null;
 
