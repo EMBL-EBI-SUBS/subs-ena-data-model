@@ -34,15 +34,6 @@ public class ENAStudy extends Study implements ENASubmittable {
         super.setAccession(accession);
     }
 
-    public String getTestString() {
-        return testString;
-    }
-
-    public void setTestString(String testString) {
-        this.testString = testString;
-    }
-
-
     @Override
     public String getTeamName() {
         Team team = getTeam();
