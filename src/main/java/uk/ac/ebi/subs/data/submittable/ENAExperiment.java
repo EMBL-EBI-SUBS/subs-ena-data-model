@@ -7,8 +7,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.util.ReflectionUtils;
 import uk.ac.ebi.ena.sra.xml.LibraryDescriptorType;
 import uk.ac.ebi.subs.data.client.*;
-import uk.ac.ebi.subs.data.component.Attribute;
-import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.component.*;
 import uk.ac.ebi.subs.ena.annotation.ENAAttribute;
 import uk.ac.ebi.subs.ena.annotation.ENAPlatform;
 import uk.ac.ebi.subs.ena.annotation.ENAValidation;
@@ -195,6 +194,13 @@ public class ENAExperiment extends Assay implements ENASubmittable {
         getAttributes().add(attribute);
     }
 
+    public SampleRef getSampleRef () {
+        if (getSampleUses().isEmpty())
+            return null;
+        else
+            return getSampleUses().get(0).getSampleRef();
+    }
+
     @Override
     public String getTeamName() {
         Team team = getTeam();
@@ -223,5 +229,4 @@ public class ENAExperiment extends Assay implements ENASubmittable {
 
         public PairedLibraryLayout () {}
     }
-
 }
