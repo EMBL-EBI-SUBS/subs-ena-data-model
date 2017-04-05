@@ -2,61 +2,61 @@ package uk.ac.ebi.subs.data.submittable;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import uk.ac.ebi.subs.data.component.AbstractSubsRef;
+import uk.ac.ebi.subs.data.component.Archive;
 import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.ena.annotation.ENAAttribute;
 import uk.ac.ebi.subs.ena.annotation.ENAValidation;
 import uk.ac.ebi.subs.ena.exception.AttributeException;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public interface ENASubmittable extends Submittable {
-
+/**
+ * Created by neilg on 04/04/2017.
+ */
+public abstract class ENASubmittable <T extends BaseSubmittable> implements Submittable, BaseSubmittableFactory<T> {
     static final String MULTIPLE_VALUES_ERROR_MESSAGE = "Multiple values found for attribute %s.";
     static final String ATTRIBUTE_VALUE_REQUIRED_ERROR_MESSAGE = "Value for attribute %s is required.";
     static final String INVALID_VALUE_ERROR_MESSAGE = "Invalid value for attribute %s value must be one of %s.";
 
-    default Optional<Attribute> getExistingStudyTypeAttribute(String attributeName, boolean allowMultiple) {
+    BaseSubmittable<T> baseSubmittable;
+
+    public ENASubmittable(BaseSubmittable<T> baseSubmittable) throws IllegalAccessException {
+        this.baseSubmittable = baseSubmittable;
+        serialiseAttributes();
+    }
+
+
+    Optional<Attribute> getExistingStudyTypeAttribute(String attributeName, boolean allowMultiple) {
         if (!allowMultiple && getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).count() > 1)
             throw new IllegalArgumentException(String.format(MULTIPLE_VALUES_ERROR_MESSAGE,attributeName));
         return getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).findFirst();
     }
 
-    default Stream<Attribute> getExistingStudyTypeAttributes(String attributeName) {
+    Stream<Attribute> getExistingStudyTypeAttributes(String attributeName) {
         return getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName));
     }
 
-    default int getAttributeCount(String attributeName) {
+    int getAttributeCount(String attributeName) {
         return (int)getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).count();
     }
 
-    default void deleteAttribute(Attribute attribute) {
+    void deleteAttribute(Attribute attribute) {
         getAttributes().remove(attribute);
     }
 
-    /*
-    default String getExistingStudyTypeValue(String attributeName) {
-        final Optional<Attribute> existingStudyTypeAttribute = getExistingStudyTypeAttribute(attributeName);
-        if (existingStudyTypeAttribute.isPresent()) {
-            return existingStudyTypeAttribute.get().getValue();
-        } else {
-            return null;
-        }
-    }
-    */
-
-    default void serialiseAttributes () throws IllegalAccessException {
+    void serialiseAttributes () throws IllegalAccessException {
         if (this.getClass().isAnnotationPresent(ENAValidation.class))
             serialiseFields(this.getClass(), this);
     }
 
-    default void serialiseFields (Class<?> aClass, Object obj) throws IllegalAccessException {
+    void serialiseFields (Class<?> aClass, Object obj) throws IllegalAccessException {
         final Field[] fields = aClass.getDeclaredFields();
-
+        String string;
         for (Field field : fields ) {
             if (field.isAnnotationPresent(ENAAttribute.class)) {
                 final ENAAttribute annotation = field.getAnnotation(ENAAttribute.class);
@@ -81,11 +81,11 @@ public interface ENASubmittable extends Submittable {
         }
     }
 
-    default void deSerialiseAttributes () throws IllegalAccessException {
+    void deSerialiseAttributes () throws IllegalAccessException {
         deSerialiseFields(this.getClass(), this);
     }
 
-    default void deSerialiseFields (Class<?> aClass, Object obj) throws IllegalAccessException {
+    void deSerialiseFields (Class<?> aClass, Object obj) throws IllegalAccessException {
         final Field[] fields = aClass.getDeclaredFields();
         for (Field field : fields ) {
             if (field.isAnnotationPresent(ENAAttribute.class)) {
@@ -102,14 +102,115 @@ public interface ENASubmittable extends Submittable {
         }
     }
 
-    /**
-     * Bug in moxy which prevents using a default version here.
-     */
-    String getTeamName ();
+    @Override
+    public String getId() {
+        return baseSubmittable.getId();
+    }
 
-    /**
-     * Bug in moxy which prevents using a default version here
-     */
-    void setTeamName (String teamName);
+    @Override
+    public void setId(String id) {
+        baseSubmittable.setId(id);
+    }
 
+    @Override
+    public String getAccession() {
+        return baseSubmittable.getAccession();
+    }
+
+    @Override
+    public void setAccession(String accession) {
+        baseSubmittable.setAccession(accession);
+    }
+
+    @Override
+    public String getAlias() {
+        return baseSubmittable.getAlias();
+    }
+
+    @Override
+    public void setAlias(String alias) {
+        baseSubmittable.setAlias(alias);
+    }
+
+    @Override
+    public Team getTeam() {
+        return baseSubmittable.getTeam();
+    }
+
+    @Override
+    public void setTeam(Team team) {
+        baseSubmittable.setTeam(team);
+    }
+
+    @Override
+    public String getTitle() {
+        return baseSubmittable.getTitle();
+    }
+
+    @Override
+    public void setTitle(String title) {
+        baseSubmittable.setTitle(title);
+    }
+
+    @Override
+    public String getDescription() {
+        return baseSubmittable.getDescription();
+    }
+
+    @Override
+    public void setDescription(String description) {
+        baseSubmittable.setDescription(description);
+    }
+
+    @Override
+    public List<Attribute> getAttributes() {
+        return baseSubmittable.getAttributes();
+    }
+
+    @Override
+    public void setAttributes(List<Attribute> attributes) {
+        baseSubmittable.setAttributes(attributes);
+    }
+
+    @Override
+    public Archive getArchive() {
+        return baseSubmittable.getArchive();
+    }
+
+    @Override
+    public void setArchive(Archive archive) {
+        baseSubmittable.setArchive(archive);
+    }
+
+    @Override
+    public boolean isAccessioned() {
+        return baseSubmittable.isAccessioned();
+    }
+
+    public String getTeamName() {
+        Team team = getTeam();
+        if (team != null)
+            return team.getName();
+        else return null;
+    }
+
+    //@Override
+    public void setTeamName(String teamName) {
+        Team team = new Team();
+        team.setName(teamName);
+        setTeam(team);
+    }
+
+    public BaseSubmittable<T> getBaseSubmittable() {
+        return baseSubmittable;
+    }
+
+    public void setBaseSubmittable(BaseSubmittable<T> baseSubmittable) {
+        this.baseSubmittable = baseSubmittable;
+    }
+
+    @Override
+    public T getBaseObject() {
+        return (T)baseSubmittable;
+    }
 }

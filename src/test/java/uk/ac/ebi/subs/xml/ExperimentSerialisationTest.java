@@ -8,19 +8,19 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import uk.ac.ebi.ena.sra.xml.PlatformType;
-import uk.ac.ebi.subs.data.component.Attribute;
-import uk.ac.ebi.subs.data.component.StudyRef;
-import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.component.*;
 import uk.ac.ebi.subs.data.submittable.Assay;
 import uk.ac.ebi.subs.data.submittable.ENAExperiment;
+import uk.ac.ebi.subs.data.submittable.Sample;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -49,7 +49,10 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     static String EXPERIMENT_ALIAS_XPATH = "/EXPERIMENT/@alias";
     static String EXPERIMENT_CENTER_NAME_XPATH ="/EXPERIMENT/@center_name";
     static String EXPERIMENT_TITLE_XPATH = "/EXPERIMENT/TITLE[1]/text()";
-    static String EXPERIMENT_STUDY_REF = "/EXPERIMENT[1]/STUDY_REF[1]/@accession";
+    static String EXPERIMENT_STUDY_REF_ACCESSION = "/EXPERIMENT[1]/STUDY_REF[1]/@accession";
+    static String EXPERIMENT_STUDY_REF_NAME = "/EXPERIMENT[1]/STUDY_REF[1]/@ref_name";
+    static String EXPERIMENT_SAMPLE_REF_ACCESSION = "/EXPERIMENT[1]/DESIGN[1]/SAMPLE_DESCRIPTOR[1]/@accession";
+    static String EXPERIMENT_SAMPLE_REF_NAME = "/EXPERIMENT[1]/DESIGN[1]/SAMPLE_DESCRIPTOR[1]/@ref_name";
     static String ILLUMINA_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/ILLUMINA[1]/INSTRUMENT_MODEL[1]/text()";
     static String LS454_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/LS454[1]/INSTRUMENT_MODEL[1]/text()";
     static String HELICOS_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/HELICOS[1]/INSTRUMENT_MODEL[1]/text()";
@@ -139,7 +142,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String studyAccession = executeXPathQueryNodeValue(document,EXPERIMENT_STUDY_REF);
+        String studyAccession = executeXPathQueryNodeValue(document, EXPERIMENT_STUDY_REF_ACCESSION);
         assertThat("experiment alias serialised to XML", studyRef.getAccession(), equalTo(studyAccession));
     }
 
@@ -169,6 +172,24 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         marshaller.marshal(enaExperiment,new DOMResult(document));
         Node node = executeXPathQuery(document,PAIRED_LIBRARY_LAYOUT_XPATH);
         assertThat("experiment paired library layout",node,notNullValue());
+    }
+
+    @Test
+    public void testMarshalExperimentSampleRef() throws Exception {
+        Assay assay = createAssay();
+        SampleRef sampleRef = new SampleRef();
+        sampleRef.setAccession(UUID.randomUUID().toString());
+        SampleUse sampleUse = new SampleUse(sampleRef);
+        assay.getSampleUses().add(sampleUse);
+        ENAExperiment enaExperiment = new ENAExperiment(assay);
+        StringWriter stringWriter = new StringWriter();
+        objectMapper.writeValue(stringWriter,assay);
+        String assayString = stringWriter.toString();
+        logger.info(assayString);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaExperiment,new DOMResult(document));
+        String sampleAccession = executeXPathQueryNodeValue(document, EXPERIMENT_SAMPLE_REF_ACCESSION);
+        assertThat("experiment alias serialised to XML", sampleRef.getAccession(), equalTo(sampleAccession));
     }
 
     @Test

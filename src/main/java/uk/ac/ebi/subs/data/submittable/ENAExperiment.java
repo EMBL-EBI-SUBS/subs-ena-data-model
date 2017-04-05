@@ -20,7 +20,7 @@ import java.util.*;
  * Created by neilg on 28/03/2017.
  */
 @ENAValidation
-public class ENAExperiment extends Assay implements ENASubmittable {
+public class ENAExperiment extends ENASubmittable<Assay>  {
     public static final String DESIGN_DESCRIPTION = "design_description";
     public static final String LIBRARY_NAME = "library_name";
     public static final String LIBRARY_STRATEGY = "library_strategy";
@@ -51,27 +51,27 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     @ENAPlatform(name = "ABI_SOLID", instrumentModels = {"AB SOLiD System 2.0", "AB SOLiD System 3.0", "AB SOLiD 3 Plus System",
             "AB SOLiD 4 System", "AB SOLiD 4hq System", "AB SOLiD PI System", "AB 5500 Genetic Analyzer", "AB 5500xl Genetic Analyzer",
             "AB 5500xl-W Genetic Analysis System", "unspecified"})
-    String abiSolid = null;
+    String abiSolid ;
 
     @ENAPlatform(name = "COMPLETE_GENOMICS", instrumentModels = {"Complete Genomics", "unspecified"})
-    String completeGenomics = null;
+    String completeGenomics;
 
     @ENAPlatform(name = "BGISEQ", instrumentModels = {"BGISEQ-500"})
-    String bgiseq = null;
+    String bgiseq;
 
     @ENAPlatform(name = "OXFORD_NANOPORE", instrumentModels = {"MinION", "GridION", "unspecified"})
-    String oxfordNanopore = null;
+    String oxfordNanopore;
 
     @ENAPlatform(name = "PACBIO_SMRT", instrumentModels = {"PacBio RS", "PacBio RS II", "Sequel", "unspecified"})
-    String pacbioSMRT = null;
+    String pacbioSMRT;
 
     @ENAPlatform(name = "ION_TORRENT", instrumentModels = {"Ion Torrent PGM", "Ion Torrent Proton", "unspecified"})
-    String ionTorrent = null;
+    String ionTorrent;
 
     @ENAPlatform(name = "CAPILLARY", instrumentModels = {"AB 3730xL Genetic Analyzer", "AB 3730 Genetic Analyzer", "AB 3500xL Genetic Analyzer",
             "AB 3500 Genetic Analyzer", "AB 3130xL Genetic Analyzer", "AB 3130 Genetic Analyzer", "AB 3130 Genetic Analyzer", "AB 310 Genetic Analyzer",
             "unspecified"})
-    String capillary = null;
+    String capillary;
 
     @ENAAttribute(name = DESIGN_DESCRIPTION)
     String designDescription;
@@ -89,7 +89,7 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     String librarySelection;
 
     @ENAAttribute(name = LIBRARY_LAYOUT, allowedValues = {SINGLE,PAIRED})
-    String libraryLayout = SINGLE;
+    String libraryLayout;
 
     @ENAAttribute(name = PAIRED_NOMINAL_LENGTH)
     String nominalLength = null;
@@ -97,16 +97,15 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     String nominalSdev = null;
 
     String singleLibraryLayout;
-    PairedLibraryLayout pairedLibraryLayout = null;
+    PairedLibraryLayout pairedLibraryLayout;
 
     public ENAExperiment(Assay assay) throws IllegalAccessException {
-        super();
-        BeanUtils.copyProperties(assay, this);
-        serialiseAttributes();
+        super(assay);
         serialiseLibraryLayout();
     }
 
-    public ENAExperiment() {
+    public ENAExperiment() throws IllegalAccessException {
+        super(new Assay());
     }
 
     /*
@@ -125,7 +124,7 @@ public class ENAExperiment extends Assay implements ENASubmittable {
 
     @Override
     public void serialiseAttributes() throws IllegalAccessException {
-        ENASubmittable.super.serialiseAttributes();
+        super.serialiseAttributes();
         final Optional<Attribute> platformTypeAttribute = getExistingStudyTypeAttribute(PLATFORM_TYPE,false);
         final Optional<Attribute> instrumentModelAttribute = getExistingStudyTypeAttribute(INSTRUMENT_MODEL,false);
         if (!platformTypeAttribute.isPresent())
@@ -161,7 +160,9 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     }
 
     public void serialiseLibraryLayout() throws IllegalAccessException {
-        if (libraryLayout.equals(PAIRED)) {
+        if (libraryLayout == null)
+            libraryLayout = SINGLE;
+        else if (libraryLayout.equals(PAIRED)) {
             this.pairedLibraryLayout = new PairedLibraryLayout(nominalLength, nominalSdev);
             this.singleLibraryLayout = null;
         } else if (libraryLayout.equals(SINGLE)) {
@@ -171,7 +172,7 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     }
 
     public void deSerialiseAttributes () throws IllegalAccessException {
-        ENASubmittable.super.deSerialiseAttributes();
+        super.deSerialiseAttributes();
 
         final Field[] declaredFields = this.getClass().getDeclaredFields();
         Field platformField = null;
@@ -195,25 +196,11 @@ public class ENAExperiment extends Assay implements ENASubmittable {
     }
 
     public SampleRef getSampleRef () {
-        if (getSampleUses().isEmpty())
+        uk.ac.ebi.subs.data.submittable.Assay assay = (uk.ac.ebi.subs.data.submittable.Assay)getBaseSubmittable();
+        if (assay.getSampleUses().isEmpty())
             return null;
         else
-            return getSampleUses().get(0).getSampleRef();
-    }
-
-    @Override
-    public String getTeamName() {
-        Team team = getTeam();
-        if (team != null)
-            return team.getName();
-        else return null;
-    }
-
-    @Override
-    public void setTeamName(String teamName) {
-        Team team = new Team();
-        team.setName(teamName);
-        setTeam(team);
+            return assay.getSampleUses().get(0).getSampleRef();
     }
 
     public static class Single {}
@@ -228,5 +215,17 @@ public class ENAExperiment extends Assay implements ENASubmittable {
         }
 
         public PairedLibraryLayout () {}
+    }
+
+    public Assay getAssay () {
+        return (uk.ac.ebi.subs.data.submittable.Assay)getBaseSubmittable();
+    }
+
+    public StudyRef getStudyRef() {
+        return getAssay().getStudyRef();
+    }
+
+    public void setStudyRef(StudyRef studyRef) {
+        this.getAssay().setStudyRef(studyRef);
     }
 }
