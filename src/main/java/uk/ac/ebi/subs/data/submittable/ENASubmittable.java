@@ -162,9 +162,16 @@ public abstract class ENASubmittable <T extends BaseSubmittable> implements Subm
         baseSubmittable.setDescription(description);
     }
 
+    /**
+     * Return null for a empty list to prevent moxy from creating an empty attributes element as the schema doesn't allow this
+     */
     @Override
     public List<Attribute> getAttributes() {
-        return baseSubmittable.getAttributes();
+        if (baseSubmittable.getAttributes().isEmpty()) {
+            return null;
+        } else {
+            return baseSubmittable.getAttributes();
+        }
     }
 
     @Override
