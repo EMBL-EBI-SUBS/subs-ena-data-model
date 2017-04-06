@@ -8,6 +8,10 @@
   "description": null,
   "attributes": [
     {
+      "name": "design_description",
+      "value": "design_description"
+    },
+    {
       "name": "library_name",
       "value": "Library Name"
     },
