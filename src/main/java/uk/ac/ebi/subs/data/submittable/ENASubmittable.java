@@ -42,7 +42,12 @@ public abstract class ENASubmittable <T extends BaseSubmittable> implements Subm
     }
 
     int getAttributeCount(String attributeName) {
-        return (int)getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).count();
+        final List<Attribute> attributeList = getAttributes();
+        if (attributeList == null) {
+            return 0;
+        } else {
+            return (int)attributeList.stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).count();
+        }
     }
 
     void deleteAttribute(Attribute attribute) {
