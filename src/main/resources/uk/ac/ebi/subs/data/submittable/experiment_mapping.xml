@@ -10,16 +10,19 @@
         <java-type name="Assay" xml-transient="true"/>
         <java-type name="ENAExperiment" xml-accessor-type="NONE">
             <xml-root-element name="EXPERIMENT"/>
-            <xml-type prop-order="title studyRef designDescription sampleRef libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary attributes"/>
+            <xml-type prop-order="accession alias teamName title studyRef designDescription sampleRef libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary attributes"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
                 <xml-attribute java-attribute="teamName" name="center_name"/>
+                <xml-element java-attribute="accession" name="IDENTIFIERS/PRIMARY_ID"/>
+                <xml-element java-attribute="alias" xml-path="IDENTIFIERS/SUBMITTER_ID/text()"/>
+                <xml-attribute java-attribute="teamName" xml-path="IDENTIFIERS/SUBMITTER_ID/@namespace"/>
                 <xml-element java-attribute="title" name="TITLE"/>
                 <xml-element java-attribute="studyRef" name="STUDY_REF"
                              type="uk.ac.ebi.subs.data.component.AbstractSubsRef">
                 </xml-element>
-                <xml-element java-attribute="designDescription" xml-path="DESIGN/DESIGN_DESCRIPTION/text()"/>
+                <xml-element java-attribute="designDescription" nillable="true" xml-path="DESIGN/DESIGN_DESCRIPTION/text()"/>
                 <xml-element java-attribute="sampleRef" name="SAMPLE_REF" xml-path="DESIGN/SAMPLE_DESCRIPTOR"
                              type="uk.ac.ebi.subs.data.component.AbstractSubsRef"/>
                 <xml-element java-attribute="libraryName" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_NAME/text()"/>
@@ -38,9 +41,9 @@
                 <xml-element java-attribute="pacbioSMRT" required="false" nillable="false" xml-path="PLATFORM/PACBIO_SMRT/INSTRUMENT_MODEL/text()" />
                 <xml-element java-attribute="ionTorrent" required="false" nillable="false" xml-path="PLATFORM/ION_TORRENT/INSTRUMENT_MODEL/text()" />
                 <xml-element java-attribute="capillary" required="false" nillable="false" xml-path="PLATFORM/CAPILLARY/INSTRUMENT_MODEL/text()" />
-                <xml-element java-attribute="attributes" required="false" nillable="false" name="EXPERIMENT_ATTRIBUTE"
+                <xml-element java-attribute="attributes" required="false" name="EXPERIMENT_ATTRIBUTE"
                              type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
-                    <xml-element-wrapper name="EXPERIMENT_ATTRIBUTES"/>
+                    <xml-element-wrapper name="EXPERIMENT_ATTRIBUTES" required="false" nillable="false"/>
                 </xml-element>
             </java-attributes>
         </java-type>
