@@ -15,6 +15,7 @@ import uk.ac.ebi.subs.data.submittable.Sample;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +26,7 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 
@@ -78,6 +80,8 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public static final String PACBIO_SMRT_INSTRUMENT_MODEL = "PacBio RS";
     public static final String ION_TORRENT_INSTRUMENT_MODEL = "Ion Torrent PGM";
     public static final String CAPILLARY_INSTRUMENT_MODEL = "AB 3730xL Genetic Analyzer";
+
+    String EXPERIMENT_XSD = "https://raw.githubusercontent.com/enasequence/schema/master/src/main/resources/uk/ac/ebi/ena/sra/schema/SRA.study.xsd";
 
     @Override
     @Before
@@ -292,12 +296,14 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     }
 
     @Test
-    public void testExperimentSerialisation () throws IOException, IllegalAccessException, JAXBException, ParserConfigurationException {
+    public void testExperimentSerialisation () throws IOException, IllegalAccessException, JAXBException, ParserConfigurationException, TransformerException {
         final Assay assayFromResource = getAssayFromResource(ASSAY_RESOURCE);
         ENAExperiment enaExperiment = new ENAExperiment(assayFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-
+        final String documentString = getDocumentString(document);
+        logger.info(documentString);
+        assertNotNull(enaExperiment);
     }
 
     public Assay getAssayFromResource (String assayResource) throws IOException {

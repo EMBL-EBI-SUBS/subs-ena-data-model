@@ -13,6 +13,8 @@ import uk.ac.ebi.subs.data.submittable.Study;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -36,6 +38,8 @@ public class StudySerialisationTest extends SerialisationTest {
     static String STUDY_DESCRIPTION_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_DESCRIPTION[1]/text()";
     static String STUDY_TYPE_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_TYPE[1]/@existing_study_type";
     static String STUDY_ATTRIBUTE = "/STUDY/STUDY_ATTRIBUTES[1]/STUDY_ATTRIBUTE";
+
+    String STUDY_XSD = "https://raw.githubusercontent.com/enasequence/schema/master/src/main/resources/uk/ac/ebi/ena/sra/schema/SRA.study.xsd";
 
     @Test
     public void testMarshalStudyXML() throws Exception {
