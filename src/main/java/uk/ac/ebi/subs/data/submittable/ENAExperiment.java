@@ -196,11 +196,16 @@ public class ENAExperiment extends ENASubmittable<Assay>  {
     }
 
     public SampleRef getSampleRef () {
-        uk.ac.ebi.subs.data.submittable.Assay assay = (uk.ac.ebi.subs.data.submittable.Assay)getBaseSubmittable();
+        Assay assay = getBaseObject();
         if (assay.getSampleUses().isEmpty())
             return null;
         else
             return assay.getSampleUses().get(0).getSampleRef();
+    }
+
+    public void setSampleRef (SampleRef sampleRef) {
+        SampleUse sampleUse = new SampleUse(sampleRef);
+        getBaseObject().getSampleUses().add(sampleUse);
     }
 
     public static class Single {}
@@ -217,15 +222,14 @@ public class ENAExperiment extends ENASubmittable<Assay>  {
         public PairedLibraryLayout () {}
     }
 
-    public Assay getAssay () {
-        return (uk.ac.ebi.subs.data.submittable.Assay)getBaseSubmittable();
-    }
 
     public StudyRef getStudyRef() {
-        return getAssay().getStudyRef();
+        return getBaseObject().getStudyRef();
     }
 
     public void setStudyRef(StudyRef studyRef) {
-        this.getAssay().setStudyRef(studyRef);
+        getBaseObject().setStudyRef(studyRef);
     }
+
+
 }
