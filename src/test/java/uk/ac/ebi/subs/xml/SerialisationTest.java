@@ -108,7 +108,6 @@ public class SerialisationTest {
 
     public Marshaller createMarshaller (Class cl, String objectPackage, String objectMapperResource,
                                         String componentPackage, String componentResource) throws URISyntaxException, JAXBException {
-
         Map<String, Source> metadata = new HashMap<String, Source>();
         metadata.put(objectPackage, createStreamSource(objectMapperResource));
         metadata.put(componentPackage, createStreamSource(componentResource));
