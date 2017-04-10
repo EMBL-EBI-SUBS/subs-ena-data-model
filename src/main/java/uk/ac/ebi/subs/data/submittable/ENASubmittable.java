@@ -2,7 +2,6 @@ package uk.ac.ebi.subs.data.submittable;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import uk.ac.ebi.subs.data.component.AbstractSubsRef;
 import uk.ac.ebi.subs.data.component.Archive;
 import uk.ac.ebi.subs.data.component.Attribute;
 import uk.ac.ebi.subs.data.component.Team;
@@ -16,16 +15,20 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * Created by neilg on 04/04/2017.
+ * Created by neilg on 03/03/2017.
  */
-public abstract class ENASubmittable <T extends BaseSubmittable> implements Submittable, BaseSubmittableFactory<T> {
+public abstract class ENASubmittable <T extends BaseSubmittable> implements BaseSubmittableFactory<T> {
     static final String MULTIPLE_VALUES_ERROR_MESSAGE = "Multiple values found for attribute %s.";
     static final String ATTRIBUTE_VALUE_REQUIRED_ERROR_MESSAGE = "Value for attribute %s is required.";
     static final String INVALID_VALUE_ERROR_MESSAGE = "Invalid value for attribute %s value must be one of %s.";
 
-    BaseSubmittable<T> baseSubmittable;
+    BaseSubmittable baseSubmittable;
 
-    public ENASubmittable(BaseSubmittable<T> baseSubmittable) throws IllegalAccessException {
+    public ENASubmittable(BaseSubmittable baseSubmittable) throws IllegalAccessException {
+        setBaseSubmittable(baseSubmittable);
+    }
+
+    public void setBaseSubmittable(BaseSubmittable baseSubmittable) throws IllegalAccessException {
         this.baseSubmittable = baseSubmittable;
         serialiseAttributes();
     }
@@ -215,10 +218,6 @@ public abstract class ENASubmittable <T extends BaseSubmittable> implements Subm
 
     public BaseSubmittable<T> getBaseSubmittable() {
         return baseSubmittable;
-    }
-
-    public void setBaseSubmittable(BaseSubmittable<T> baseSubmittable) {
-        this.baseSubmittable = baseSubmittable;
     }
 
     @Override
