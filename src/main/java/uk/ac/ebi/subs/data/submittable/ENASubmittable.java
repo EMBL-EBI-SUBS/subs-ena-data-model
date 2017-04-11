@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 /**
  * Created by neilg on 03/03/2017.
  */
-public abstract class ENASubmittable <T extends BaseSubmittable> implements BaseSubmittableFactory<T> {
+public abstract class ENASubmittable <T extends BaseSubmittable> implements BaseSubmittableFactory<T> , Submittable {
     static final String MULTIPLE_VALUES_ERROR_MESSAGE = "Multiple values found for attribute %s.";
     static final String ATTRIBUTE_VALUE_REQUIRED_ERROR_MESSAGE = "Value for attribute %s is required.";
     static final String INVALID_VALUE_ERROR_MESSAGE = "Invalid value for attribute %s value must be one of %s.";
