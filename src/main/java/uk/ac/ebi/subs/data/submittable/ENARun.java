@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by neilg on 05/04/2017.
  */
-public class ENARun extends ENASubmittable<AssayData> {
+public class ENARun extends AbstractENASubmittable<AssayData> {
     public ENARun(AssayData assayData) throws IllegalAccessException {
         super(assayData);
     }
@@ -35,5 +35,10 @@ public class ENARun extends ENASubmittable<AssayData> {
 
     public void setFiles (List<File> files) {
         getBaseObject().setFiles(files);
+    }
+
+    @Override
+    public Submittable createNewSubmittable() {
+        return new AssayData();
     }
 }

@@ -6,7 +6,7 @@
     <java-types>
         <java-type name="Submittable" xml-transient="true"/>
         <java-type name="BaseSubmittable" xml-transient="true"/>
-        <java-type name="ENASubmittable" xml-transient="true"/>
+        <java-type name="AbstractENASubmittable" xml-transient="true"/>
         <java-type name="AssayData" xml-transient="true"/>
         <java-type name="ENARun" xml-accessor-type="NONE">
             <xml-root-element name="RUN"/>

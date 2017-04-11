@@ -1,18 +1,11 @@
 package uk.ac.ebi.subs.data.submittable;
 
-import com.sun.javafx.css.CssError;
-import javafx.application.Platform;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.util.ReflectionUtils;
-import uk.ac.ebi.ena.sra.xml.LibraryDescriptorType;
-import uk.ac.ebi.subs.data.client.*;
 import uk.ac.ebi.subs.data.component.*;
 import uk.ac.ebi.subs.ena.annotation.ENAAttribute;
 import uk.ac.ebi.subs.ena.annotation.ENAPlatform;
 import uk.ac.ebi.subs.ena.annotation.ENAValidation;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -20,7 +13,7 @@ import java.util.*;
  * Created by neilg on 28/03/2017.
  */
 @ENAValidation
-public class ENAExperiment extends ENASubmittable<Assay>  {
+public class ENAExperiment extends AbstractENASubmittable<Assay> {
     public static final String DESIGN_DESCRIPTION = "design_description";
     public static final String LIBRARY_NAME = "library_name";
     public static final String LIBRARY_STRATEGY = "library_strategy";
@@ -101,7 +94,6 @@ public class ENAExperiment extends ENASubmittable<Assay>  {
 
     public ENAExperiment(Assay assay) throws IllegalAccessException {
         super(assay);
-        serialiseLibraryLayout();
     }
 
     public ENAExperiment() throws IllegalAccessException {
@@ -125,6 +117,11 @@ public class ENAExperiment extends ENASubmittable<Assay>  {
     @Override
     public void serialiseAttributes() throws IllegalAccessException {
         super.serialiseAttributes();
+        serialisePlatformTypeInstrumentModel();
+        serialiseLibraryLayout();
+    }
+
+    private void serialisePlatformTypeInstrumentModel() throws IllegalAccessException {
         final Optional<Attribute> platformTypeAttribute = getExistingStudyTypeAttribute(PLATFORM_TYPE,false);
         final Optional<Attribute> instrumentModelAttribute = getExistingStudyTypeAttribute(INSTRUMENT_MODEL,false);
         if (!platformTypeAttribute.isPresent())
@@ -206,6 +203,11 @@ public class ENAExperiment extends ENASubmittable<Assay>  {
     public void setSampleRef (SampleRef sampleRef) {
         SampleUse sampleUse = new SampleUse(sampleRef);
         getBaseObject().getSampleUses().add(sampleUse);
+    }
+
+    @Override
+    public Submittable createNewSubmittable() {
+        return new Assay();
     }
 
     public static class Single {}
