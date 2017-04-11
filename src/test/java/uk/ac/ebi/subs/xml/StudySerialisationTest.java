@@ -36,6 +36,7 @@ public class StudySerialisationTest extends SerialisationTest {
     static String STUDY_CENTER_NAME_XPATH ="/STUDY/@center_name";
     static String STUDY_TITLE_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_TITLE[1]/text()";
     static String STUDY_DESCRIPTION_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_DESCRIPTION[1]/text()";
+    static String STUDY_ABSTRACT_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_ABSTRACT[1]/text()";
     static String STUDY_TYPE_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_TYPE[1]/@existing_study_type";
     static String STUDY_ATTRIBUTE = "/STUDY/STUDY_ATTRIBUTES[1]/STUDY_ATTRIBUTE";
 
@@ -108,6 +109,20 @@ public class StudySerialisationTest extends SerialisationTest {
         marshaller.marshal(enaStudy,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,STUDY_DESCRIPTION_XPATH);
         assertThat("study description serialised to XML", enaStudy.getDescription(), equalTo(str));
+    }
+
+    @Test
+    public void testMarshalStudyAbstract() throws Exception {
+        Study study = new Study();
+        Attribute attribute = new Attribute();
+        attribute.setName(ENAStudy.STUDY_ABSTRACT);
+        attribute.setValue(UUID.randomUUID().toString());
+        study.getAttributes().add(attribute);
+        ENAStudy enaStudy = new ENAStudy(study);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaStudy,new DOMResult(document));
+        String str = executeXPathQueryNodeValue(document,STUDY_ABSTRACT_XPATH);
+        assertThat("study abstract attribute serialised to XML", attribute.getValue(), equalTo(str));
     }
 
     @Test
