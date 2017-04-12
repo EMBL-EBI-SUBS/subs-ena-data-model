@@ -8,16 +8,16 @@ public interface BaseSubmittableFactory<T extends Submittable> extends ENASubmit
     Submittable createNewSubmittable();
 
     static ENASubmittable create (Class<? extends BaseSubmittableFactory> clasz,
-                                  Submittable submittable) throws IllegalAccessException, InstantiationException {
+                                  Submittable submittable) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
         BaseSubmittableFactory baseSubmittableFactory = clasz.newInstance();
         baseSubmittableFactory.setBaseSubmittable(submittable);
+        baseSubmittableFactory.serialiseAttributes();
         return baseSubmittableFactory;
     }
 
-    static ENASubmittable create (Class<? extends BaseSubmittableFactory> clasz) throws IllegalAccessException, InstantiationException {
+    static ENASubmittable create (Class<? extends BaseSubmittableFactory> clasz) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
         BaseSubmittableFactory baseSubmittableFactory = clasz.newInstance();
-        final Submittable newSubmittable = baseSubmittableFactory.createNewSubmittable();
-        return create(clasz,newSubmittable);
+        return baseSubmittableFactory;
     }
 
 
