@@ -29,7 +29,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     }
 
     public AbstractENASubmittable() throws IllegalAccessException {
-        setBaseSubmittable(createNewSubmittable());
+        this.baseSubmittable = createNewSubmittable();
     }
 
     public void setBaseSubmittable(Submittable baseSubmittable) throws IllegalAccessException {
