@@ -51,6 +51,11 @@ public class RunSerialisationTest extends SerialisationTest {
         marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
     }
 
+    @Override
+    protected String getName() {
+        return "RUN";
+    }
+
     @Test
     public void testMarshallRunAccession() throws Exception {
         AssayData assayData = createAssayData();
@@ -155,4 +160,10 @@ public class RunSerialisationTest extends SerialisationTest {
         AssayData assayData = new AssayData();
         return assayData;
     }
+
+    @Override
+    protected ENASubmittable createENASubmittable() throws IllegalAccessException {
+        return new ENARun();
+    }
+
 }

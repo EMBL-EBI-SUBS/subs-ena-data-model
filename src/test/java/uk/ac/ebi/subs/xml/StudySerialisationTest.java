@@ -9,6 +9,7 @@ import org.w3c.dom.Document;
 import uk.ac.ebi.subs.data.component.Attribute;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.ENAStudy;
+import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.Study;
 
 import javax.xml.bind.JAXBException;
@@ -52,6 +53,10 @@ public class StudySerialisationTest extends SerialisationTest {
         final String documentString = getDocumentString(document);
         logger.info(documentString);
         assertNotNull(study);
+    }
+
+    protected ENASubmittable createENASubmittable() throws IllegalAccessException {
+        return new ENAStudy();
     }
 
     @Test
@@ -143,6 +148,11 @@ public class StudySerialisationTest extends SerialisationTest {
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
         marshaller = createMarshaller(ENAStudy.class,SUBMITTABLE_PACKAGE,STUDY_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+    }
+
+    @Override
+    protected String getName() {
+        return "STUDY";
     }
 
     public Study getStudyFromResource () throws IOException {

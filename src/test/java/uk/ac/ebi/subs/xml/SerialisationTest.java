@@ -6,12 +6,18 @@ import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlOptions;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.submittable.ENAStudy;
+import uk.ac.ebi.subs.data.submittable.ENASubmittable;
+import uk.ac.ebi.subs.data.submittable.Study;
+import uk.ac.ebi.subs.data.submittable.Submittable;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
@@ -42,15 +48,27 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static uk.ac.ebi.subs.xml.StudySerialisationTest.STUDY_ACCESSION_XPATH;
 
 /**
  * Created by neilg on 28/03/2017.
  */
-public class SerialisationTest {
+public abstract class SerialisationTest {
     static final Logger logger = LoggerFactory.getLogger(SerialisationTest.class);
     String ATTRIBUTE_MAPPING = "uk/ac/ebi/subs/data/component/attribute_mapping.xml";
     String SUBMITTABLE_PACKAGE = "uk.ac.ebi.subs.data.submittable";
     String COMPONENT_PACKAGE = "uk.ac.ebi.subs.data.component";
+
+    static String ACCESSION_XPATH = "/%s/@accession";
+    static String ALIAS_XPATH = "/%s/@alias";
+    static String CENTER_NAME_XPATH ="/%s/@center_name";
+    static String IDENTIFIERS_ACCESSION_XPATH = "/%s/IDENTIFIERS/PRIMARY_ID/text()";
+    static String IDENTIFIERS_ALIAS_XPATH = "/%s/IDENTIFIERS/SUBMITTER_ID/text()";
+    static String IDENTIFIERS_CENTER_NAME_XPATH ="/%s/IDENTIFIERS/SUBMITTER_ID/@namespace";
 
     DocumentBuilderFactory documentBuilderFactory = null;
     XPathFactory xPathFactory = null;
@@ -65,6 +83,65 @@ public class SerialisationTest {
         xmlOptions.setErrorListener(validationErrors);
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         xPathFactory = XPathFactory.newInstance();
+    }
+
+    @Test
+    public void testMarshalSubmittableAccession() throws Exception {
+        Submittable submittable = createENASubmittable();
+        submittable.setAccession(UUID.randomUUID().toString());
+        String xpathQuery = String.format(ACCESSION_XPATH, getName());
+        assertXMLSubmittable(submittable,xpathQuery,submittable.getAccession());
+    }
+
+    @Test
+    public void testMarshalSubmittableAlias() throws Exception {
+        Submittable submittable = createENASubmittable();
+        submittable.setAlias(UUID.randomUUID().toString());
+        String xpathQuery = String.format(ALIAS_XPATH, getName());
+        assertXMLSubmittable(submittable,xpathQuery,submittable.getAlias());
+    }
+
+    @Test
+    public void testMarshalCentreName() throws Exception {
+        Submittable submittable = createENASubmittable();
+        Team team = new Team();
+        team.setName(UUID.randomUUID().toString());
+        submittable.setTeam(team);
+        String xpathQuery = String.format(CENTER_NAME_XPATH, getName());
+        assertXMLSubmittable(submittable,xpathQuery,team.getName());
+    }
+
+    @Test
+    public void testMarshalIdentifiersSubmittableAccession() throws Exception {
+        Submittable submittable = createENASubmittable();
+        submittable.setAccession(UUID.randomUUID().toString());
+        String accessionXpathQuery = String.format(IDENTIFIERS_ACCESSION_XPATH, getName());
+        assertXMLSubmittable(submittable,accessionXpathQuery,submittable.getAccession());
+    }
+
+    @Test
+    public void testMarshalIdentifiersSubmittableAlias() throws Exception {
+        Submittable submittable = createENASubmittable();
+        submittable.setAlias(UUID.randomUUID().toString());
+        String xpathQuery = String.format(IDENTIFIERS_ALIAS_XPATH, getName());
+        assertXMLSubmittable(submittable,xpathQuery,submittable.getAlias());
+    }
+
+    @Test
+    public void testMarshalIdentifiersCenterName() throws Exception {
+        Submittable submittable = createENASubmittable();
+        Team team = new Team();
+        team.setName(UUID.randomUUID().toString());
+        submittable.setTeam(team);
+        String xpathQuery = String.format(IDENTIFIERS_CENTER_NAME_XPATH, getName());
+        assertXMLSubmittable(submittable,xpathQuery,team.getName());
+    }
+
+    protected void assertXMLSubmittable (Submittable submittable, String xPathQuery, String actual) throws JAXBException, ParserConfigurationException, XPathExpressionException, TransformerException {
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(submittable,new DOMResult(document));
+        String xmlAlias = executeXPathQueryNodeValue(document,xPathQuery);
+        assertThat(xPathQuery, actual, equalTo(xmlAlias));
     }
 
     public Document marshal (Object object , Marshaller marshaller) throws ParserConfigurationException, JAXBException {
@@ -131,4 +208,8 @@ public class SerialisationTest {
         Validator validator = schema.newValidator();
         return validator;
     }
+
+    protected abstract ENASubmittable createENASubmittable () throws IllegalAccessException;
+
+    protected abstract String getName ();
 }

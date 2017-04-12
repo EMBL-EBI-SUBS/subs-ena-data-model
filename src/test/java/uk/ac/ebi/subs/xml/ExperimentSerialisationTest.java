@@ -11,6 +11,7 @@ import org.w3c.dom.Node;
 import uk.ac.ebi.subs.data.component.*;
 import uk.ac.ebi.subs.data.submittable.Assay;
 import uk.ac.ebi.subs.data.submittable.ENAExperiment;
+import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.Sample;
 
 import javax.xml.bind.JAXBException;
@@ -42,7 +43,6 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public static final String PACBIO_SMRT = "PACBIO_SMRT";
     public static final String ION_TORRENT = "ION_TORRENT";
     public static final String CAPILLARY = "CAPILLARY";
-
 
     String EXPERIMENT_MARSHALLER = "uk/ac/ebi/subs/data/submittable/experiment_mapping.xml";
     String ASSAY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/assay_template.json";
@@ -89,6 +89,11 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         super.setUp();
         marshaller = createMarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,EXPERIMENT_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
         marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
+    }
+
+    @Override
+    protected String getName() {
+        return "EXPERIMENT";
     }
 
     @Test
@@ -333,6 +338,12 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         assay.getAttributes().add(instrumentModelAttribute);
         return assay;
     }
+
+    @Override
+    protected ENASubmittable createENASubmittable() throws IllegalAccessException {
+        return new ENAExperiment();
+    }
+
 
 
 }

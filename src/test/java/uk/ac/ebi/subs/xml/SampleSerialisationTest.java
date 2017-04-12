@@ -7,6 +7,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.ENASample;
+import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.Sample;
 
 import javax.xml.bind.JAXBException;
@@ -41,6 +42,11 @@ public class SampleSerialisationTest extends SerialisationTest {
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
         marshaller = createMarshaller(ENASample.class,SUBMITTABLE_PACKAGE,SAMPLE_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+    }
+
+    @Override
+    protected String getName() {
+        return "SAMPLE";
     }
 
     @Test
@@ -110,4 +116,10 @@ public class SampleSerialisationTest extends SerialisationTest {
         String str = executeXPathQueryNodeValue(document,SAMPLE_DESCRIPTION_XPATH);
         assertThat("sample center_name serialised to XML", sample.getDescription(), equalTo(str));
     }
+
+    @Override
+    protected ENASubmittable createENASubmittable() throws IllegalAccessException {
+        return new ENASample();
+    }
+
 }
