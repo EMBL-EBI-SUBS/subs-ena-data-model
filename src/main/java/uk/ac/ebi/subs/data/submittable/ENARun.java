@@ -13,12 +13,8 @@ public class ENARun extends AbstractENASubmittable<AssayData> {
         super(assayData);
     }
 
-    public ENARun(BaseSubmittable<AssayData> baseSubmittable) throws IllegalAccessException {
-        super(new AssayData());
-    }
-
     public ENARun () throws IllegalAccessException {
-        super(new AssayData());
+        super();
     }
 
     public AssayRef getAssayRef () {

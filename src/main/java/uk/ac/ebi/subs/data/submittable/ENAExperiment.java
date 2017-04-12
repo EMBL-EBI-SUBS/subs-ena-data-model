@@ -97,7 +97,7 @@ public class ENAExperiment extends AbstractENASubmittable<Assay> {
     }
 
     public ENAExperiment() throws IllegalAccessException {
-        super(new Assay());
+        super();
     }
 
     /*
