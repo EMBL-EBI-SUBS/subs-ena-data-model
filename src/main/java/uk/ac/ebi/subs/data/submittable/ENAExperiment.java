@@ -85,8 +85,10 @@ public class ENAExperiment extends AbstractENASubmittable<Assay> {
     String libraryLayout;
 
     @ENAAttribute(name = PAIRED_NOMINAL_LENGTH)
+    final
     String nominalLength = null;
     @ENAAttribute(name = PAIRED_NOMINAL_SDEV)
+    final
     String nominalSdev = null;
 
     String singleLibraryLayout;

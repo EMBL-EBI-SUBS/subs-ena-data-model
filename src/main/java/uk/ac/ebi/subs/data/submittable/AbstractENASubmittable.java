@@ -18,17 +18,17 @@ import java.util.stream.Stream;
  * Created by neilg on 03/03/2017.
  */
 public abstract class AbstractENASubmittable<T extends BaseSubmittable> implements BaseSubmittableFactory<T>  {
-    static final String MULTIPLE_VALUES_ERROR_MESSAGE = "Multiple values found for attribute %s.";
+    private static final String MULTIPLE_VALUES_ERROR_MESSAGE = "Multiple values found for attribute %s.";
     static final String ATTRIBUTE_VALUE_REQUIRED_ERROR_MESSAGE = "Value for attribute %s is required.";
-    static final String INVALID_VALUE_ERROR_MESSAGE = "Invalid value for attribute %s value must be one of %s.";
+    private static final String INVALID_VALUE_ERROR_MESSAGE = "Invalid value for attribute %s value must be one of %s.";
 
-    Submittable baseSubmittable;
+    private Submittable baseSubmittable;
 
     public AbstractENASubmittable(Submittable baseSubmittable) throws IllegalAccessException {
         setBaseSubmittable(baseSubmittable);
     }
 
-    public AbstractENASubmittable() throws IllegalAccessException {
+    public AbstractENASubmittable() {
         this.baseSubmittable = createNewSubmittable();
     }
 
@@ -48,7 +48,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         return getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName));
     }
 
-    int getAttributeCount(String attributeName) {
+    private int getAttributeCount(String attributeName) {
         final List<Attribute> attributeList = getAttributes();
         if (attributeList == null) {
             return 0;
@@ -66,7 +66,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
             serialiseFields(this.getClass(), this);
     }
 
-    void serialiseFields (Class<?> aClass, Object obj) throws IllegalAccessException {
+    private void serialiseFields(Class<?> aClass, Object obj) throws IllegalAccessException {
         final Field[] fields = aClass.getDeclaredFields();
         String string;
         for (Field field : fields ) {
@@ -97,7 +97,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         deSerialiseFields(this.getClass(), this);
     }
 
-    public void deSerialiseFields (Class<?> aClass, Object obj) throws IllegalAccessException {
+    private void deSerialiseFields(Class<?> aClass, Object obj) throws IllegalAccessException {
         final Field[] fields = aClass.getDeclaredFields();
         for (Field field : fields ) {
             if (field.isAnnotationPresent(ENAAttribute.class)) {
