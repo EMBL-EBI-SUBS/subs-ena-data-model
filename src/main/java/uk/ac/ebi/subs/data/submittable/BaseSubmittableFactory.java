@@ -3,7 +3,7 @@ package uk.ac.ebi.subs.data.submittable;
 /**
  * Created by neilg on 05/03/2017.
  */
-interface BaseSubmittableFactory<T extends Submittable> extends ENASubmittable<T> {
+public interface BaseSubmittableFactory<T extends Submittable> extends ENASubmittable<T> {
     void setBaseSubmittable(Submittable submittable) throws IllegalAccessException;
     Submittable createNewSubmittable();
 
