@@ -14,15 +14,10 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import uk.ac.ebi.subs.data.component.Team;
-import uk.ac.ebi.subs.data.submittable.ENAStudy;
-import uk.ac.ebi.subs.data.submittable.ENASubmittable;
-import uk.ac.ebi.subs.data.submittable.Study;
-import uk.ac.ebi.subs.data.submittable.Submittable;
+import uk.ac.ebi.subs.data.submittable.*;
 
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,6 +35,7 @@ import javax.xml.validation.Validator;
 import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -76,6 +72,7 @@ public abstract class SerialisationTest {
     ArrayList<XmlError> validationErrors;
     ObjectMapper objectMapper = new ObjectMapper();
     Marshaller marshaller;
+    Unmarshaller unmarshaller;
 
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -200,6 +197,23 @@ public abstract class SerialisationTest {
         return marshaller;
     }
 
+    public Unmarshaller createUnmarshaller (Class cl, String objectPackage, String objectMapperResource,
+                                            String componentPackage, String componentResource) throws URISyntaxException, JAXBException {
+        Map<String, Source> metadata = new HashMap<String, Source>();
+        metadata.put(objectPackage, createStreamSource(objectMapperResource));
+        metadata.put(componentPackage, createStreamSource(componentResource));
+
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, metadata);
+
+        JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {cl}, properties);
+
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
+        return unmarshaller;
+    }
+
     public Validator getValidator(String url) throws MalformedURLException, SAXException {
         SchemaFactory schemaFactory = SchemaFactory
                 .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -212,4 +226,30 @@ public abstract class SerialisationTest {
     protected abstract ENASubmittable createENASubmittable () throws IllegalAccessException;
 
     protected abstract String getName ();
+
+    protected void serialiseDeserialiseTest (String studyResource,
+                                             Class<? extends BaseSubmittableFactory> baseSubmittableFactoryClass,
+                                             Class<? extends BaseSubmittable> baseSubmittableClass) throws Exception {
+        final BaseSubmittable baseSubmittableFromResource = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
+        final BaseSubmittable baseSubmittableForCompare = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
+        baseSubmittableForCompare.setArchive(null);
+        ((Study)baseSubmittableForCompare).setReleaseDate(null);
+        final ENASubmittable enaSubmittable = BaseSubmittableFactory.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaSubmittable,new DOMResult(document));
+        logger.info(getDocumentString(document));
+        DOMSource domSource = new DOMSource(document);
+        final JAXBElement<? extends BaseSubmittableFactory> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
+        final BaseSubmittableFactory baseSubmittableValue = baseSubmittable.getValue();
+        baseSubmittableValue.deSerialiseAttributes();
+        final Submittable baseObject = baseSubmittableValue.getBaseObject();
+        assertThat("serialised and deserialised submittable", baseSubmittableForCompare, equalTo(baseObject));
+    }
+
+    public BaseSubmittable getBaseSubmittableFromResource (String resource, Class<? extends BaseSubmittable> cl) throws IOException {
+        final InputStream inputStream = getClass().getResourceAsStream(resource);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final BaseSubmittable baseSubmittable = objectMapper.readValue(inputStream, cl);
+        return baseSubmittable;
+    }
 }
