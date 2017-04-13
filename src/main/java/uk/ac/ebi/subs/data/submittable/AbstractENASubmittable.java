@@ -10,6 +10,7 @@ import uk.ac.ebi.subs.ena.annotation.ENAValidation;
 import uk.ac.ebi.subs.ena.exception.AttributeException;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -97,22 +98,28 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         deSerialiseFields(this.getClass(), this);
     }
 
-    private void deSerialiseFields(Class<?> aClass, Object obj) throws IllegalAccessException {
+    private void deSerialiseFields (Class<?> aClass, Object obj) throws IllegalAccessException {
+        List<Attribute> attributes = getAttributes();
+        if (attributes == null) attributes = new ArrayList<>();
         final Field[] fields = aClass.getDeclaredFields();
         for (Field field : fields ) {
             if (field.isAnnotationPresent(ENAAttribute.class)) {
                 final ENAAttribute annotation = field.getAnnotation(ENAAttribute.class);
                 final Object o = field.get(obj);
-                Attribute attribute = new Attribute();
-                attribute.setName(annotation.name());
-                attribute.setValue(o.toString());
-                getAttributes().add(attribute);
+                if ( o != null ) {
+                    Attribute attribute = new Attribute();
+                    attribute.setName(annotation.name());
+                    attribute.setValue(o.toString());
+                    attributes.add(attribute);
+                }
             } else if (field.getType().isMemberClass()) {
                 deSerialiseFields(field.getType(),field.get(obj));
             }
 
         }
+        setAttributes(attributes);
     }
+
 
     @Override
     public String getId() {
