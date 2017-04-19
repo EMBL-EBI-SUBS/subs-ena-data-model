@@ -1,6 +1,7 @@
 package uk.ac.ebi.subs.xml;
 
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.eclipse.persistence.internal.jpa.parsing.StringFunctionNode;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +37,7 @@ public class RunSerialisationTest extends SerialisationTest {
     static String RUN_ACCESSION_XPATH = "/RUN/@accession";
     static String RUN_ALIAS_XPATH = "/RUN/@alias";
     static String RUN_CENTER_NAME_XPATH = "/RUN/@center_name";
+    static String RUN_TITLE_XPATH = "/RUN[1]/TITLE[1]/text()";
     static String RUN_EXPERIMENT_ACCESSION = "/RUN[1]/EXPERIMENT_REF[1]/@accession";
     static String RUN_EXPERIMENT_REF_NAME = "/RUN[1]/EXPERIMENT_REF[1]/@ref_name";
     static String RUN_FILES_FILENAME = "/RUN[1]/DATA_BLOCK/FILES/FILE/@filename";
@@ -48,6 +50,7 @@ public class RunSerialisationTest extends SerialisationTest {
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
         marshaller = createMarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,RUN_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+        unmarshaller = createUnmarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,RUN_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
         marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
     }
 
@@ -102,6 +105,17 @@ public class RunSerialisationTest extends SerialisationTest {
         marshaller.marshal(enaRun,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,RUN_EXPERIMENT_ACCESSION);
         assertThat("run experiment ref", assayRef.getAccession(), equalTo(str));
+    }
+
+    @Test
+    public void testMarshalRunTitle() throws Exception {
+        AssayData assayData = createAssayData();
+        assayData.setTitle(UUID.randomUUID().toString());
+        ENARun enaRun = new ENARun(assayData);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaRun,new DOMResult(document));
+        String str = executeXPathQueryNodeValue(document,RUN_TITLE_XPATH);
+        assertThat("experiment title to XML", assayData.getTitle(), equalTo(str));
     }
 
     @Test
@@ -161,9 +175,34 @@ public class RunSerialisationTest extends SerialisationTest {
         return assayData;
     }
 
+    AssayData createAssayData (String alias, String assayAlias) {
+        AssayData assayData = new AssayData();
+        Team team = new Team();
+        team.setName("test-team");
+        assayData.setTeam(team);
+        assayData.setAlias(alias);
+        AssayRef assayRef = new AssayRef();
+        assayRef.setAlias(assayAlias);
+        assayData.setAssayRef(assayRef);
+        assayData.setTitle("Test Title");
+        File file = new File();
+        file.setType("fastq");
+        file.setChecksum("12345678abcdefgh12345678abcdefgh");
+        file.setName("Test.fastq");
+        file.setChecksumMethod("MD5");
+        assayData.getFiles().add(file);
+        return assayData;
+    }
+
     @Override
     protected ENASubmittable createENASubmittable() throws IllegalAccessException {
         return new ENARun();
+    }
+
+    @Test
+    public void testMarshalUnmarshallRun () throws Exception {
+        final AssayData assayData = createAssayData(UUID.randomUUID().toString(),"assay-ref-001");
+        serialiseDeserialiseTest(assayData,ENARun.class);
     }
 
 }
