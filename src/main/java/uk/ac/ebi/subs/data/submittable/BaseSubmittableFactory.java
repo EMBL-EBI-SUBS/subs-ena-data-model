@@ -11,7 +11,6 @@ public interface BaseSubmittableFactory<T extends Submittable> extends ENASubmit
                                   Submittable submittable) throws IllegalArgumentException, IllegalAccessException, InstantiationException {
         BaseSubmittableFactory baseSubmittableFactory = clasz.newInstance();
         baseSubmittableFactory.setBaseSubmittable(submittable);
-        baseSubmittableFactory.serialiseAttributes();
         return baseSubmittableFactory;
     }
 
