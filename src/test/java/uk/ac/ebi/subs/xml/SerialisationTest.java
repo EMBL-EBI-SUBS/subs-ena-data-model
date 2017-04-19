@@ -248,6 +248,31 @@ public abstract class SerialisationTest {
         assertThat("serialised and deserialised submittable", baseSubmittableForCompare, equalTo(baseObject));
     }
 
+    protected void serialiseDeserialiseTest (Submittable submittable,
+                                             Class<? extends BaseSubmittableFactory> baseSubmittableFactoryClass) throws Exception {
+        StringWriter stringWriter = new StringWriter();
+        final Class<? extends Submittable> submittableClass = submittable.getClass();
+        objectMapper.writeValue(stringWriter,submittable);
+        // clone the object
+        final Submittable clonedSubmittable = objectMapper.readValue(stringWriter.toString(), submittableClass);
+        clonedSubmittable.setArchive(null);
+        clonedSubmittable.setId(null);
+        Collections.sort(clonedSubmittable.getAttributes());
+
+        final ENASubmittable enaSubmittable = BaseSubmittableFactory.create(baseSubmittableFactoryClass, submittable);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaSubmittable,new DOMResult(document));
+        String documentString = getDocumentString(document);
+        logger.info(documentString);
+        DOMSource domSource = new DOMSource(document);
+        final JAXBElement<? extends BaseSubmittableFactory> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
+        final BaseSubmittableFactory baseSubmittableValue = baseSubmittable.getValue();
+        baseSubmittableValue.deSerialiseAttributes();
+        final Submittable baseObject = baseSubmittableValue.getBaseObject();
+        Collections.sort(baseObject.getAttributes());
+        assertThat("serialised and deserialised submittable", clonedSubmittable, equalTo(baseObject));
+    }
+
     public BaseSubmittable getBaseSubmittableFromResource (String resource, Class<? extends BaseSubmittable> cl) throws IOException {
         final InputStream inputStream = getClass().getResourceAsStream(resource);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
