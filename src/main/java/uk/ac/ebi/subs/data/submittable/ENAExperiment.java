@@ -85,10 +85,8 @@ public class ENAExperiment extends AbstractENASubmittable<Assay> {
     String libraryLayout;
 
     @ENAAttribute(name = PAIRED_NOMINAL_LENGTH)
-    final
     String nominalLength = null;
     @ENAAttribute(name = PAIRED_NOMINAL_SDEV)
-    final
     String nominalSdev = null;
 
     String singleLibraryLayout;
@@ -123,9 +121,17 @@ public class ENAExperiment extends AbstractENASubmittable<Assay> {
         serialiseLibraryLayout();
     }
 
+    public void deSerialiseAttributes () throws IllegalAccessException {
+        deserialiseLibraryLayout();
+        deserialisePlatformTypeInstrumentModel();
+        super.deSerialiseAttributes();
+    }
+
+
+
     private void serialisePlatformTypeInstrumentModel() throws IllegalAccessException {
-        final Optional<Attribute> platformTypeAttribute = getExistingStudyTypeAttribute(PLATFORM_TYPE,false);
-        final Optional<Attribute> instrumentModelAttribute = getExistingStudyTypeAttribute(INSTRUMENT_MODEL,false);
+        final Optional<Attribute> platformTypeAttribute = getExistingAttribute(PLATFORM_TYPE,false);
+        final Optional<Attribute> instrumentModelAttribute = getExistingAttribute(INSTRUMENT_MODEL,false);
         if (!platformTypeAttribute.isPresent())
             throw new IllegalAccessException("Attribute " + PLATFORM_TYPE + " not defined");
         if (!instrumentModelAttribute.isPresent())
@@ -158,6 +164,36 @@ public class ENAExperiment extends AbstractENASubmittable<Assay> {
         deleteAttribute(instrumentModelAttribute.get());
     }
 
+    public void deserialisePlatformTypeInstrumentModel () throws IllegalAccessException {
+
+        final Field[] declaredFields = this.getClass().getDeclaredFields();
+        Field platformField = null;
+
+        for (Field field : declaredFields) {
+            if (field.isAnnotationPresent(ENAPlatform.class)) {
+                if (field.get(this) != null) {
+                    if (platformField != null) throw new IllegalArgumentException("Multiple platforms found in class");
+                    platformField = field;
+                }
+            }
+        }
+
+        List<Attribute> attributeList = getAttributes();
+
+        if (attributeList == null) attributeList = new ArrayList<>();
+
+        Attribute platformTypeAttribute = new Attribute();
+        platformTypeAttribute.setName(PLATFORM_TYPE);
+        platformTypeAttribute.setValue(platformField.getAnnotation(ENAPlatform.class).name());
+        attributeList.add(platformTypeAttribute);
+        Attribute instrumentModelAttribute = new Attribute();
+        instrumentModelAttribute.setName(INSTRUMENT_MODEL);
+        String pt = (String) platformField.get(this);
+        instrumentModelAttribute.setValue(pt);
+        attributeList.add(instrumentModelAttribute);
+        setAttributes(attributeList);
+    }
+
     public void serialiseLibraryLayout() throws IllegalAccessException {
         if (libraryLayout == null)
             libraryLayout = SINGLE;
@@ -170,28 +206,14 @@ public class ENAExperiment extends AbstractENASubmittable<Assay> {
         }
     }
 
-    public void deSerialiseAttributes () throws IllegalAccessException {
-        super.deSerialiseAttributes();
-
-        final Field[] declaredFields = this.getClass().getDeclaredFields();
-        Field platformField = null;
-
-        for (Field field : declaredFields) {
-            if (field.isAnnotationPresent(ENAPlatform.class)) {
-                if (platformField == null) {
-                    platformField = field;
-                } else {
-                    throw new IllegalArgumentException("Multiple platforms found in class");
-                }
-            }
+    public void deserialiseLibraryLayout() throws IllegalAccessException {
+        if (pairedLibraryLayout != null) {
+            nominalLength = pairedLibraryLayout.getNominalLength();
+            nominalSdev = pairedLibraryLayout.getNominalSdev();
+            libraryLayout = PAIRED;
+        } else {
+            libraryLayout = SINGLE;
         }
-
-        Attribute attribute = new Attribute();
-
-        attribute.setName(platformField.getAnnotation(ENAPlatform.class).name());
-        String pt = (String) platformField.get(this);
-        attribute.setValue(pt);
-        getAttributes().add(attribute);
     }
 
     public SampleRef getSampleRef () {
@@ -224,6 +246,14 @@ public class ENAExperiment extends AbstractENASubmittable<Assay> {
         }
 
         public PairedLibraryLayout () {}
+
+        public String getNominalLength() {
+            return nominalLength;
+        }
+
+        public String getNominalSdev() {
+            return nominalSdev;
+        }
     }
 
 
