@@ -42,14 +42,12 @@
   ],
   "studyRef": {
     "alias": "study1",
-    "archive": "Ena",
     "team": "test team"
   },
   "sampleUses": [
     {
       "sampleRef": {
         "alias": "bob",
-        "archive": "Usi",
         "team": "test team"
       },
       "attributes": []
