@@ -178,20 +178,15 @@ public class ENAExperiment extends AbstractENASubmittable<Assay> {
             }
         }
 
-        List<Attribute> attributeList = getAttributes();
-
-        if (attributeList == null) attributeList = new ArrayList<>();
-
         Attribute platformTypeAttribute = new Attribute();
         platformTypeAttribute.setName(PLATFORM_TYPE);
         platformTypeAttribute.setValue(platformField.getAnnotation(ENAPlatform.class).name());
-        attributeList.add(platformTypeAttribute);
+        getAttributes().add(platformTypeAttribute);
         Attribute instrumentModelAttribute = new Attribute();
         instrumentModelAttribute.setName(INSTRUMENT_MODEL);
         String pt = (String) platformField.get(this);
         instrumentModelAttribute.setValue(pt);
-        attributeList.add(instrumentModelAttribute);
-        setAttributes(attributeList);
+        getAttributes().add(instrumentModelAttribute);
     }
 
     public void serialiseLibraryLayout() throws IllegalAccessException {

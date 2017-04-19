@@ -102,8 +102,6 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     }
 
     private void deSerialiseFields (Class<?> aClass, Object obj) throws IllegalAccessException {
-        List<Attribute> attributes = getAttributes();
-        if (attributes == null) attributes = new ArrayList<>();
         final Field[] fields = aClass.getDeclaredFields();
         for (Field field : fields ) {
             if (field.isAnnotationPresent(ENAAttribute.class)) {
@@ -113,14 +111,13 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
                     Attribute attribute = new Attribute();
                     attribute.setName(annotation.name());
                     attribute.setValue(o.toString());
-                    attributes.add(attribute);
+                    getAttributes().add(attribute);
                 }
             } else if (field.getType().isMemberClass()) {
                 deSerialiseFields(field.getType(),field.get(obj));
             }
 
         }
-        setAttributes(attributes);
     }
 
 
@@ -189,11 +186,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
      */
     @Override
     public List<Attribute> getAttributes() {
-        if (baseSubmittable.getAttributes().isEmpty()) {
-            return null;
-        } else {
-            return baseSubmittable.getAttributes();
-        }
+        return baseSubmittable.getAttributes();
     }
 
     @Override
@@ -233,5 +226,19 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     @Override
     public T getBaseObject() {
         return (T)baseSubmittable;
+    }
+
+    @Override
+    public List<Attribute> getAttributesXML() {
+        if (baseSubmittable.getAttributes().isEmpty()) {
+            return null;
+        } else {
+            return baseSubmittable.getAttributes();
+        }
+    }
+
+    @Override
+    public void setAttributesXML(List<Attribute> attributeList) {
+        baseSubmittable.setAttributes(attributeList);
     }
 }

@@ -20,7 +20,7 @@
         <java-type name="Study" xml-transient="true"/>
         <java-type name="ENAStudy" xml-accessor-type="NONE">
             <xml-root-element name="STUDY"/>
-            <xml-type prop-order="accession alias teamName title studyType studyAbstract description attributes"/>
+            <xml-type prop-order="accession alias teamName title studyType studyAbstract description attributesXML"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
@@ -32,7 +32,7 @@
                 <xml-element java-attribute="studyType" xml-path="DESCRIPTOR/STUDY_TYPE/@existing_study_type"/>
                 <xml-element java-attribute="studyAbstract" xml-path="DESCRIPTOR/STUDY_ABSTRACT/text()"/>
                 <xml-element java-attribute="description" xml-path="DESCRIPTOR/STUDY_DESCRIPTION/text()"/>
-                <xml-element java-attribute="attributes" name="STUDY_ATTRIBUTE"
+                <xml-element java-attribute="attributesXML" name="STUDY_ATTRIBUTE"
                              type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="STUDY_ATTRIBUTES"/>
                 </xml-element>

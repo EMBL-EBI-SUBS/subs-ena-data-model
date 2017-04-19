@@ -10,7 +10,7 @@
         <java-type name="AssayData" xml-transient="true"/>
         <java-type name="ENARun" xml-accessor-type="NONE">
             <xml-root-element name="RUN"/>
-            <xml-type prop-order="accession alias teamName assayRef files attributes"/>
+            <xml-type prop-order="accession alias teamName title assayRef files attributesXML"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
@@ -18,14 +18,15 @@
                 <xml-element java-attribute="accession" name="IDENTIFIERS/PRIMARY_ID"/>
                 <xml-element java-attribute="alias" xml-path="IDENTIFIERS/SUBMITTER_ID/text()"/>
                 <xml-attribute java-attribute="teamName" xml-path="IDENTIFIERS/SUBMITTER_ID/@namespace"/>
+                <xml-element java-attribute="title" name="TITLE"/>
                 <xml-element java-attribute="assayRef" name="EXPERIMENT_REF"
-                             type="uk.ac.ebi.subs.data.component.AbstractSubsRef">
+                             type="uk.ac.ebi.subs.data.component.AssayRef">
                 </xml-element>
                 <xml-element java-attribute="files" name="FILE"
                              type="uk.ac.ebi.subs.data.component.File" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="DATA_BLOCK/FILES"/>
                 </xml-element>
-                <xml-element java-attribute="attributes" required="false" nillable="false" name="RUN_ATTRIBUTE"
+                <xml-element java-attribute="attributesXML" required="false" nillable="false" name="RUN_ATTRIBUTE"
                              type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="RUN_ATTRIBUTES"/>
                 </xml-element>

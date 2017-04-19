@@ -10,7 +10,7 @@
         <java-type name="Assay" xml-transient="true"/>
         <java-type name="ENAExperiment" xml-accessor-type="NONE">
             <xml-root-element name="EXPERIMENT"/>
-            <xml-type prop-order="accession alias teamName title studyRef designDescription sampleRef libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary attributes"/>
+            <xml-type prop-order="accession alias teamName title studyRef designDescription sampleRef libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary attributesXML"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
@@ -41,7 +41,7 @@
                 <xml-element java-attribute="pacbioSMRT" required="false" nillable="false" xml-path="PLATFORM/PACBIO_SMRT/INSTRUMENT_MODEL/text()" />
                 <xml-element java-attribute="ionTorrent" required="false" nillable="false" xml-path="PLATFORM/ION_TORRENT/INSTRUMENT_MODEL/text()" />
                 <xml-element java-attribute="capillary" required="false" nillable="false" xml-path="PLATFORM/CAPILLARY/INSTRUMENT_MODEL/text()" />
-                <xml-element java-attribute="attributes" required="false" name="EXPERIMENT_ATTRIBUTE"
+                <xml-element java-attribute="attributesXML" required="false" name="EXPERIMENT_ATTRIBUTE"
                              type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="EXPERIMENT_ATTRIBUTES" required="false" nillable="false"/>
                 </xml-element>
