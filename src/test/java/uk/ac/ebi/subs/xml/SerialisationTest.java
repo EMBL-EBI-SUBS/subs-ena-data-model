@@ -41,10 +41,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -232,8 +229,12 @@ public abstract class SerialisationTest {
                                              Class<? extends BaseSubmittable> baseSubmittableClass) throws Exception {
         final BaseSubmittable baseSubmittableFromResource = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
         final BaseSubmittable baseSubmittableForCompare = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
+        if (baseSubmittableClass.equals(Study.class)) {
+            ((Study)baseSubmittableForCompare).setReleaseDate(null);
+        }
         baseSubmittableForCompare.setArchive(null);
-        ((Study)baseSubmittableForCompare).setReleaseDate(null);
+        Collections.sort(baseSubmittableForCompare.getAttributes());
+
         final ENASubmittable enaSubmittable = BaseSubmittableFactory.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaSubmittable,new DOMResult(document));
@@ -243,6 +244,7 @@ public abstract class SerialisationTest {
         final BaseSubmittableFactory baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
+        Collections.sort(baseObject.getAttributes());
         assertThat("serialised and deserialised submittable", baseSubmittableForCompare, equalTo(baseObject));
     }
 
