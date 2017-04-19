@@ -14,8 +14,6 @@ import uk.ac.ebi.subs.data.submittable.Study;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.validation.Validator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -148,6 +146,7 @@ public class StudySerialisationTest extends SerialisationTest {
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
         marshaller = createMarshaller(ENAStudy.class,SUBMITTABLE_PACKAGE,STUDY_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+        unmarshaller = createUnmarshaller(ENAStudy.class,SUBMITTABLE_PACKAGE,STUDY_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
     }
 
     @Override
@@ -168,6 +167,11 @@ public class StudySerialisationTest extends SerialisationTest {
         study.setId(uuid.toString());
         return study;
 
+    }
+
+    @Test
+    public void testMarshalUnmarshallStudy () throws Exception {
+        serialiseDeserialiseTest(STUDY_RESOURCE,ENAStudy.class,Study.class);
     }
 
 
