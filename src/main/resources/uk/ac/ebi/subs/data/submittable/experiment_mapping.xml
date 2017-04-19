@@ -20,11 +20,11 @@
                 <xml-attribute java-attribute="teamName" xml-path="IDENTIFIERS/SUBMITTER_ID/@namespace"/>
                 <xml-element java-attribute="title" name="TITLE"/>
                 <xml-element java-attribute="studyRef" name="STUDY_REF"
-                             type="uk.ac.ebi.subs.data.component.AbstractSubsRef">
+                             type="uk.ac.ebi.subs.data.component.StudyRef">
                 </xml-element>
                 <xml-element java-attribute="designDescription" nillable="true" xml-path="DESIGN/DESIGN_DESCRIPTION/text()"/>
                 <xml-element java-attribute="sampleRef" name="SAMPLE_REF" xml-path="DESIGN/SAMPLE_DESCRIPTOR"
-                             type="uk.ac.ebi.subs.data.component.AbstractSubsRef"/>
+                             type="uk.ac.ebi.subs.data.component.SampleRef"/>
                 <xml-element java-attribute="libraryName" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_NAME/text()"/>
                 <xml-element java-attribute="libraryStrategy" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_STRATEGY/text()"/>
                 <xml-element java-attribute="librarySource" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_SOURCE/text()"/>
