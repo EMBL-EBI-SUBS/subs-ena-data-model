@@ -39,13 +39,16 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     }
 
 
-    Optional<Attribute> getExistingStudyTypeAttribute(String attributeName, boolean allowMultiple) {
-        if (!allowMultiple && getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).count() > 1)
+    Optional<Attribute> getExistingAttribute(String attributeName, boolean allowMultiple) {
+        List<Attribute> attributeList = getAttributes();
+        if (attributeList == null)
+            attributeList = new ArrayList<>();
+        if (!allowMultiple && attributeList.stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).count() > 1)
             throw new IllegalArgumentException(String.format(MULTIPLE_VALUES_ERROR_MESSAGE,attributeName));
-        return getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).findFirst();
+        return attributeList.stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).findFirst();
     }
 
-    Stream<Attribute> getExistingStudyTypeAttributes(String attributeName) {
+    Stream<Attribute> getExistingAttribute(String attributeName) {
         return getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName));
     }
 
@@ -75,7 +78,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
                 final ENAAttribute annotation = field.getAnnotation(ENAAttribute.class);
                 int attributeCount = getAttributeCount(annotation.name());
                 if (attributeCount == 1) {
-                    final Optional<Attribute> existingStudyTypeAttribute = getExistingStudyTypeAttribute(annotation.name(),false);
+                    final Optional<Attribute> existingStudyTypeAttribute = getExistingAttribute(annotation.name(),false);
                     if (annotation.allowedValues().length > 0) {
                         if ( !ArrayUtils.contains( annotation.allowedValues(), existingStudyTypeAttribute.get().getValue() ) ) {
                             throw new IllegalArgumentException(String.format(INVALID_VALUE_ERROR_MESSAGE,annotation.name(), StringUtils.join(annotation.allowedValues())));
