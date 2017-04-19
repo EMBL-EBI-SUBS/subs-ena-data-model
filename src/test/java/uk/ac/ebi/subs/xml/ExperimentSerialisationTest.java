@@ -88,6 +88,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
         marshaller = createMarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,EXPERIMENT_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+        unmarshaller = createUnmarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,EXPERIMENT_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
         marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
     }
 
@@ -342,6 +343,11 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     @Override
     protected ENASubmittable createENASubmittable() throws IllegalAccessException {
         return new ENAExperiment();
+    }
+
+    @Test
+    public void testMarshalUnmarshallExperiment () throws Exception {
+        serialiseDeserialiseTest(ASSAY_RESOURCE,ENAExperiment.class,Assay.class);
     }
 
 
