@@ -73,11 +73,10 @@ uploadArchives {
 
             pom.project {
                 packaging 'jar'
-                // optionally artifactId can be defined here
-                url 'https://github.com/EMBL-EBI-SUBS'
+                url 'https://github.com/EMBL-EBI-SUBS/subs-ena-data-model'
 
                 scm {
-                    url 'https://github.com/EMBL-EBI-SUBS'
+                    url 'https://github.com/EMBL-EBI-SUBS/subs-ena-data-model'
                 }
 
                 licenses {
@@ -87,13 +86,6 @@ uploadArchives {
                     }
                 }
 
-                developers {
-                    developer {
-                        id 'neilg'
-                        name 'Neil Goodgame'
-                        email 'neilg@ebi.ac.uk'
-                    }
-                }
             }
         }
     }
