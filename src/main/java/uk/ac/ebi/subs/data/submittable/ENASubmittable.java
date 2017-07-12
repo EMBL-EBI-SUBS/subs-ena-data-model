@@ -26,6 +26,19 @@ public interface ENASubmittable<T extends Submittable> extends Submittable {
      * @throws IllegalAccessException
      */
     void deSerialiseAttributes () throws IllegalAccessException;
+
+    /**
+     * Used internally via JAXB moxy during serialisation / deserilisation to XML
+     * @return
+     */
+    List<Attribute> getAttributesXML();
+
+    /**
+     * Used internally via JAXB moxy during serialisation / deserilisation to XML
+     * @return
+     */
+    void setAttributesXML(List<Attribute> attributeList);
+
     /**
      * Classes that implement this interface should create a list of SingleValidationResult objects
      * during serialisation to represent any validation errors
