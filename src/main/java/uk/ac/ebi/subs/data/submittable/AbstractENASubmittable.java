@@ -24,6 +24,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     private static final String MULTIPLE_VALUES_ERROR_MESSAGE = "Multiple values found for attribute %s.";
     static final String ATTRIBUTE_VALUE_REQUIRED_ERROR_MESSAGE = "Value for attribute %s is required.";
     private static final String INVALID_VALUE_ERROR_MESSAGE = "Invalid value for attribute %s value must be one of %s.";
+    public static final String USI_TEAM_PREFIX = "@USI-";
 
     private Submittable baseSubmittable;
     private List<SingleValidationResult> validationResultList = new ArrayList<>();
@@ -247,12 +248,12 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
 
     @Override
     public String getAlias() {
-        return baseSubmittable.getAlias();
+        return getENAAlias(baseSubmittable.getAlias(),getTeamName());
     }
 
     @Override
     public void setAlias(String alias) {
-        baseSubmittable.setAlias(alias);
+        baseSubmittable.setAlias(removeENAAlias(alias));
     }
 
     @Override
@@ -352,6 +353,18 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     @Override
     public boolean isValid() {
         return validationResultList.isEmpty();
+    }
+
+    public static String getENAAlias (String alias, String teamName) {
+        return alias + USI_TEAM_PREFIX + teamName;
+    }
+
+    public static String removeENAAlias (String alias) {
+        if (alias.indexOf(USI_TEAM_PREFIX) > 0)
+            return alias.substring(0, alias.lastIndexOf("@"));
+        else {
+            return alias;
+        }
     }
 
 }
