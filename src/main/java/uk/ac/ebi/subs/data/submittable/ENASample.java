@@ -11,7 +11,7 @@ public class ENASample extends AbstractENASubmittable<Sample> {
         super(baseSubmittable);
     }
 
-    public ENASample() throws IllegalAccessException {
+    public ENASample() {
         super();
     }
 

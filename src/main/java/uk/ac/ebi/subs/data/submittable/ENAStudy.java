@@ -33,7 +33,7 @@ public class ENAStudy extends AbstractENASubmittable<Study> {
         super(study);
     }
 
-    public ENAStudy() throws IllegalAccessException {
+    public ENAStudy() {
         super();
     }
 
