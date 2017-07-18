@@ -31,11 +31,10 @@ public class ENAStudy extends AbstractENASubmittable<Study> {
 
     public ENAStudy(Study study) throws IllegalAccessException {
         super(study);
-        //serialiseAttributes();
     }
 
     public ENAStudy() throws IllegalAccessException {
-        super(new Study());
+        super();
     }
 
 
