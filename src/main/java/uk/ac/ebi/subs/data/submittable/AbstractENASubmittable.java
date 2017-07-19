@@ -49,9 +49,9 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         List<Attribute> attributeList = getAttributes();
         if (attributeList == null)
             attributeList = new ArrayList<>();
-        if (!allowMultiple && attributeList.stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).count() > 1)
+        if (!allowMultiple && attributeList.stream().filter(attribute -> (attribute.getName() != null && attribute.getName().equalsIgnoreCase(attributeName))).count() > 1)
             throw new IllegalArgumentException(String.format(MULTIPLE_VALUES_ERROR_MESSAGE,attributeName));
-        return attributeList.stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).findFirst();
+        return attributeList.stream().filter(attribute -> (attribute.getName() != null && attribute.getName().equalsIgnoreCase(attributeName))).findFirst();
     }
 
     Stream<Attribute> getExistingAttribute(String attributeName) {
@@ -63,7 +63,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         if (attributeList == null) {
             return 0;
         } else {
-            return (int)attributeList.stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName)).count();
+            return (int)attributeList.stream().filter(attribute -> (attribute.getName() != null && attribute.getName().equalsIgnoreCase(attributeName))).count();
         }
     }
 
