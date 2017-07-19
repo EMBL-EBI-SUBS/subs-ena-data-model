@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class StudySerialisationTest extends SerialisationTest {
@@ -49,6 +50,20 @@ public class StudySerialisationTest extends SerialisationTest {
     public void testMarshalStudyXML() throws Exception {
         Study study = getStudyFromResource();
         ENAStudy enaStudy = new ENAStudy(study);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        DOMResult domResult = new DOMResult(document);
+        marshaller.marshal(enaStudy,domResult);
+        final String documentString = getDocumentString(document);
+        logger.info(documentString);
+        assertNotNull(study);
+    }
+
+    @Test
+    public void testSubs591StudyXML() throws Exception {
+        Study study = getStudyFromResource("/uk/ac/ebi/subs/ena/submittable/subs-591-study.json");
+        ENAStudy enaStudy = new ENAStudy(study);
+        final List<SingleValidationResult> validationResultList = enaStudy.getValidationResultList();
+        assertTrue("validation errors", validationResultList.size() == 1);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         DOMResult domResult = new DOMResult(document);
         marshaller.marshal(enaStudy,domResult);

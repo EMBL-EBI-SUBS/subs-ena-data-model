@@ -1,0 +1,20 @@
+{
+  "alias" : "StudyTest1",
+  "archive" : "Ena",
+  "title" : "My Sequencing Study 1",
+  "description" : "We sequenced some humans to discover variants linked with a disease",
+  "attributes" : [ {
+    "name" : "study_abstract",
+    "value" : "We sequenced some humans to discover variants linked with a disease",
+    "terms" : [ {
+      "url" : "http://www.ebi.ac.uk/efo/EFO_0003744"
+    } ]
+  }, {
+    "terms" : [ ]
+  } ],
+  "publications" : [ ],
+  "contacts" : [ ],
+  "protocolRefs" : [ ],
+  "projectRef" : { },
+  "releaseDate" : "2020-12-25"
+}
