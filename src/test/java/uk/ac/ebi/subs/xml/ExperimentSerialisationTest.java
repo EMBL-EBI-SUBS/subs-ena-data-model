@@ -267,6 +267,14 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         assertThat("experiment alias serialised to XML", instrumentModel, equalTo(returnedInstrumentModel));
     }
 
+    @Test
+    public void testNoPlatform() throws Exception {
+        Assay assay = createAssay(null,CAPILLARY_INSTRUMENT_MODEL);
+        ENAExperiment enaExperiment = new ENAExperiment(assay);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaExperiment,new DOMResult(document));
+    }
+
     private void testInvalidPlatform(String platformXpathQuery, String plaformType) throws Exception {
         String instrumentModel = UUID.randomUUID().toString();
         Assay assay = createAssay(plaformType,instrumentModel);
@@ -311,7 +319,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         marshaller.marshal(enaExperiment,new DOMResult(document));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidMultiplePlatforms() throws Exception {
         Assay assay = createAssay(ILLUMINA,ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL);
         Attribute platformTypeAttribute = new Attribute();
@@ -319,11 +327,13 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         platformTypeAttribute.setValue(COMPLETE_GENOMICS);
         assay.getAttributes().add(platformTypeAttribute);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
+        final List<SingleValidationResult> validationResultList = enaExperiment.getValidationResultList();
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
+
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidMultipleInstruments() throws Exception {
         Assay assay = createAssay(ILLUMINA,ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL);
         Attribute platformTypeAttribute = new Attribute();
@@ -361,16 +371,20 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         return createAssay(ILLUMINA, ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL);
     }
 
-    static Assay createAssay (String plaformType, String instrumentModel) {
+    static Assay createAssay (String platformType, String instrumentModel) {
         Assay assay = new Assay();
-        Attribute platformTypeAttribute = new Attribute();
-        platformTypeAttribute.setName(ENAExperiment.PLATFORM_TYPE);
-        platformTypeAttribute.setValue(plaformType);
-        assay.getAttributes().add(platformTypeAttribute);
-        Attribute instrumentModelAttribute = new Attribute();
-        instrumentModelAttribute.setName(ENAExperiment.INSTRUMENT_MODEL);
-        instrumentModelAttribute.setValue(instrumentModel);
-        assay.getAttributes().add(instrumentModelAttribute);
+        if (platformType != null) {
+            Attribute platformTypeAttribute = new Attribute();
+            platformTypeAttribute.setName(ENAExperiment.PLATFORM_TYPE);
+            platformTypeAttribute.setValue(platformType);
+            assay.getAttributes().add(platformTypeAttribute);
+        }
+        if (instrumentModel != null) {
+            Attribute instrumentModelAttribute = new Attribute();
+            instrumentModelAttribute.setName(ENAExperiment.INSTRUMENT_MODEL);
+            instrumentModelAttribute.setValue(instrumentModel);
+            assay.getAttributes().add(instrumentModelAttribute);
+        }
         return assay;
     }
 

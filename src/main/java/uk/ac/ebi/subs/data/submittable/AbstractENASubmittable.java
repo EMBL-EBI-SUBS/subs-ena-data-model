@@ -45,17 +45,9 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     }
 
 
-    Optional<Attribute> getExistingAttribute(String attributeName, boolean allowMultiple) {
+    Optional<Attribute> getExistingAttribute(String attributeName) {
         List<Attribute> attributeList = getAttributes();
-        if (attributeList == null)
-            attributeList = new ArrayList<>();
-        if (!allowMultiple && attributeList.stream().filter(attribute -> (attribute.getName() != null && attribute.getName().equalsIgnoreCase(attributeName))).count() > 1)
-            throw new IllegalArgumentException(String.format(MULTIPLE_VALUES_ERROR_MESSAGE,attributeName));
         return attributeList.stream().filter(attribute -> (attribute.getName() != null && attribute.getName().equalsIgnoreCase(attributeName))).findFirst();
-    }
-
-    Stream<Attribute> getExistingAttribute(String attributeName) {
-        return getAttributes().stream().filter(attribute -> attribute.getName().equalsIgnoreCase(attributeName));
     }
 
     private int getAttributeCount(String attributeName) {
@@ -104,25 +96,38 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
 
     private void parseAttributes(ENAValidation enaValidation) {
         for (ENAFieldAttribute enaFieldAttribute : enaValidation.value()) {
-            String fieldName = null;
-            if (!enaFieldAttribute.attributeFieldName().equals(ENAFieldAttribute.NO_FIELD)) {
-                fieldName = attributeMap.get(enaFieldAttribute.attributeFieldName().toUpperCase()).getValue();
-            } else if (!enaFieldAttribute.fieldName().equals(ENAFieldAttribute.NO_FIELD)) {
+            String fieldName;
+            if (!enaFieldAttribute.fieldName().equals(ENAFieldAttribute.NO_FIELD)) {
                 fieldName = enaFieldAttribute.fieldName();
             }
              else {
                 fieldName = enaFieldAttribute.attributeName();
             }
-            String attributeName = enaFieldAttribute.attributeName();
-            final int attributeCount = getAttributeCount(attributeName);
-            final Optional<Attribute> attribute = getExistingAttribute(attributeName, false);
-            if (attributeCount > 1) {
-                validationResultList.add(new SingleAttributeValidationResult(this, attributeName));
-            } else if (attributeCount == 0 && enaFieldAttribute.required()) {
-                validationResultList.add(new AttributeRequiredValidationResult(this,attributeName));
-            } else if (attributeCount > 0 ) {
-                attributeMap.put(fieldName.toUpperCase(),attribute.get());
+            parseField(enaFieldAttribute, fieldName);
+        }
+
+        for (ENAFieldAttribute enaFieldAttribute : enaValidation.value()) {
+            String fieldName = null;
+            if (!enaFieldAttribute.attributeFieldName().equals(ENAFieldAttribute.NO_FIELD)) {
+                if (attributeMap.containsKey(enaFieldAttribute.attributeFieldName().toUpperCase())) {
+                    fieldName = attributeMap.get(enaFieldAttribute.attributeFieldName().toUpperCase()).getValue();
+                    parseField(enaFieldAttribute, fieldName);
+                }
             }
+        }
+    }
+
+    private void parseField(ENAFieldAttribute enaFieldAttribute, String fieldName) {
+        String attributeName = enaFieldAttribute.attributeName();
+        final int attributeCount = getAttributeCount(attributeName);
+
+        if (attributeCount > 1) {
+            validationResultList.add(new SingleAttributeValidationResult(this, attributeName));
+        } else if (attributeCount == 0 && enaFieldAttribute.required()) {
+            validationResultList.add(new AttributeRequiredValidationResult(this,attributeName));
+        } else if (attributeCount > 0 ) {
+            final Optional<Attribute> attribute = getExistingAttribute(attributeName);
+            attributeMap.put(fieldName.toUpperCase(),attribute.get());
         }
     }
 
@@ -130,8 +135,9 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         for (ENAControlledValueAttribute enaControlledValueAttribute : enaValidation.enaControlledValueAttributes()) {
             String attributeName = enaControlledValueAttribute.attributeName();
             List<String> allowedValueList = Arrays.asList(enaControlledValueAttribute.allowedValues());
-            final Optional<Attribute> optionalAttribute = getExistingAttribute(attributeName, false);
-            parseControlledValue(optionalAttribute.get(), allowedValueList);
+            final Optional<Attribute> optionalAttribute = getExistingAttribute(attributeName);
+            if (optionalAttribute.isPresent())
+                parseControlledValue(optionalAttribute.get(), allowedValueList);
         }
     }
 
