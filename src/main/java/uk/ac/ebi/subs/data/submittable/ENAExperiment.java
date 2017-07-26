@@ -169,6 +169,9 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
             return null;
         else {
             final SampleRef sampleRef = assay.getSampleUses().get(0).getSampleRef();
+            if (sampleRef.getTeam() == null) {
+                sampleRef.setTeam(getTeamName());
+            }
             sampleRef.setAlias(getENAAlias(sampleRef.getAlias(),sampleRef.getTeam()));
             return sampleRef;
         }
@@ -210,6 +213,9 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
 
     public StudyRef getStudyRef() {
         final StudyRef studyRef = getBaseObject().getStudyRef();
+        if (studyRef.getTeam() == null) {
+            studyRef.setTeam(getTeamName());
+        }
         studyRef.setAlias(getENAAlias(studyRef.getAlias(),studyRef.getTeam()));
         return studyRef;
 
