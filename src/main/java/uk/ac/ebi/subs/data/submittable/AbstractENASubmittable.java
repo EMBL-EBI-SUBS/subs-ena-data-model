@@ -356,7 +356,9 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     }
 
     public static String getENAAlias (String alias, String teamName) {
-        return alias + USI_TEAM_PREFIX + teamName;
+        if (alias != null)
+            return alias + USI_TEAM_PREFIX + teamName;
+        else return null;
     }
 
     public static String removeENAAlias (String alias) {
