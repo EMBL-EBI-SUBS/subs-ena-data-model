@@ -15,6 +15,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.*;
+import uk.ac.ebi.subs.ena.config.ENAMarshaller;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.*;
@@ -97,12 +98,7 @@ public abstract class SerialisationTest {
 
     @Test
     public void testMarshalCentreName() throws Exception {
-        Submittable submittable = createENASubmittable();
-        Team team = new Team();
-        team.setName(UUID.randomUUID().toString());
-        submittable.setTeam(team);
-        String xpathQuery = String.format(CENTER_NAME_XPATH, getName());
-        assertXMLSubmittable(submittable,xpathQuery,team.getName());
+        testMarshallByFiledName(CENTER_NAME_XPATH);
     }
 
     @Test
@@ -123,12 +119,7 @@ public abstract class SerialisationTest {
 
     @Test
     public void testMarshalIdentifiersCenterName() throws Exception {
-        Submittable submittable = createENASubmittable();
-        Team team = new Team();
-        team.setName(UUID.randomUUID().toString());
-        submittable.setTeam(team);
-        String xpathQuery = String.format(IDENTIFIERS_CENTER_NAME_XPATH, getName());
-        assertXMLSubmittable(submittable,xpathQuery,team.getName());
+        testMarshallByFiledName(IDENTIFIERS_CENTER_NAME_XPATH);
     }
 
     protected void assertXMLSubmittable (Submittable submittable, String xPathQuery, String actual) throws JAXBException, ParserConfigurationException, XPathExpressionException, TransformerException {
@@ -179,19 +170,7 @@ public abstract class SerialisationTest {
 
     public Marshaller createMarshaller (Class cl, String objectPackage, String objectMapperResource,
                                         String componentPackage, String componentResource) throws URISyntaxException, JAXBException {
-        Map<String, Source> metadata = new HashMap<String, Source>();
-        metadata.put(objectPackage, createStreamSource(objectMapperResource));
-        metadata.put(componentPackage, createStreamSource(componentResource));
-
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, metadata);
-
-        JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {cl}, properties);
-
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
-        return marshaller;
+        return ENAMarshaller.createMarshaller(cl, objectPackage, objectMapperResource, componentPackage, componentResource);
     }
 
     public Unmarshaller createUnmarshaller (Class cl, String objectPackage, String objectMapperResource,
@@ -279,5 +258,14 @@ public abstract class SerialisationTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         final BaseSubmittable baseSubmittable = objectMapper.readValue(inputStream, cl);
         return baseSubmittable;
+    }
+
+    private void testMarshallByFiledName(String fieldName) throws Exception {
+        Submittable submittable = createENASubmittable();
+        Team team = new Team();
+        team.setName(UUID.randomUUID().toString());
+        submittable.setTeam(team);
+        String xpathQuery = String.format(fieldName, getName());
+        assertXMLSubmittable(submittable,xpathQuery,team.getName());
     }
 }
