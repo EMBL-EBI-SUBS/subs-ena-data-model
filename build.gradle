@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-version '1.1.5-SNAPSHOT'
+version '1.2.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -34,12 +34,11 @@ dependencies {
     compileOnly("org.projectlombok:lombok:1.16.12")
     compile ("org.springframework:spring-oxm")
     compile 'uk.ac.ebi.ena.sra:sra-xml:1.5.30'
-    compile("uk.ac.ebi.subs:subs-data-model:1.0.1-SNAPSHOT")
     compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.4'
     compile 'commons-lang:commons-lang:2.6'
     testCompile("org.springframework.boot:spring-boot-starter-test")
-    compile 'uk.ac.ebi.subs:subs-data-model:1.0.1-SNAPSHOT'
-    compile ("uk.ac.ebi.subs:validator-common:1.11.0-SNAPSHOT") {
+    compile 'uk.ac.ebi.subs:subs-data-model:1.0.4-SNAPSHOT'
+    compile ("uk.ac.ebi.subs:validator-common:1.16.1-SNAPSHOT") {
         changing = true
         exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
     }

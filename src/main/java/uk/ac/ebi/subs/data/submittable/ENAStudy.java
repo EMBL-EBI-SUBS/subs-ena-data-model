@@ -4,12 +4,12 @@ import uk.ac.ebi.subs.ena.annotation.*;
 
 @ENAValidation(
         value = {
-                @ENAFieldAttribute(attributeName = "existing_study_type", required = true),
+                @ENAFieldAttribute(attributeName = "study_type", required = true),
                 @ENAFieldAttribute(attributeName = "study_abstract", required = true)
         })
 public class ENAStudy extends AbstractENASubmittable<Study> {
 
-    @ENAField(fieldName = "existing_study_type", values = {
+    @ENAField(fieldName = "study_type", values = {
             "Whole Genome Sequencing",
             "Metagenomics",
             "Transcriptome Analysis",
