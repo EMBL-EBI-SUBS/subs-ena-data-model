@@ -41,10 +41,8 @@ public class StudySerialisationTest extends SerialisationTest {
     static String STUDY_TITLE_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_TITLE[1]/text()";
     static String STUDY_DESCRIPTION_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_DESCRIPTION[1]/text()";
     static String STUDY_ABSTRACT_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_ABSTRACT[1]/text()";
-    static String STUDY_TYPE_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_TYPE[1]/@existing_study_type";
+    static String STUDY_TYPE_XPATH = "/STUDY/DESCRIPTOR[1]/STUDY_TYPE[1]/@study_type";
     static String STUDY_ATTRIBUTE = "/STUDY/STUDY_ATTRIBUTES[1]/STUDY_ATTRIBUTE";
-
-    String STUDY_XSD = "https://raw.githubusercontent.com/enasequence/schema/master/src/main/resources/uk/ac/ebi/ena/sra/schema/SRA.study.xsd";
 
     @Test
     public void testMarshalStudyXML() throws Exception {
@@ -151,21 +149,21 @@ public class StudySerialisationTest extends SerialisationTest {
     public void testMarshalStudyType() throws Exception {
         Study study = new Study();
         Attribute attribute = new Attribute();
-        attribute.setName("existing_study_type");
+        attribute.setName("study_type");
         attribute.setValue("Whole Genome Sequencing");
         study.getAttributes().add(attribute);
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,STUDY_TYPE_XPATH);
-        assertThat("study type attribute serialised to XML", attribute.getValue(), equalTo(str));
+        assertThat("study type attribute serialised to XML", str, equalTo(attribute.getValue()));
     }
 
     @Test
     public void testMarshalInvalidStudyType() throws Exception {
         Study study = new Study();
         Attribute attribute = new Attribute();
-        attribute.setName("existing_study_type");
+        attribute.setName("study_type");
         String incorrectStudyType = UUID.randomUUID().toString();
         attribute.setValue(incorrectStudyType);
         study.getAttributes().add(attribute);
