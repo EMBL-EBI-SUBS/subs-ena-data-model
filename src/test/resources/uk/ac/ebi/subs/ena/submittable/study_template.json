@@ -8,7 +8,7 @@
   "description": "Description",
   "attributes": [
     {
-      "name": "existing_study_type",
+      "name": "study_type",
       "value": "Whole Genome Sequencing",
       "units": null,
       "terms": []
