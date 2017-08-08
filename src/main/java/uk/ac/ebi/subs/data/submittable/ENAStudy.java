@@ -4,12 +4,14 @@ import uk.ac.ebi.subs.ena.annotation.*;
 
 @ENAValidation(
         value = {
-                @ENAFieldAttribute(attributeName = "existing_study_type", required = true),
-                @ENAFieldAttribute(attributeName = "study_abstract", required = true)
+                @ENAFieldAttribute(attributeName = ENAStudy.STUDY_TYPE, required = true),
+                @ENAFieldAttribute(attributeName = ENAStudy.STUDY_ABSTRACT, required = true)
         })
 public class ENAStudy extends AbstractENASubmittable<Study> {
 
-    @ENAField(fieldName = "existing_study_type", values = {
+    public static final String STUDY_TYPE = "study_type";
+    public static final String STUDY_ABSTRACT = "study_abstract";
+    @ENAField(fieldName = STUDY_TYPE, values = {
             "Whole Genome Sequencing",
             "Metagenomics",
             "Transcriptome Analysis",
@@ -26,7 +28,7 @@ public class ENAStudy extends AbstractENASubmittable<Study> {
             "Other"})
     String studyType;
 
-    @ENAField(fieldName = "study_abstract")
+    @ENAField(fieldName = STUDY_ABSTRACT)
     String studyAbstract;
 
     public ENAStudy(Study study) throws IllegalAccessException {

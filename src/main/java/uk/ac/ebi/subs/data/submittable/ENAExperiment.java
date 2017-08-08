@@ -8,16 +8,16 @@ import uk.ac.ebi.subs.ena.annotation.*;
  */
 @ENAValidation(
         value = {
-                @ENAFieldAttribute(attributeName = "platform_type", required = true),
-                @ENAFieldAttribute(attributeName = "instrument_model", attributeFieldName = "platform_type", required = true),
-                @ENAFieldAttribute(attributeName = "design_description", required = true),
-                @ENAFieldAttribute(attributeName = "library_name", required = true),
-                @ENAFieldAttribute(attributeName = "library_strategy", required = true),
-                @ENAFieldAttribute(attributeName = "library_source", required = true),
-                @ENAFieldAttribute(attributeName = "library_selection", required = true),
-                @ENAFieldAttribute(attributeName = "library_layout", required = true),
-                @ENAFieldAttribute(attributeName = "paired_nominal_length"),
-                @ENAFieldAttribute(attributeName = "paired_nominal_sdev")
+                @ENAFieldAttribute(attributeName = ENAExperiment.PLATFORM_TYPE, required = true),
+                @ENAFieldAttribute(attributeName = ENAExperiment.INSTRUMENT_MODEL, attributeFieldName = "platform_type", required = true),
+                @ENAFieldAttribute(attributeName = ENAExperiment.DESIGN_DESCRIPTION, required = true),
+                @ENAFieldAttribute(attributeName = ENAExperiment.LIBRARY_NAME, required = true),
+                @ENAFieldAttribute(attributeName = ENAExperiment.LIBRARY_STRATEGY, required = true),
+                @ENAFieldAttribute(attributeName = ENAExperiment.LIBRARY_SOURCE, required = true),
+                @ENAFieldAttribute(attributeName = ENAExperiment.LIBRARY_SELECTION, required = true),
+                @ENAFieldAttribute(attributeName = ENAExperiment.LIBRARY_LAYOUT, required = true),
+                @ENAFieldAttribute(attributeName = ENAExperiment.PAIRED_NOMINAL_LENGTH),
+                @ENAFieldAttribute(attributeName = ENAExperiment.PAIRED_NOMINAL_SDEV)
         },
         enaControlledValueAttributes = {
                 @ENAControlledValueAttribute(
@@ -43,65 +43,77 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
 
     public static final String SINGLE = "SINGLE";
     public static final String PAIRED = "PAIRED";
+    public static final String LS454 = "LS454";
+    public static final String ILLUMINA = "ILLUMINA";
+    public static final String HELICOS = "HELICOS";
+    public static final String ABI_SOLID = "ABI_SOLID";
+    public static final String COMPLETE_GENOMICS = "COMPLETE_GENOMICS";
+    public static final String BGISEQ = "BGISEQ";
+    public static final String OXFORD_NANOPORE = "OXFORD_NANOPORE";
+    public static final String PACBIO_SMRT = "PACBIO_SMRT";
+    public static final String ION_TORRENT = "ION_TORRENT";
+    public static final String CAPILLARY = "CAPILLARY";
 
-    @ENAField(fieldName = "LS454", attributeName = "instrument_model" ,values = {"454 GS 20", "454 GS FLX", "454 GS FLX+", "454 GS FLX Titanium", "454 GS Junior", "unspecified"})
+
+
+    @ENAField(fieldName = LS454, attributeName = "instrument_model" ,values = {"454 GS 20", "454 GS FLX", "454 GS FLX+", "454 GS FLX Titanium", "454 GS Junior", "unspecified"})
     String ls454 ;
 
-    @ENAField(fieldName = "ILLUMINA", attributeName = "instrument_model" ,values = {"Illumina Genome Analyzer", "Illumina Genome Analyzer II", "Illumina Genome Analyzer IIx",
+    @ENAField(fieldName = ILLUMINA, attributeName = "instrument_model" ,values = {"Illumina Genome Analyzer", "Illumina Genome Analyzer II", "Illumina Genome Analyzer IIx",
             "Illumina HiSeq 2500", "Illumina HiSeq 2000", "Illumina HiSeq 1500", "Illumina HiSeq 1000", "Illumina MiSeq", "Illumina HiScanSQ",
             "HiSeq X Ten", "NextSeq 500", "HiSeq X Five", "Illumina HiSeq 3000", "Illumina HiSeq 4000", "NextSeq 550", "unspecified"})
     String illumina ;
 
-    @ENAField(fieldName = "HELICOS", attributeName = "instrument_model" ,values = {"Helicos HeliScope", "unspecified"})
+    @ENAField(fieldName = HELICOS, attributeName = "instrument_model" ,values = {"Helicos HeliScope", "unspecified"})
     String helicos;
 
-    @ENAField(fieldName = "ABI_SOLID", attributeName = "instrument_model" ,values = {"AB SOLiD System 2.0", "AB SOLiD System 3.0", "AB SOLiD 3 Plus System",
+    @ENAField(fieldName = ABI_SOLID, attributeName = "instrument_model" ,values = {"AB SOLiD System 2.0", "AB SOLiD System 3.0", "AB SOLiD 3 Plus System",
             "AB SOLiD 4 System", "AB SOLiD 4hq System", "AB SOLiD PI System", "AB 5500 Genetic Analyzer", "AB 5500xl Genetic Analyzer",
             "AB 5500xl-W Genetic Analysis System", "unspecified"})
     String abiSolid ;
 
-    @ENAField(fieldName = "COMPLETE_GENOMICS", attributeName = "instrument_model" ,values = {"Complete Genomics", "unspecified"})
+    @ENAField(fieldName = COMPLETE_GENOMICS, attributeName = "instrument_model" ,values = {"Complete Genomics", "unspecified"})
     String completeGenomics;
 
-    @ENAField(fieldName = "BGISEQ", attributeName = "instrument_model" ,values = {"BGISEQ-500"})
+    @ENAField(fieldName = BGISEQ, attributeName = "instrument_model" ,values = {"BGISEQ-500"})
     String bgiseq;
 
-    @ENAField(fieldName = "OXFORD_NANOPORE", attributeName = "instrument_model" ,values = {"MinION", "GridION", "unspecified"})
+    @ENAField(fieldName = OXFORD_NANOPORE, attributeName = "instrument_model" ,values = {"MinION", "GridION", "unspecified"})
     String oxfordNanopore;
 
-    @ENAField(fieldName = "PACBIO_SMRT", attributeName = "instrument_model" ,values = {"PacBio RS", "PacBio RS II", "Sequel", "unspecified"})
+    @ENAField(fieldName = PACBIO_SMRT, attributeName = "instrument_model" ,values = {"PacBio RS", "PacBio RS II", "Sequel", "unspecified"})
     String pacbioSMRT;
 
-    @ENAField(fieldName = "ION_TORRENT", attributeName = "instrument_model" ,values = {"Ion Torrent PGM", "Ion Torrent Proton", "unspecified"})
+    @ENAField(fieldName = ION_TORRENT, attributeName = "instrument_model" ,values = {"Ion Torrent PGM", "Ion Torrent Proton", "unspecified"})
     String ionTorrent;
 
-    @ENAField(fieldName = "CAPILLARY", attributeName = "instrument_model" ,values = {"AB 3730xL Genetic Analyzer", "AB 3730 Genetic Analyzer", "AB 3500xL Genetic Analyzer",
+    @ENAField(fieldName = CAPILLARY, attributeName = "instrument_model" ,values = {"AB 3730xL Genetic Analyzer", "AB 3730 Genetic Analyzer", "AB 3500xL Genetic Analyzer",
             "AB 3500 Genetic Analyzer", "AB 3130xL Genetic Analyzer", "AB 3130 Genetic Analyzer", "AB 3130 Genetic Analyzer", "AB 310 Genetic Analyzer",
             "unspecified"})
     String capillary;
 
-    @ENAField(fieldName = "design_description")
+    @ENAField(fieldName = DESIGN_DESCRIPTION)
     String designDescription;
 
-    @ENAField(fieldName = "library_name")
+    @ENAField(fieldName = LIBRARY_NAME)
     String libraryName;
 
-    @ENAField(fieldName = "library_strategy")
+    @ENAField(fieldName = LIBRARY_STRATEGY)
     String libraryStrategy;
 
-    @ENAField(fieldName = "library_source")
+    @ENAField(fieldName = LIBRARY_SOURCE)
     String librarySource;
 
-    @ENAField(fieldName = "library_selection")
+    @ENAField(fieldName = LIBRARY_SELECTION)
     String librarySelection;
 
-    @ENAField(fieldName = "library_layout")
+    @ENAField(fieldName = LIBRARY_LAYOUT)
     String libraryLayout;
 
-    @ENAField(fieldName = "paired_nominal_length")
+    @ENAField(fieldName = PAIRED_NOMINAL_LENGTH)
     String nominalLength = null;
 
-    @ENAField(fieldName = "paired_nominal_sdev")
+    @ENAField(fieldName = PAIRED_NOMINAL_SDEV)
     String nominalSdev = null;
 
     String singleLibraryLayout;

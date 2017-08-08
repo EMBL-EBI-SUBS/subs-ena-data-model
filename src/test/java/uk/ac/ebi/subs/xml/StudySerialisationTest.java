@@ -137,7 +137,7 @@ public class StudySerialisationTest extends SerialisationTest {
     public void testMarshalStudyAbstract() throws Exception {
         Study study = new Study();
         Attribute attribute = new Attribute();
-        attribute.setName("study_abstract");
+        attribute.setName(ENAStudy.STUDY_ABSTRACT);
         attribute.setValue(UUID.randomUUID().toString());
         study.getAttributes().add(attribute);
         ENAStudy enaStudy = new ENAStudy(study);
@@ -151,7 +151,7 @@ public class StudySerialisationTest extends SerialisationTest {
     public void testMarshalStudyType() throws Exception {
         Study study = new Study();
         Attribute attribute = new Attribute();
-        attribute.setName("existing_study_type");
+        attribute.setName(ENAStudy.STUDY_TYPE);
         attribute.setValue("Whole Genome Sequencing");
         study.getAttributes().add(attribute);
         ENAStudy enaStudy = new ENAStudy(study);
@@ -165,7 +165,7 @@ public class StudySerialisationTest extends SerialisationTest {
     public void testMarshalInvalidStudyType() throws Exception {
         Study study = new Study();
         Attribute attribute = new Attribute();
-        attribute.setName("existing_study_type");
+        attribute.setName(ENAStudy.STUDY_TYPE);
         String incorrectStudyType = UUID.randomUUID().toString();
         attribute.setValue(incorrectStudyType);
         study.getAttributes().add(attribute);
