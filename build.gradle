@@ -1,3 +1,6 @@
+group 'uk.ac.ebi.subs'
+version '0.1.0-SNAPSHOT'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -9,15 +12,11 @@ buildscript {
     }
 }
 
-version '1.1.5-SNAPSHOT'
-
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'maven-publish'
-
-group 'uk.ac.ebi.subs'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -29,20 +28,18 @@ repositories {
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
-
 dependencies {
     compileOnly("org.projectlombok:lombok:1.16.12")
+
     compile ("org.springframework:spring-oxm")
-    compile 'uk.ac.ebi.ena.sra:sra-xml:1.5.30'
-    compile("uk.ac.ebi.subs:subs-data-model:1.0.1-SNAPSHOT")
-    compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.4'
-    compile 'commons-lang:commons-lang:2.6'
-    testCompile("org.springframework.boot:spring-boot-starter-test")
-    compile 'uk.ac.ebi.subs:subs-data-model:1.0.1-SNAPSHOT'
-    compile ("uk.ac.ebi.subs:validator-common:1.11.0-SNAPSHOT") {
-        changing = true
+    compile ("uk.ac.ebi.ena.sra:sra-xml:1.5.30")
+    compile ("org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.4")
+    compile ("commons-lang:commons-lang:2.6")
+    compile ("uk.ac.ebi.subs:validator-common:0.1.0-SNAPSHOT") {
         exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
     }
+
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 task sourceJar(type: Jar) { from sourceSets.main.allJava }
@@ -74,7 +71,7 @@ uploadArchives {
                 url 'https://github.com/EMBL-EBI-SUBS/subs-ena-data-model'
 
                 scm {
-                    url 'https://github.com/EMBL-EBI-SUBS/subs-ena-data-model'
+                    url 'https://github.com/EMBL-EBI-SUBS/subs-ena-data-model.git'
                 }
 
                 licenses {
@@ -84,6 +81,13 @@ uploadArchives {
                     }
                 }
 
+                developers {
+                    developer {
+                        id 'subs-internal'
+                        name 'EMBL-EBI-SUBS'
+                        email 'subs-internal@ebi.ac.uk'
+                    }
+                }
             }
         }
     }

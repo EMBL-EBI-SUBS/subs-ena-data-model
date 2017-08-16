@@ -9,12 +9,14 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import uk.ac.ebi.subs.data.component.*;
-import uk.ac.ebi.subs.data.status.ProcessingStatusEnum;
+import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.SampleRef;
+import uk.ac.ebi.subs.data.component.SampleUse;
+import uk.ac.ebi.subs.data.component.StudyRef;
+import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.Assay;
 import uk.ac.ebi.subs.data.submittable.ENAExperiment;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
-import uk.ac.ebi.subs.data.submittable.Sample;
 import uk.ac.ebi.subs.ena.validation.InvalidAttributeValue;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
@@ -29,7 +31,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.Is.is;
