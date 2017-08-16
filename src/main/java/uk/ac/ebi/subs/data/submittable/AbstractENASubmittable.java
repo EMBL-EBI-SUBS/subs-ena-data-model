@@ -1,7 +1,5 @@
 package uk.ac.ebi.subs.data.submittable;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-import uk.ac.ebi.subs.data.component.Archive;
 import uk.ac.ebi.subs.data.component.Attribute;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.ena.annotation.ENAControlledValueAttribute;
@@ -14,8 +12,13 @@ import uk.ac.ebi.subs.ena.validation.SingleAttributeValidationResult;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by neilg on 03/03/2017.
@@ -303,16 +306,6 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     @Override
     public void setAttributes(List<Attribute> attributes) {
         baseSubmittable.setAttributes(attributes);
-    }
-
-    @Override
-    public Archive getArchive() {
-        return baseSubmittable.getArchive();
-    }
-
-    @Override
-    public void setArchive(Archive archive) {
-        baseSubmittable.setArchive(archive);
     }
 
     @Override

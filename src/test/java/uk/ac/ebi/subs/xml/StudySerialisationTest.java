@@ -11,7 +11,6 @@ import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.ENAStudy;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.Study;
-import uk.ac.ebi.subs.ena.validation.InvalidAttributeValue;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import javax.xml.bind.JAXBException;
@@ -22,7 +21,6 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -33,7 +31,6 @@ public class StudySerialisationTest extends SerialisationTest {
 
     String STUDY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/study_template.json";
     String STUDY_MARSHALLER = "uk/ac/ebi/subs/data/submittable/study_mapping.xml";
-
 
     static String STUDY_ACCESSION_XPATH = "/STUDY/@accession";
     static String STUDY_ALIAS_XPATH = "/STUDY/@alias";

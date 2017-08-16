@@ -11,14 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.*;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Source;
@@ -45,7 +43,6 @@ import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static uk.ac.ebi.subs.xml.StudySerialisationTest.STUDY_ACCESSION_XPATH;
 
 /**
  * Created by neilg on 28/03/2017.
@@ -232,7 +229,7 @@ public abstract class SerialisationTest {
         if (baseSubmittableClass.equals(Study.class)) {
             ((Study)baseSubmittableForCompare).setReleaseDate(null);
         }
-        baseSubmittableForCompare.setArchive(null);
+
         Collections.sort(baseSubmittableForCompare.getAttributes());
 
         final ENASubmittable enaSubmittable = BaseSubmittableFactory.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
@@ -256,7 +253,7 @@ public abstract class SerialisationTest {
         objectMapper.writeValue(stringWriter,submittable);
         // clone the object
         final Submittable clonedSubmittable = objectMapper.readValue(stringWriter.toString(), submittableClass);
-        clonedSubmittable.setArchive(null);
+
         clonedSubmittable.setId(null);
         Collections.sort(clonedSubmittable.getAttributes());
 
