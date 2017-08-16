@@ -30,16 +30,16 @@ repositories {
 
 dependencies {
     compileOnly("org.projectlombok:lombok:1.16.12")
+
     compile ("org.springframework:spring-oxm")
-    compile 'uk.ac.ebi.ena.sra:sra-xml:1.5.30'
-    compile("uk.ac.ebi.subs:subs-data-model:0.1.0-SNAPSHOT")
-    compile 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.4'
-    compile 'commons-lang:commons-lang:2.6'
-    testCompile("org.springframework.boot:spring-boot-starter-test")
+    compile ("uk.ac.ebi.ena.sra:sra-xml:1.5.30")
+    compile ("org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.4")
+    compile ("commons-lang:commons-lang:2.6")
     compile ("uk.ac.ebi.subs:validator-common:0.1.0-SNAPSHOT") {
         exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
     }
 
+    testCompile("org.springframework.boot:spring-boot-starter-test")
 }
 
 task sourceJar(type: Jar) { from sourceSets.main.allJava }
