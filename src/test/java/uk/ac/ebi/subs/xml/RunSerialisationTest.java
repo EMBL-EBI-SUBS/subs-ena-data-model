@@ -1,26 +1,18 @@
 package uk.ac.ebi.subs.xml;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
-import org.eclipse.persistence.internal.jpa.parsing.StringFunctionNode;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import uk.ac.ebi.subs.data.component.*;
 import uk.ac.ebi.subs.data.submittable.*;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -31,7 +23,6 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class RunSerialisationTest extends SerialisationTest {
-    String RUN_MARSHALLER = "uk/ac/ebi/subs/data/submittable/run_mapping.xml";
     String RUN_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/run_template.json";
 
     static String RUN_ACCESSION_XPATH = "/RUN/@accession";
@@ -49,8 +40,8 @@ public class RunSerialisationTest extends SerialisationTest {
     @Before
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
-        marshaller = createMarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,RUN_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
-        unmarshaller = createUnmarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,RUN_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+        marshaller = MappingHelper.createMarshaller(ENAExperiment.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.RUN_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
+        unmarshaller = MappingHelper.createUnmarshaller(ENAExperiment.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.RUN_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
         marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
     }
 

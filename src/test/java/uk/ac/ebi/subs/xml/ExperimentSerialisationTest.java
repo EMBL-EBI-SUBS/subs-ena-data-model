@@ -17,6 +17,7 @@ import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.Assay;
 import uk.ac.ebi.subs.data.submittable.ENAExperiment;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
+import uk.ac.ebi.subs.data.submittable.MappingHelper;
 import uk.ac.ebi.subs.ena.validation.InvalidAttributeValue;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
@@ -51,7 +52,6 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public static final String ION_TORRENT = "ION_TORRENT";
     public static final String CAPILLARY = "CAPILLARY";
 
-    String EXPERIMENT_MARSHALLER = "uk/ac/ebi/subs/data/submittable/experiment_mapping.xml";
     String ASSAY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/assay_template.json";
 
     static String EXPERIMENT_ACCESSION_XPATH = "/EXPERIMENT/@accession";
@@ -94,8 +94,8 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     @Before
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
-        marshaller = createMarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,EXPERIMENT_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
-        unmarshaller = createUnmarshaller(ENAExperiment.class,SUBMITTABLE_PACKAGE,EXPERIMENT_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+        marshaller = MappingHelper.createMarshaller(ENAExperiment.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.EXPERIMENT_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
+        unmarshaller = MappingHelper.createUnmarshaller(ENAExperiment.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.EXPERIMENT_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
         marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
     }
 

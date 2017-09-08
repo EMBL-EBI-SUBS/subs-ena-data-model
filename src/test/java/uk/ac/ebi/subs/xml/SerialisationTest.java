@@ -26,17 +26,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import javax.xml.xpath.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
@@ -49,9 +46,6 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public abstract class SerialisationTest {
     static final Logger logger = LoggerFactory.getLogger(SerialisationTest.class);
-    String ATTRIBUTE_MAPPING = "uk/ac/ebi/subs/data/component/attribute_mapping.xml";
-    String SUBMITTABLE_PACKAGE = "uk.ac.ebi.subs.data.submittable";
-    String COMPONENT_PACKAGE = "uk.ac.ebi.subs.data.component";
 
     static String ACCESSION_XPATH = "/%s/@accession";
     static String ALIAS_XPATH = "/%s/@alias";
@@ -164,48 +158,6 @@ public abstract class SerialisationTest {
         Transformer transformer = transformerFactory.newTransformer();
         transformer.transform(domSource, result);
         return writer.toString();
-    }
-
-    public StreamSource createStreamSource (String resourceName) throws URISyntaxException {
-        final URL resource = getClass().getClassLoader().getResource(resourceName);
-        URI uri = resource.toURI();
-        File file = new File(uri);
-        StreamSource streamSource = new StreamSource(file);
-        return streamSource;
-    }
-
-    public Marshaller createMarshaller (Class cl, String objectPackage, String objectMapperResource,
-                                        String componentPackage, String componentResource) throws URISyntaxException, JAXBException {
-        Map<String, Source> metadata = new HashMap<String, Source>();
-        metadata.put(objectPackage, createStreamSource(objectMapperResource));
-        metadata.put(componentPackage, createStreamSource(componentResource));
-
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, metadata);
-
-        JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {cl}, properties);
-
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
-        return marshaller;
-    }
-
-    public Unmarshaller createUnmarshaller (Class cl, String objectPackage, String objectMapperResource,
-                                            String componentPackage, String componentResource) throws URISyntaxException, JAXBException {
-        Map<String, Source> metadata = new HashMap<String, Source>();
-        metadata.put(objectPackage, createStreamSource(objectMapperResource));
-        metadata.put(componentPackage, createStreamSource(componentResource));
-
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, metadata);
-
-        JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {cl}, properties);
-
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
-        return unmarshaller;
     }
 
     public Validator getValidator(String url) throws MalformedURLException, SAXException {

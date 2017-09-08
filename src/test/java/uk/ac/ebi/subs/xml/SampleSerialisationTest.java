@@ -8,13 +8,12 @@ import org.w3c.dom.Document;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.ENASample;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
+import uk.ac.ebi.subs.data.submittable.MappingHelper;
 import uk.ac.ebi.subs.data.submittable.Sample;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
@@ -27,7 +26,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class SampleSerialisationTest extends SerialisationTest {
     String SAMPLE_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/sample_template.json";
-    String SAMPLE_MARSHALLER = "uk/ac/ebi/subs/data/submittable/sample_mapping.xml";
 
 
     static String SAMPLE_ACCESSION_XPATH = "/SAMPLE/@accession";
@@ -41,7 +39,7 @@ public class SampleSerialisationTest extends SerialisationTest {
     @Before
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
-        marshaller = createMarshaller(ENASample.class,SUBMITTABLE_PACKAGE,SAMPLE_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+        marshaller = MappingHelper.createMarshaller(ENASample.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.SAMPLE_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
     }
 
     @Override
