@@ -174,7 +174,7 @@ public abstract class SerialisationTest {
     protected abstract String getName ();
 
     protected void serialiseDeserialiseTest (String studyResource,
-                                             Class<? extends BaseSubmittableFactory> baseSubmittableFactoryClass,
+                                             Class<? extends ENASubmittable> baseSubmittableFactoryClass,
                                              Class<? extends BaseSubmittable> baseSubmittableClass) throws Exception {
         final BaseSubmittable baseSubmittableFromResource = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
         final BaseSubmittable baseSubmittableForCompare = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
@@ -189,8 +189,8 @@ public abstract class SerialisationTest {
         marshaller.marshal(enaSubmittable,new DOMResult(document));
         logger.info(getDocumentString(document));
         DOMSource domSource = new DOMSource(document);
-        final JAXBElement<? extends BaseSubmittableFactory> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
-        final BaseSubmittableFactory baseSubmittableValue = baseSubmittable.getValue();
+        final JAXBElement<? extends ENASubmittable> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
+        final ENASubmittable baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
         Collections.sort(baseObject.getAttributes());
@@ -199,7 +199,7 @@ public abstract class SerialisationTest {
     }
 
     protected void serialiseDeserialiseTest (Submittable submittable,
-                                             Class<? extends BaseSubmittableFactory> baseSubmittableFactoryClass) throws Exception {
+                                             Class<? extends ENASubmittable> baseSubmittableFactoryClass) throws Exception {
         StringWriter stringWriter = new StringWriter();
         final Class<? extends Submittable> submittableClass = submittable.getClass();
         objectMapper.writeValue(stringWriter,submittable);
@@ -215,8 +215,8 @@ public abstract class SerialisationTest {
         String documentString = getDocumentString(document);
         logger.info(documentString);
         DOMSource domSource = new DOMSource(document);
-        final JAXBElement<? extends BaseSubmittableFactory> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
-        final BaseSubmittableFactory baseSubmittableValue = baseSubmittable.getValue();
+        final JAXBElement<? extends ENASubmittable> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
+        final ENASubmittable baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
         Collections.sort(baseObject.getAttributes());
