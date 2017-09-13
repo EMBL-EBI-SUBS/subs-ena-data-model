@@ -49,4 +49,8 @@ public interface ENASubmittable<T extends Submittable> extends Submittable {
      * @return true if any validation errors occur during serialisation
      */
     boolean isValid();
+
+    void setBaseSubmittable(Submittable submittable) throws IllegalAccessException;
+
+    Submittable createNewSubmittable();
 }
