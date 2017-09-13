@@ -184,7 +184,7 @@ public abstract class SerialisationTest {
 
         Collections.sort(baseSubmittableForCompare.getAttributes());
 
-        final ENASubmittable enaSubmittable = BaseSubmittableFactory.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
+        final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaSubmittable,new DOMResult(document));
         logger.info(getDocumentString(document));
@@ -209,7 +209,7 @@ public abstract class SerialisationTest {
         clonedSubmittable.setId(null);
         Collections.sort(clonedSubmittable.getAttributes());
 
-        final ENASubmittable enaSubmittable = BaseSubmittableFactory.create(baseSubmittableFactoryClass, submittable);
+        final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, submittable);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaSubmittable,new DOMResult(document));
         String documentString = getDocumentString(document);
