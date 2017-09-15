@@ -10,6 +10,7 @@ import uk.ac.ebi.subs.data.component.Attribute;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.ENAStudy;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
+import uk.ac.ebi.subs.data.submittable.MappingHelper;
 import uk.ac.ebi.subs.data.submittable.Study;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
@@ -30,7 +31,6 @@ import static org.junit.Assert.assertTrue;
 public class StudySerialisationTest extends SerialisationTest {
 
     String STUDY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/study_template.json";
-    String STUDY_MARSHALLER = "uk/ac/ebi/subs/data/submittable/study_mapping.xml";
 
     static String STUDY_ACCESSION_XPATH = "/STUDY/@accession";
     static String STUDY_ALIAS_XPATH = "/STUDY/@alias";
@@ -177,8 +177,8 @@ public class StudySerialisationTest extends SerialisationTest {
     @Before
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
-        marshaller = createMarshaller(ENAStudy.class,SUBMITTABLE_PACKAGE,STUDY_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
-        unmarshaller = createUnmarshaller(ENAStudy.class,SUBMITTABLE_PACKAGE,STUDY_MARSHALLER,COMPONENT_PACKAGE, ATTRIBUTE_MAPPING);
+        marshaller = MappingHelper.createMarshaller(ENAStudy.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.STUDY_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
+        unmarshaller = MappingHelper.createUnmarshaller(ENAStudy.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.STUDY_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
     }
 
     @Override

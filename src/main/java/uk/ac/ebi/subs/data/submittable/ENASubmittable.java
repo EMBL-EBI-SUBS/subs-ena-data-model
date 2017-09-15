@@ -49,4 +49,19 @@ public interface ENASubmittable<T extends Submittable> extends Submittable {
      * @return true if any validation errors occur during serialisation
      */
     boolean isValid();
+
+    void setBaseSubmittable(Submittable submittable) throws IllegalAccessException;
+
+    Submittable createNewSubmittable();
+
+    static <T extends ENASubmittable> T create(Class<T> clasz, Submittable submittable) throws IllegalAccessException, InstantiationException {
+        final T t = create(clasz);
+        t.setBaseSubmittable(submittable);
+        return t;
+    }
+
+    static <T extends ENASubmittable> T create(Class<T> clasz) throws IllegalAccessException, InstantiationException {
+        final T t = clasz.newInstance();
+        return t;
+    }
 }

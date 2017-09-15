@@ -26,17 +26,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 import javax.xml.xpath.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
@@ -49,9 +46,6 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public abstract class SerialisationTest {
     static final Logger logger = LoggerFactory.getLogger(SerialisationTest.class);
-    String ATTRIBUTE_MAPPING = "uk/ac/ebi/subs/data/component/attribute_mapping.xml";
-    String SUBMITTABLE_PACKAGE = "uk.ac.ebi.subs.data.submittable";
-    String COMPONENT_PACKAGE = "uk.ac.ebi.subs.data.component";
 
     static String ACCESSION_XPATH = "/%s/@accession";
     static String ALIAS_XPATH = "/%s/@alias";
@@ -166,48 +160,6 @@ public abstract class SerialisationTest {
         return writer.toString();
     }
 
-    public StreamSource createStreamSource (String resourceName) throws URISyntaxException {
-        final URL resource = getClass().getClassLoader().getResource(resourceName);
-        URI uri = resource.toURI();
-        File file = new File(uri);
-        StreamSource streamSource = new StreamSource(file);
-        return streamSource;
-    }
-
-    public Marshaller createMarshaller (Class cl, String objectPackage, String objectMapperResource,
-                                        String componentPackage, String componentResource) throws URISyntaxException, JAXBException {
-        Map<String, Source> metadata = new HashMap<String, Source>();
-        metadata.put(objectPackage, createStreamSource(objectMapperResource));
-        metadata.put(componentPackage, createStreamSource(componentResource));
-
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, metadata);
-
-        JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {cl}, properties);
-
-        Marshaller marshaller = jaxbContext.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
-        return marshaller;
-    }
-
-    public Unmarshaller createUnmarshaller (Class cl, String objectPackage, String objectMapperResource,
-                                            String componentPackage, String componentResource) throws URISyntaxException, JAXBException {
-        Map<String, Source> metadata = new HashMap<String, Source>();
-        metadata.put(objectPackage, createStreamSource(objectMapperResource));
-        metadata.put(componentPackage, createStreamSource(componentResource));
-
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, metadata);
-
-        JAXBContext jaxbContext = JAXBContext.newInstance(new Class[] {cl}, properties);
-
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
-        return unmarshaller;
-    }
-
     public Validator getValidator(String url) throws MalformedURLException, SAXException {
         SchemaFactory schemaFactory = SchemaFactory
                 .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -222,7 +174,7 @@ public abstract class SerialisationTest {
     protected abstract String getName ();
 
     protected void serialiseDeserialiseTest (String studyResource,
-                                             Class<? extends BaseSubmittableFactory> baseSubmittableFactoryClass,
+                                             Class<? extends ENASubmittable> baseSubmittableFactoryClass,
                                              Class<? extends BaseSubmittable> baseSubmittableClass) throws Exception {
         final BaseSubmittable baseSubmittableFromResource = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
         final BaseSubmittable baseSubmittableForCompare = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
@@ -232,13 +184,13 @@ public abstract class SerialisationTest {
 
         Collections.sort(baseSubmittableForCompare.getAttributes());
 
-        final ENASubmittable enaSubmittable = BaseSubmittableFactory.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
+        final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaSubmittable,new DOMResult(document));
         logger.info(getDocumentString(document));
         DOMSource domSource = new DOMSource(document);
-        final JAXBElement<? extends BaseSubmittableFactory> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
-        final BaseSubmittableFactory baseSubmittableValue = baseSubmittable.getValue();
+        final JAXBElement<? extends ENASubmittable> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
+        final ENASubmittable baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
         Collections.sort(baseObject.getAttributes());
@@ -247,7 +199,7 @@ public abstract class SerialisationTest {
     }
 
     protected void serialiseDeserialiseTest (Submittable submittable,
-                                             Class<? extends BaseSubmittableFactory> baseSubmittableFactoryClass) throws Exception {
+                                             Class<? extends ENASubmittable> baseSubmittableFactoryClass) throws Exception {
         StringWriter stringWriter = new StringWriter();
         final Class<? extends Submittable> submittableClass = submittable.getClass();
         objectMapper.writeValue(stringWriter,submittable);
@@ -257,14 +209,14 @@ public abstract class SerialisationTest {
         clonedSubmittable.setId(null);
         Collections.sort(clonedSubmittable.getAttributes());
 
-        final ENASubmittable enaSubmittable = BaseSubmittableFactory.create(baseSubmittableFactoryClass, submittable);
+        final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, submittable);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaSubmittable,new DOMResult(document));
         String documentString = getDocumentString(document);
         logger.info(documentString);
         DOMSource domSource = new DOMSource(document);
-        final JAXBElement<? extends BaseSubmittableFactory> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
-        final BaseSubmittableFactory baseSubmittableValue = baseSubmittable.getValue();
+        final JAXBElement<? extends ENASubmittable> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
+        final ENASubmittable baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
         Collections.sort(baseObject.getAttributes());

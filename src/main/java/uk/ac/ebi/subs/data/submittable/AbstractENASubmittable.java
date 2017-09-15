@@ -23,7 +23,7 @@ import java.util.UUID;
 /**
  * Created by neilg on 03/03/2017.
  */
-public abstract class AbstractENASubmittable<T extends BaseSubmittable> implements BaseSubmittableFactory<T>  {
+public abstract class AbstractENASubmittable<T extends BaseSubmittable> implements ENASubmittable<T>  {
     private static final String MULTIPLE_VALUES_ERROR_MESSAGE = "Multiple values found for attribute %s.";
     static final String ATTRIBUTE_VALUE_REQUIRED_ERROR_MESSAGE = "Value for attribute %s is required.";
     private static final String INVALID_VALUE_ERROR_MESSAGE = "Invalid value for attribute %s value must be one of %s.";
