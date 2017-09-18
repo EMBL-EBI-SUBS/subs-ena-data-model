@@ -1,5 +1,6 @@
 package uk.ac.ebi.subs.data.submittable;
 
+import uk.ac.ebi.subs.data.component.StudyDataType;
 import uk.ac.ebi.subs.ena.annotation.*;
 
 @ENAValidation(
@@ -58,6 +59,8 @@ public class ENAStudy extends AbstractENASubmittable<Study> {
 
     @Override
     public Submittable createNewSubmittable() {
-        return new Study();
+        final Study study = new Study();
+        study.setStudyType(StudyDataType.Sequencing);
+        return study;
     }
 }
