@@ -1,8 +1,6 @@
 package uk.ac.ebi.subs.ena.validation;
 
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
-import uk.ac.ebi.subs.validator.data.SingleValidationResult;
-import uk.ac.ebi.subs.validator.data.ValidationAuthor;
 
 /**
  * Created by neilg on 14/06/2017.
@@ -14,6 +12,7 @@ public class SingleAttributeValidationResult extends AbstractENAValidationResult
     public SingleAttributeValidationResult(ENASubmittable enaSubmittable, String attributeName) {
         super(enaSubmittable, String.format(ERROR_MESSAGE,attributeName));
         this.attributeName = attributeName;
+        this.setEntityUuid(enaSubmittable.getId().toString());
     }
 
     public String getAttributeName() {
