@@ -2,6 +2,7 @@ package uk.ac.ebi.subs.xml;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.xmlbeans.XmlError;
 import org.apache.xmlbeans.XmlOptions;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
@@ -63,6 +64,7 @@ public abstract class SerialisationTest {
     Unmarshaller unmarshaller;
 
     public void setUp() throws IOException, JAXBException, URISyntaxException {
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         validationErrors = new ArrayList<>();
         xmlOptions.setErrorListener(validationErrors);
