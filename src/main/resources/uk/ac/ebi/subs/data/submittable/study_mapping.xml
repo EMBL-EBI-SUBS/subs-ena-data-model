@@ -32,8 +32,8 @@
                 <xml-element java-attribute="studyType" xml-path="DESCRIPTOR/STUDY_TYPE/@existing_study_type"/>
                 <xml-element java-attribute="studyAbstract" xml-path="DESCRIPTOR/STUDY_ABSTRACT/text()"/>
                 <xml-element java-attribute="description" xml-path="DESCRIPTOR/STUDY_DESCRIPTION/text()"/>
-                <xml-element java-attribute="attributesXML" name="STUDY_ATTRIBUTE"
-                             type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
+                <xml-element java-attribute="enaAttributeList" name="STUDY_ATTRIBUTE"
+                             type="uk.ac.ebi.subs.ena.component.ENAAttribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="STUDY_ATTRIBUTES"/>
                 </xml-element>
             </java-attributes>

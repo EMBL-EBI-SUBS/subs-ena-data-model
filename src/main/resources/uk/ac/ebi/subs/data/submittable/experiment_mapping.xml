@@ -41,8 +41,8 @@
                 <xml-element java-attribute="pacbioSMRT" required="false" nillable="false" xml-path="PLATFORM/PACBIO_SMRT/INSTRUMENT_MODEL/text()" />
                 <xml-element java-attribute="ionTorrent" required="false" nillable="false" xml-path="PLATFORM/ION_TORRENT/INSTRUMENT_MODEL/text()" />
                 <xml-element java-attribute="capillary" required="false" nillable="false" xml-path="PLATFORM/CAPILLARY/INSTRUMENT_MODEL/text()" />
-                <xml-element java-attribute="attributesXML" required="false" name="EXPERIMENT_ATTRIBUTE"
-                             type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
+                <xml-element java-attribute="enaAttributeList" required="false" name="EXPERIMENT_ATTRIBUTE"
+                             type="uk.ac.ebi.subs.ena.component.ENAAttribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="EXPERIMENT_ATTRIBUTES" required="false" nillable="false"/>
                 </xml-element>
             </java-attributes>

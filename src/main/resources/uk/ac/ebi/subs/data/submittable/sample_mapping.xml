@@ -31,8 +31,8 @@
                 <xml-element java-attribute="title" xml-path="TITLE/text()"/>
                 <xml-element java-attribute="taxonId" xml-path="SAMPLE_NAME/TAXON_ID/text()"/>
                 <xml-element java-attribute="description" xml-path="DESCRIPTION/text()"/>
-                <xml-element java-attribute="attributesXML" name="SAMPLE_ATTRIBUTE"
-                             type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
+                <xml-element java-attribute="enaAttributeList" name="SAMPLE_ATTRIBUTE"
+                             type="uk.ac.ebi.subs.ena.component.ENAAttribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="SAMPLE_ATTRIBUTES"/>
                 </xml-element>
             </java-attributes>
