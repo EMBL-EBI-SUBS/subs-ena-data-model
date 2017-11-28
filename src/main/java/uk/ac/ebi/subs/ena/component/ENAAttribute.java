@@ -1,18 +1,18 @@
 package uk.ac.ebi.subs.ena.component;
 
-public class ENAComponent {
+public class ENAAttribute {
     String tag = null;
     String value = null;
     String units = null;
 
-    public ENAComponent() {}
+    public ENAAttribute() {}
 
-    public ENAComponent(String tag, String value) {
+    public ENAAttribute(String tag, String value) {
         this.tag = tag;
         this.value = value;
     }
 
-    public ENAComponent(String tag, String value, String units) {
+    public ENAAttribute(String tag, String value, String units) {
         this.tag = tag;
         this.value = value;
         this.units = units;
@@ -47,7 +47,7 @@ public class ENAComponent {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ENAComponent that = (ENAComponent) o;
+        ENAAttribute that = (ENAAttribute) o;
 
         if (!tag.equals(that.tag)) return false;
         if (!value.equals(that.value)) return false;
