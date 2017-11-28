@@ -1,9 +1,12 @@
 package uk.ac.ebi.subs.data.submittable;
 
 import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.ena.component.ENAAttribute;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by neilg on 09/04/2017.
@@ -27,17 +30,9 @@ public interface ENASubmittable<T extends Submittable> extends Submittable {
      */
     void deSerialiseAttributes () throws IllegalAccessException;
 
-    /**
-     * Used internally via JAXB moxy during serialisation / deserilisation to XML
-     * @return
-     */
-    List<Attribute> getAttributesXML();
+    List<ENAAttribute> getEnaAttributeList ();
 
-    /**
-     * Used internally via JAXB moxy during serialisation / deserilisation to XML
-     * @return
-     */
-    void setAttributesXML(List<Attribute> attributeList);
+    void setEnaAttributeList(List<ENAAttribute> enaAttributeList);
 
     /**
      * Classes that implement this interface should create a list of SingleValidationResult objects
