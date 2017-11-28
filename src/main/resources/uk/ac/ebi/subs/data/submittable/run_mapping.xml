@@ -26,8 +26,8 @@
                              type="uk.ac.ebi.subs.data.component.File" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="DATA_BLOCK/FILES"/>
                 </xml-element>
-                <xml-element java-attribute="attributesXML" required="false" nillable="false" name="RUN_ATTRIBUTE"
-                             type="uk.ac.ebi.subs.data.component.Attribute" container-type="java.util.ArrayList">
+                <xml-element java-attribute="enaAttributeList" required="false" nillable="false" name="RUN_ATTRIBUTE"
+                             type="uk.ac.ebi.subs.ena.component.ENAAttribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="RUN_ATTRIBUTES"/>
                 </xml-element>
             </java-attributes>

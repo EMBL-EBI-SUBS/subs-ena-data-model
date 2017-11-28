@@ -4,10 +4,10 @@
               xsi:schemaLocation="http://www.eclipse.org/eclipselink/xsds/persistence/oxm http://www.eclipse.org/eclipselink/xsds/eclipselink_oxm_2_4.xsd"
               package-name="uk.ac.ebi.subs.data.component">
     <java-types>
-        <java-type name="Attribute">
+        <java-type name="ENAAttribute">
             <xml-root-element name="EXPERIMENT"/>
             <java-attributes>
-                <xml-element java-attribute="name" name="TAG"/>
+                <xml-element java-attribute="tag" name="TAG"/>
                 <xml-element java-attribute="value" name="VALUE"/>
             </java-attributes>
         </java-type>
