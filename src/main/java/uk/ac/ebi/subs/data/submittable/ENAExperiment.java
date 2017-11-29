@@ -9,7 +9,13 @@ import uk.ac.ebi.subs.ena.annotation.*;
 @ENAValidation(
         value = {
                 @ENAFieldAttribute(name = ENAExperiment.PLATFORM_TYPE, required = true),
-                @ENAFieldAttribute(name = ENAExperiment.INSTRUMENT_MODEL, attributeFieldName = "platform_type", required = true),
+                @ENAFieldAttribute(name =
+                        ENAExperiment.INSTRUMENT_MODEL,
+                        attributeFieldName = "platform_type",
+                        allowedValues = {"LS454","ILLUMINA","HELICOS","ABI_SOLID",
+                                "COMPLETE_GENOMICS","BGISEQ","OXFORD_NANOPORE",
+                                "PACBIO_SMRT","ION_TORRENT","CAPILLARY"},
+                        required = true),
                 @ENAFieldAttribute(name = ENAExperiment.DESIGN_DESCRIPTION, required = true),
                 @ENAFieldAttribute(name = ENAExperiment.LIBRARY_NAME, required = true),
                 @ENAFieldAttribute(name = ENAExperiment.LIBRARY_STRATEGY, required = true),
@@ -18,13 +24,6 @@ import uk.ac.ebi.subs.ena.annotation.*;
                 @ENAFieldAttribute(name = ENAExperiment.LIBRARY_LAYOUT, required = true),
                 @ENAFieldAttribute(name = ENAExperiment.PAIRED_NOMINAL_LENGTH),
                 @ENAFieldAttribute(name = ENAExperiment.PAIRED_NOMINAL_SDEV)
-        },
-        enaControlledValueAttributes = {
-                @ENAControlledValueAttribute(
-                        name = "platform_type",
-                        allowedValues = {"LS454","ILLUMINA","HELICOS","ABI_SOLID",
-                                "COMPLETE_GENOMICS","BGISEQ","OXFORD_NANOPORE",
-                                "PACBIO_SMRT","ION_TORRENT","CAPILLARY"}),
         }
 )
 public class    ENAExperiment extends AbstractENASubmittable<Assay> {
