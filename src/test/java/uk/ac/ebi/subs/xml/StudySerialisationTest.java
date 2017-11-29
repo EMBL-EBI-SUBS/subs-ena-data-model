@@ -159,6 +159,7 @@ public class StudySerialisationTest extends SerialisationTest {
     public void testMarshalInvalidStudyType() throws Exception {
         Study study = new Study();
         TestHelper.addAttribute(study,ENAStudy.STUDY_TYPE,UUID.randomUUID().toString());
+        TestHelper.addAttribute(study,ENAStudy.STUDY_ABSTRACT,UUID.randomUUID().toString());
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
