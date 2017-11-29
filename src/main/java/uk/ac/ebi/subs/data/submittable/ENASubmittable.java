@@ -1,12 +1,9 @@
 package uk.ac.ebi.subs.data.submittable;
 
-import uk.ac.ebi.subs.data.component.Attribute;
-import uk.ac.ebi.subs.ena.component.ENAAttribute;
+import uk.ac.ebi.subs.data.component.ENAAttribute;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by neilg on 09/04/2017.
@@ -30,8 +27,16 @@ public interface ENASubmittable<T extends Submittable> extends Submittable {
      */
     void deSerialiseAttributes () throws IllegalAccessException;
 
+    /**
+     * Returns a list of <code>ENAAttribute</code>
+     * @return
+     */
     List<ENAAttribute> getEnaAttributeList ();
 
+    /**
+     * Sets the <code>ENAAttribute</code> list
+     * @param enaAttributeList
+     */
     void setEnaAttributeList(List<ENAAttribute> enaAttributeList);
 
     /**
@@ -45,16 +50,43 @@ public interface ENASubmittable<T extends Submittable> extends Submittable {
      */
     boolean isValid();
 
+    /**
+     * Sets the underlying Submittable, all methods in <code>Submittable</code> interface should be delegating in
+     * the implement class to this submittable
+     * @param submittable
+     * @throws IllegalAccessException
+     */
     void setBaseSubmittable(Submittable submittable) throws IllegalAccessException;
 
+    /**
+     * Creates an empty <code>Submittable</code>
+     * @return
+     */
     Submittable createNewSubmittable();
 
+    /**
+     * Creates a new instance
+     * @param   clasz   a class that implements this interface
+     * @param   submittable a <Code>Submittable</Code> that will be used as the delegate
+     * @param <T>
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
     static <T extends ENASubmittable> T create(Class<T> clasz, Submittable submittable) throws IllegalAccessException, InstantiationException {
         final T t = create(clasz);
         t.setBaseSubmittable(submittable);
         return t;
     }
 
+    /**
+     * Creates a new instance
+     * @param   clasz   a class that implements this interface
+     * @param <T>
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
+     */
     static <T extends ENASubmittable> T create(Class<T> clasz) throws IllegalAccessException, InstantiationException {
         final T t = clasz.newInstance();
         return t;
