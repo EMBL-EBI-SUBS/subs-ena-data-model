@@ -180,11 +180,11 @@ public abstract class SerialisationTest {
                                              Class<? extends BaseSubmittable> baseSubmittableClass) throws Exception {
         final BaseSubmittable baseSubmittableFromResource = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
         final BaseSubmittable baseSubmittableForCompare = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
-        if (baseSubmittableClass.equals(Study.class)) {
-            ((Study)baseSubmittableForCompare).setReleaseDate(null);
+        if (baseSubmittableClass.equals(Project.class)) {
+            ((Project)baseSubmittableForCompare).setReleaseDate(null);
         }
 
-        Collections.sort(baseSubmittableForCompare.getAttributes());
+        sortAttributes(baseSubmittableForCompare);
 
         final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
@@ -195,7 +195,7 @@ public abstract class SerialisationTest {
         final ENASubmittable baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
-        Collections.sort(baseObject.getAttributes());
+        sortAttributes(baseObject);
         baseObject.setId(baseSubmittableForCompare.getId());
         assertThat("serialised and deserialised submittable", baseSubmittableForCompare, equalTo(baseObject));
     }
@@ -209,7 +209,7 @@ public abstract class SerialisationTest {
         final Submittable clonedSubmittable = objectMapper.readValue(stringWriter.toString(), submittableClass);
 
         clonedSubmittable.setId(null);
-        Collections.sort(clonedSubmittable.getAttributes());
+        sortAttributes(clonedSubmittable);
 
         final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, submittable);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
@@ -221,7 +221,7 @@ public abstract class SerialisationTest {
         final ENASubmittable baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
-        Collections.sort(baseObject.getAttributes());
+        sortAttributes(baseObject);
         assertThat("serialised and deserialised submittable", clonedSubmittable, equalTo(baseObject));
     }
 
@@ -230,5 +230,9 @@ public abstract class SerialisationTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         final BaseSubmittable baseSubmittable = objectMapper.readValue(inputStream, cl);
         return baseSubmittable;
+    }
+
+    public static void sortAttributes (Submittable submittable) {
+        //Collections.sort
     }
 }
