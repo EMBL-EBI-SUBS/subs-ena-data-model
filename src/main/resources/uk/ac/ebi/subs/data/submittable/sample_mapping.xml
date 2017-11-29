@@ -20,7 +20,7 @@
         <java-type name="Sample" xml-transient="true"/>
         <java-type name="ENASample" xml-accessor-type="NONE">
             <xml-root-element name="SAMPLE"/>
-            <xml-type prop-order="accession alias teamName title taxonId description attributesXML"/>
+            <xml-type prop-order="accession alias teamName title taxonId description enaAttributeList"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
@@ -32,7 +32,7 @@
                 <xml-element java-attribute="taxonId" xml-path="SAMPLE_NAME/TAXON_ID/text()"/>
                 <xml-element java-attribute="description" xml-path="DESCRIPTION/text()"/>
                 <xml-element java-attribute="enaAttributeList" name="SAMPLE_ATTRIBUTE"
-                             type="uk.ac.ebi.subs.ena.component.ENAAttribute" container-type="java.util.ArrayList">
+                             type="uk.ac.ebi.subs.data.component.ENAAttribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="SAMPLE_ATTRIBUTES"/>
                 </xml-element>
             </java-attributes>
