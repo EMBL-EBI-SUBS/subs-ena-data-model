@@ -14,14 +14,8 @@ public @interface ENAFieldAttribute {
      * The attribute name to retrieve
      * @return
      */
-    String attributeName();
+    String name();
     boolean required() default false;
-
-    /**
-     * If set to the default then the value is not copied into the field
-     * @return
-     */
-    String fieldName() default NO_FIELD;
 
     /**
      * If this is set it will use another attributes value as the field name.
