@@ -6,7 +6,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * /**
  * Created by neilg on 06/07/2017.
+ * Annotation used to indicate that a <code>Submittable</code> used to generate an <code>ENASubmittable</code>
+ * should contain an attribute
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = {ElementType.FIELD})
@@ -16,4 +19,5 @@ public @interface ENAField {
     String [] values() default {};
     String name() default TYPE_FIELD_NAME;
     String attributeName() default NO_ATTRIBUTE_TYPE;
+    String [] allowedValues() default {};
 }
