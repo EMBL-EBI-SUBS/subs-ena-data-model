@@ -1,5 +1,8 @@
-package uk.ac.ebi.subs.ena.component;
+package uk.ac.ebi.subs.data.component;
 
+/**
+ * Represents an attribute in the ENA data model
+ */
 public class ENAAttribute {
     String tag = null;
     String value = null;
