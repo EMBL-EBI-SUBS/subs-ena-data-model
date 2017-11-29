@@ -14,7 +14,7 @@ public @interface ENAControlledValueAttribute {
      * Must match up to an fieldName is an ENAFieldAttribute
      * @return
      */
-    String attributeName() ;
+    String name() ;
 
     /**
      * Field name to copy the value, if not defined will not be copied over
