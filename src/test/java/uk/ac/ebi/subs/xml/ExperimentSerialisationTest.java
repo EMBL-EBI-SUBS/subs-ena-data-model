@@ -18,6 +18,7 @@ import uk.ac.ebi.subs.data.submittable.Assay;
 import uk.ac.ebi.subs.data.submittable.ENAExperiment;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.MappingHelper;
+import uk.ac.ebi.subs.ena.helper.TestHelper;
 import uk.ac.ebi.subs.ena.validation.InvalidAttributeValue;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
@@ -166,10 +167,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     @Test
     public void testMarshalExperimentSingleLibraryLayout() throws Exception {
         Assay assay = createAssay();
-        Attribute libraryLayoutAttribute = new Attribute();
-        libraryLayoutAttribute.setName(ENAExperiment.LIBRARY_LAYOUT);
-        libraryLayoutAttribute.setValue(ENAExperiment.SINGLE);
-        assay.getAttributes().add(libraryLayoutAttribute);
+        TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_LAYOUT,ENAExperiment.SINGLE);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
@@ -181,9 +179,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public void testMarshalExperimentPairedLibraryLayout() throws Exception {
         Assay assay = createAssay();
         Attribute libraryLayoutAttribute = new Attribute();
-        libraryLayoutAttribute.setName(ENAExperiment.LIBRARY_LAYOUT);
-        libraryLayoutAttribute.setValue(ENAExperiment.PAIRED);
-        assay.getAttributes().add(libraryLayoutAttribute);
+        TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_LAYOUT,ENAExperiment.PAIRED);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
@@ -324,9 +320,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public void testInvalidMultiplePlatforms() throws Exception {
         Assay assay = createAssay(ILLUMINA,ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL);
         Attribute platformTypeAttribute = new Attribute();
-        platformTypeAttribute.setName(ENAExperiment.PLATFORM_TYPE);
-        platformTypeAttribute.setValue(COMPLETE_GENOMICS);
-        assay.getAttributes().add(platformTypeAttribute);
+        TestHelper.addAttribute(assay,ENAExperiment.PLATFORM_TYPE,COMPLETE_GENOMICS);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final List<SingleValidationResult> validationResultList = enaExperiment.getValidationResultList();
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
@@ -337,10 +331,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     @Test
     public void testInvalidMultipleInstruments() throws Exception {
         Assay assay = createAssay(ILLUMINA,ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL);
-        Attribute platformTypeAttribute = new Attribute();
-        platformTypeAttribute.setName(ENAExperiment.INSTRUMENT_MODEL);
-        platformTypeAttribute.setValue(COMPLETE_GENOMICS_INSTRUMENT_MODEL);
-        assay.getAttributes().add(platformTypeAttribute);
+        TestHelper.addAttribute(assay,ENAExperiment.INSTRUMENT_MODEL,COMPLETE_GENOMICS_INSTRUMENT_MODEL);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
@@ -375,16 +366,10 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     static Assay createAssay (String platformType, String instrumentModel) {
         Assay assay = new Assay();
         if (platformType != null) {
-            Attribute platformTypeAttribute = new Attribute();
-            platformTypeAttribute.setName(ENAExperiment.PLATFORM_TYPE);
-            platformTypeAttribute.setValue(platformType);
-            assay.getAttributes().add(platformTypeAttribute);
+            TestHelper.addAttribute(assay,ENAExperiment.PLATFORM_TYPE,platformType);
         }
         if (instrumentModel != null) {
-            Attribute instrumentModelAttribute = new Attribute();
-            instrumentModelAttribute.setName(ENAExperiment.INSTRUMENT_MODEL);
-            instrumentModelAttribute.setValue(instrumentModel);
-            assay.getAttributes().add(instrumentModelAttribute);
+            TestHelper.addAttribute(assay,ENAExperiment.INSTRUMENT_MODEL,instrumentModel);
         }
         return assay;
     }
