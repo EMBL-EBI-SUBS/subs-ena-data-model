@@ -10,7 +10,7 @@
         <java-type name="AssayData" xml-transient="true"/>
         <java-type name="ENARun" xml-accessor-type="NONE">
             <xml-root-element name="RUN"/>
-            <xml-type prop-order="accession alias teamName title assayRef files attributesXML"/>
+            <xml-type prop-order="accession alias teamName title assayRef files enaAttributeList"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
@@ -27,7 +27,7 @@
                     <xml-element-wrapper name="DATA_BLOCK/FILES"/>
                 </xml-element>
                 <xml-element java-attribute="enaAttributeList" required="false" nillable="false" name="RUN_ATTRIBUTE"
-                             type="uk.ac.ebi.subs.ena.component.ENAAttribute" container-type="java.util.ArrayList">
+                             type="uk.ac.ebi.subs.data.component.ENAAttribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="RUN_ATTRIBUTES"/>
                 </xml-element>
             </java-attributes>
