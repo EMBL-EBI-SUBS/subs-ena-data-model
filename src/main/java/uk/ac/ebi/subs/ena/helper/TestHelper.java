@@ -178,7 +178,6 @@ public class TestHelper {
         addAttribute(a,ENAExperiment.LIBRARY_SELECTION,"RANDOM");
         addAttribute(a,ENAExperiment.LIBRARY_SOURCE,"GENOMIC");
         addAttribute(a,ENAExperiment.LIBRARY_STRATEGY,"WGS");
-        addAttribute(a,ENAExperiment.INSTRUMENT_MODEL,"Illumina Genome Analyzer");
 
         SampleRef sampleRef = new SampleRef();
         sampleRef.setAlias(sampleAlias);
