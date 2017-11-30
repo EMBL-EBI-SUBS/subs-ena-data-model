@@ -8,13 +8,15 @@ import uk.ac.ebi.subs.ena.annotation.*;
  */
 @ENAValidation(
         value = {
-                @ENAFieldAttribute(name = ENAExperiment.PLATFORM_TYPE, required = true),
-                @ENAFieldAttribute(name =
-                        ENAExperiment.INSTRUMENT_MODEL,
-                        attributeFieldName = "platform_type",
+                @ENAFieldAttribute(
+                        name = ENAExperiment.PLATFORM_TYPE,
                         allowedValues = {"LS454","ILLUMINA","HELICOS","ABI_SOLID",
                                 "COMPLETE_GENOMICS","BGISEQ","OXFORD_NANOPORE",
                                 "PACBIO_SMRT","ION_TORRENT","CAPILLARY"},
+                        required = true),
+                @ENAFieldAttribute(name =
+                        ENAExperiment.INSTRUMENT_MODEL,
+                        attributeFieldName = "platform_type",
                         required = true),
                 @ENAFieldAttribute(name = ENAExperiment.DESIGN_DESCRIPTION, required = true),
                 @ENAFieldAttribute(name = ENAExperiment.LIBRARY_NAME, required = true),
