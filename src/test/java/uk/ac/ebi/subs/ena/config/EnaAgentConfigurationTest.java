@@ -2,6 +2,7 @@ package uk.ac.ebi.subs.ena.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.eclipse.persistence.jaxb.javamodel.Helper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import uk.ac.ebi.subs.data.component.Attribute;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.*;
 import uk.ac.ebi.subs.ena.EnaAgentApplication;
+import uk.ac.ebi.subs.ena.helper.TestHelper;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -98,10 +100,7 @@ public class EnaAgentConfigurationTest {
         study.setTeam(createTeam(team));
         study.setDescription("Description");
         study.setTitle("Title");
-        Attribute attribute = new Attribute();
-        attribute.setName("existing_study_type");
-        attribute.setValue(UUID.randomUUID().toString());
-        study.getAttributes().add(attribute);
+        TestHelper.addAttribute(study,"existing_study_type",UUID.randomUUID().toString());
         return study;
     }
 
@@ -111,37 +110,15 @@ public class EnaAgentConfigurationTest {
         assay.setTeam(createTeam(team));
         assay.setDescription("Description");
         assay.setTitle("Title");
-        Attribute libraryNameAttribute = new Attribute();
-        libraryNameAttribute.setName(ENAExperiment.LIBRARY_NAME);
-        libraryNameAttribute.setValue(ENAExperiment.LIBRARY_NAME);
-        assay.getAttributes().add(libraryNameAttribute);
-        Attribute designDescriptionAttribute = new Attribute();
-        designDescriptionAttribute.setName(ENAExperiment.DESIGN_DESCRIPTION);
-        designDescriptionAttribute.setValue(ENAExperiment.DESIGN_DESCRIPTION);
-        assay.getAttributes().add(designDescriptionAttribute);
-        Attribute libraryLayoutAttribute = new Attribute();
-        libraryLayoutAttribute.setName(ENAExperiment.LIBRARY_LAYOUT);
-        libraryLayoutAttribute.setValue(ENAExperiment.SINGLE);
-        assay.getAttributes().add(libraryLayoutAttribute);
-        Attribute libraryStratagy = new Attribute();
-        libraryStratagy.setName(ENAExperiment.LIBRARY_STRATEGY);
-        libraryStratagy.setValue("WGS");
-        assay.getAttributes().add(libraryStratagy);
-        Attribute librarySource = new Attribute();
-        librarySource.setName(ENAExperiment.LIBRARY_SOURCE);
-        librarySource.setValue("Genomic");
-        Attribute librarySelection = new Attribute();
-        librarySelection.setName(ENAExperiment.LIBRARY_SELECTION);
-        librarySelection.setValue("Random");
-        assay.getAttributes().add(librarySelection);
-        Attribute platformAtribute = new Attribute();
-        platformAtribute.setName(ENAExperiment.PLATFORM_TYPE);
-        platformAtribute.setValue("ILLUMINA");
-        assay.getAttributes().add(platformAtribute);
-        Attribute instrumentModelAttribute = new Attribute();
-        instrumentModelAttribute.setName(ENAExperiment.INSTRUMENT_MODEL);
-        instrumentModelAttribute.setValue("Illumina Genome Analyzer");
-        assay.getAttributes().add(instrumentModelAttribute);
+        TestHelper.addAttribute(assay,ENAExperiment.PLATFORM_TYPE,"ILLUMINA");
+        TestHelper.addAttribute(assay,ENAExperiment.INSTRUMENT_MODEL,"Illumina Genome Analyzer");
+        TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_LAYOUT,ENAExperiment.SINGLE);
+        TestHelper.addAttribute(assay,ENAExperiment.DESIGN_DESCRIPTION,"Design Description");
+        TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_NAME,"Example Library");
+        TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_SELECTION,"RANDOM");
+        TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_SOURCE,"GENOMIC");
+        TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_STRATEGY,"WGS");
+        TestHelper.addAttribute(assay,ENAExperiment.INSTRUMENT_MODEL,"Illumina Genome Analyzer");
         return assay;
     }
 

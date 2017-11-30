@@ -5,40 +5,48 @@
   },
   "title": "Test USI Experiment",
   "description": null,
-  "attributes": [
-    {
-      "name": "design_description",
-      "value": "design_description"
-    },
-    {
-      "name": "library_name",
-      "value": "Library Name"
-    },
-    {
-      "name": "library_strategy",
-      "value": "WGS"
-    },
-    {
-      "name": "library_source",
-      "value": "GENOMIC"
-    },
-    {
-      "name": "library_selection",
-      "value": "RANDOM"
-    },
-    {
-      "name": "library_layout",
-      "value": "SINGLE"
-    },
-    {
-      "name": "platform_type",
-      "value": "ILLUMINA"
-    },
-    {
-      "name": "instrument_model",
-      "value": "Illumina Genome Analyzer II"
-    }
-  ],
+  "attributes": {
+    "design_description": [
+      {
+        "value": "design_description"
+      }
+    ],
+    "library_name": [
+      {
+        "value": "Library Name"
+      }
+    ],
+    "library_strategy": [
+      {
+        "value": "WGS"
+      }
+    ],
+    "library_source": [
+      {
+        "value": "GENOMIC"
+      }
+    ],
+    "library_selection": [
+      {
+        "value": "RANDOM"
+      }
+    ],
+    "library_layout": [
+      {
+        "value": "SINGLE"
+      }
+    ],
+    "platform_type": [
+      {
+        "value": "ILLUMINA"
+      }
+    ],
+    "instrument_model": [
+      {
+        "value": "Illumina Genome Analyzer II"
+      }
+    ]
+  },
   "studyRef": {
     "alias": "study1",
     "team": "test team"
@@ -48,8 +56,7 @@
       "sampleRef": {
         "alias": "bob",
         "team": "test team"
-      },
-      "attributes": []
+      }
     }
   ],
   "protocolUses": []
