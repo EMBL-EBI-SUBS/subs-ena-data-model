@@ -50,10 +50,10 @@ public abstract class SerialisationTest {
 
     static String ACCESSION_XPATH = "/%s/@accession";
     static String ALIAS_XPATH = "/%s/@alias";
-    static String CENTER_NAME_XPATH ="/%s/@center_name";
+    static String CENTER_NAME_XPATH = "/%s/@center_name";
     static String IDENTIFIERS_ACCESSION_XPATH = "/%s/IDENTIFIERS/PRIMARY_ID/text()";
     static String IDENTIFIERS_ALIAS_XPATH = "/%s/IDENTIFIERS/SUBMITTER_ID/text()";
-    static String IDENTIFIERS_CENTER_NAME_XPATH ="/%s/IDENTIFIERS/SUBMITTER_ID/@namespace";
+    static String IDENTIFIERS_CENTER_NAME_XPATH = "/%s/IDENTIFIERS/SUBMITTER_ID/@namespace";
 
     DocumentBuilderFactory documentBuilderFactory = null;
     XPathFactory xPathFactory = null;
@@ -77,7 +77,7 @@ public abstract class SerialisationTest {
         Submittable submittable = createENASubmittable();
         submittable.setAccession(UUID.randomUUID().toString());
         String xpathQuery = String.format(ACCESSION_XPATH, getName());
-        assertXMLSubmittable(submittable,xpathQuery,submittable.getAccession());
+        assertXMLSubmittable(submittable, xpathQuery, submittable.getAccession());
     }
 
     @Test
@@ -85,7 +85,7 @@ public abstract class SerialisationTest {
         Submittable submittable = createENASubmittable();
         submittable.setAlias(UUID.randomUUID().toString());
         String xpathQuery = String.format(ALIAS_XPATH, getName());
-        assertXMLSubmittable(submittable,xpathQuery,submittable.getAlias());
+        assertXMLSubmittable(submittable, xpathQuery, submittable.getAlias());
     }
 
     @Test
@@ -95,7 +95,7 @@ public abstract class SerialisationTest {
         team.setName(UUID.randomUUID().toString());
         submittable.setTeam(team);
         String xpathQuery = String.format(CENTER_NAME_XPATH, getName());
-        assertXMLSubmittable(submittable,xpathQuery,team.getName());
+        assertXMLSubmittable(submittable, xpathQuery, team.getName());
     }
 
     @Test
@@ -103,7 +103,7 @@ public abstract class SerialisationTest {
         Submittable submittable = createENASubmittable();
         submittable.setAccession(UUID.randomUUID().toString());
         String accessionXpathQuery = String.format(IDENTIFIERS_ACCESSION_XPATH, getName());
-        assertXMLSubmittable(submittable,accessionXpathQuery,submittable.getAccession());
+        assertXMLSubmittable(submittable, accessionXpathQuery, submittable.getAccession());
     }
 
     @Test
@@ -111,7 +111,7 @@ public abstract class SerialisationTest {
         Submittable submittable = createENASubmittable();
         submittable.setAlias(UUID.randomUUID().toString());
         String xpathQuery = String.format(IDENTIFIERS_ALIAS_XPATH, getName());
-        assertXMLSubmittable(submittable,xpathQuery,submittable.getAlias());
+        assertXMLSubmittable(submittable, xpathQuery, submittable.getAlias());
     }
 
     @Test
@@ -121,23 +121,23 @@ public abstract class SerialisationTest {
         team.setName(UUID.randomUUID().toString());
         submittable.setTeam(team);
         String xpathQuery = String.format(IDENTIFIERS_CENTER_NAME_XPATH, getName());
-        assertXMLSubmittable(submittable,xpathQuery,team.getName());
+        assertXMLSubmittable(submittable, xpathQuery, team.getName());
     }
 
-    protected void assertXMLSubmittable (Submittable submittable, String xPathQuery, String actual) throws JAXBException, ParserConfigurationException, XPathExpressionException, TransformerException {
+    protected void assertXMLSubmittable(Submittable submittable, String xPathQuery, String actual) throws JAXBException, ParserConfigurationException, XPathExpressionException, TransformerException {
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
-        marshaller.marshal(submittable,new DOMResult(document));
-        String xmlAlias = executeXPathQueryNodeValue(document,xPathQuery);
+        marshaller.marshal(submittable, new DOMResult(document));
+        String xmlAlias = executeXPathQueryNodeValue(document, xPathQuery);
         assertThat(xPathQuery, actual, equalTo(xmlAlias));
     }
 
-    public Document marshal (Object object , Marshaller marshaller) throws ParserConfigurationException, JAXBException {
+    public Document marshal(Object object, Marshaller marshaller) throws ParserConfigurationException, JAXBException {
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
-        marshaller.marshal(object,new DOMResult(document));
+        marshaller.marshal(object, new DOMResult(document));
         return document;
     }
 
-    Node executeXPathQuery (Document document, String xPathExpression) throws XPathExpressionException, TransformerException {
+    Node executeXPathQuery(Document document, String xPathExpression) throws XPathExpressionException, TransformerException {
         final XPath xPath = xPathFactory.newXPath();
         StudySerialisationTest.logger.info(getDocumentString(document));
         final XPathExpression xpe = xPath.compile(xPathExpression);
@@ -145,13 +145,13 @@ public abstract class SerialisationTest {
         return node;
     }
 
-    String executeXPathQueryNodeValue (Document document, String xPathExpression) throws XPathExpressionException, TransformerException {
-        Node node = executeXPathQuery(document,xPathExpression);
+    String executeXPathQueryNodeValue(Document document, String xPathExpression) throws XPathExpressionException, TransformerException {
+        Node node = executeXPathQuery(document, xPathExpression);
         if (node != null) return node.getNodeValue();
         else return null;
     }
 
-    String getDocumentString (Document document) throws TransformerException {
+    String getDocumentString(Document document) throws TransformerException {
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         DOMSource domSource = new DOMSource(document);
         StringWriter writer = new StringWriter();
@@ -171,49 +171,45 @@ public abstract class SerialisationTest {
         return validator;
     }
 
-    protected abstract ENASubmittable createENASubmittable () throws IllegalAccessException;
+    protected abstract ENASubmittable createENASubmittable() throws IllegalAccessException;
 
-    protected abstract String getName ();
+    protected abstract String getName();
 
-    protected void serialiseDeserialiseTest (String studyResource,
-                                             Class<? extends ENASubmittable> baseSubmittableFactoryClass,
-                                             Class<? extends BaseSubmittable> baseSubmittableClass) throws Exception {
+    protected void serialiseDeserialiseTest(String studyResource,
+                                            Class<? extends ENASubmittable> baseSubmittableFactoryClass,
+                                            Class<? extends BaseSubmittable> baseSubmittableClass) throws Exception {
         final BaseSubmittable baseSubmittableFromResource = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
         final BaseSubmittable baseSubmittableForCompare = getBaseSubmittableFromResource(studyResource, baseSubmittableClass);
         if (baseSubmittableClass.equals(Project.class)) {
-            ((Project)baseSubmittableForCompare).setReleaseDate(null);
+            ((Project) baseSubmittableForCompare).setReleaseDate(null);
         }
-
-        sortAttributes(baseSubmittableForCompare);
 
         final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
-        marshaller.marshal(enaSubmittable,new DOMResult(document));
+        marshaller.marshal(enaSubmittable, new DOMResult(document));
         logger.info(getDocumentString(document));
         DOMSource domSource = new DOMSource(document);
         final JAXBElement<? extends ENASubmittable> baseSubmittable = unmarshaller.unmarshal(domSource, baseSubmittableFactoryClass);
         final ENASubmittable baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
-        sortAttributes(baseObject);
         baseObject.setId(baseSubmittableForCompare.getId());
         assertThat("serialised and deserialised submittable", baseSubmittableForCompare, equalTo(baseObject));
     }
 
-    protected void serialiseDeserialiseTest (Submittable submittable,
-                                             Class<? extends ENASubmittable> baseSubmittableFactoryClass) throws Exception {
+    protected void serialiseDeserialiseTest(Submittable submittable,
+                                            Class<? extends ENASubmittable> baseSubmittableFactoryClass) throws Exception {
         StringWriter stringWriter = new StringWriter();
         final Class<? extends Submittable> submittableClass = submittable.getClass();
-        objectMapper.writeValue(stringWriter,submittable);
+        objectMapper.writeValue(stringWriter, submittable);
         // clone the object
         final Submittable clonedSubmittable = objectMapper.readValue(stringWriter.toString(), submittableClass);
 
         clonedSubmittable.setId(null);
-        sortAttributes(clonedSubmittable);
 
         final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, submittable);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
-        marshaller.marshal(enaSubmittable,new DOMResult(document));
+        marshaller.marshal(enaSubmittable, new DOMResult(document));
         String documentString = getDocumentString(document);
         logger.info(documentString);
         DOMSource domSource = new DOMSource(document);
@@ -221,18 +217,15 @@ public abstract class SerialisationTest {
         final ENASubmittable baseSubmittableValue = baseSubmittable.getValue();
         baseSubmittableValue.deSerialiseAttributes();
         final Submittable baseObject = baseSubmittableValue.getBaseObject();
-        sortAttributes(baseObject);
         assertThat("serialised and deserialised submittable", clonedSubmittable, equalTo(baseObject));
     }
 
-    public BaseSubmittable getBaseSubmittableFromResource (String resource, Class<? extends BaseSubmittable> cl) throws IOException {
+    public BaseSubmittable getBaseSubmittableFromResource(String resource, Class<? extends BaseSubmittable> cl) throws IOException {
         final InputStream inputStream = getClass().getResourceAsStream(resource);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         final BaseSubmittable baseSubmittable = objectMapper.readValue(inputStream, cl);
         return baseSubmittable;
     }
 
-    public static void sortAttributes (Submittable submittable) {
-        //Collections.sort
-    }
 }
+
