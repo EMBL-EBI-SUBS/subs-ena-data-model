@@ -41,7 +41,7 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     }
 
     public void serialiseAttributes () throws IllegalAccessException {
-        final Set<String> strings = getAttributes().keySet();
+
         if (this.getClass().isAnnotationPresent(ENAValidation.class)) {
             ENAValidation enaValidation = getEnaValidation();
 
