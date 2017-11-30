@@ -5,28 +5,23 @@
   },
   "title": "Title",
   "description": "Description",
-  "attributes": [
-    {
-      "name": "study_type",
-      "value": "Whole Genome Sequencing",
-      "units": null,
-      "terms": []
-    },
-    {
-      "name": "Project Coordinator",
-      "value": "Joe Bloggs",
-      "units": null,
-      "terms": []
-    }
-  ],
-  "publications": [],
-  "contacts": [],
-  "protocolRefs": [],
+  "attributes" : {
+    "study_type": [
+      {
+        "value" : "Whole Genome Sequencing"
+      }
+
+    ],
+    "Project Coordinator": [
+      {
+        "value" : "Joe Bloggs"
+      }
+
+    ]
+  },
   "projectRef": {
     "alias": null,
     "accession": null,
     "team": null
-  },
-  "releaseDate": "2017-04-17",
-  "studyType": "Sequencing"
+  }
 }
