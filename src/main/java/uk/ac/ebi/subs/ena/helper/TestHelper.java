@@ -144,13 +144,11 @@ public class TestHelper {
         study.setTeam(team);
         study.setTitle("Study Title");
         Attribute studyAbstractAttibute = new Attribute();
-        studyAbstractAttibute.setName("study_abstract");
         studyAbstractAttibute.setValue(studyAbstract);
-        study.getAttributes().add(studyAbstractAttibute);
+        addAttribute(study,"study_abstract",studyAbstractAttibute);
         Attribute studyTypeAttribute = new Attribute();
-        studyTypeAttribute.setName(ENAStudy.STUDY_TYPE);
         studyTypeAttribute.setValue(studyType);
-        study.getAttributes().add(studyTypeAttribute);
+        addAttribute(study,ENAStudy.STUDY_TYPE,studyTypeAttribute);
         return study;
     }
 
@@ -172,38 +170,15 @@ public class TestHelper {
         a.setTeam(team);
         a.setTitle("Assay Title ");
         a.setDescription("Test assay");
-        Attribute platformAttribute = new Attribute();
-        platformAttribute.setName(ENAExperiment.PLATFORM_TYPE);
-        platformAttribute.setValue("ILLUMINA");
-        a.getAttributes().add(platformAttribute);
-        Attribute instrumentAttribute = new Attribute();
-        instrumentAttribute.setName(ENAExperiment.INSTRUMENT_MODEL);
-        instrumentAttribute.setValue("Illumina Genome Analyzer");
-        a.getAttributes().add(instrumentAttribute);
-        Attribute libraryLayoutAttribute = new Attribute();
-        libraryLayoutAttribute.setName(ENAExperiment.LIBRARY_LAYOUT);
-        libraryLayoutAttribute.setValue(ENAExperiment.SINGLE);
-        a.getAttributes().add(libraryLayoutAttribute);
-        Attribute designDescriptionAttribute = new Attribute();
-        designDescriptionAttribute.setName(ENAExperiment.DESIGN_DESCRIPTION);
-        designDescriptionAttribute.setValue("Design Description");
-        a.getAttributes().add(designDescriptionAttribute);
-        Attribute libraryName = new Attribute();
-        libraryName.setName(ENAExperiment.LIBRARY_NAME);
-        libraryName.setValue("Example Library");
-        a.getAttributes().add(libraryName);
-        Attribute librarySelection = new Attribute();
-        librarySelection.setName(ENAExperiment.LIBRARY_SELECTION);
-        librarySelection.setValue("RANDOM");
-        a.getAttributes().add(librarySelection);
-        Attribute librarySource = new Attribute();
-        librarySource.setName(ENAExperiment.LIBRARY_SOURCE);
-        librarySource.setValue("GENOMIC");
-        a.getAttributes().add(librarySource);
-        Attribute libraryStratagy = new Attribute();
-        libraryStratagy.setName(ENAExperiment.LIBRARY_STRATEGY);
-        libraryStratagy.setValue("WGS");
-        a.getAttributes().add(libraryStratagy);
+        addAttribute(a,ENAExperiment.PLATFORM_TYPE,"ILLUMINA");
+        addAttribute(a,ENAExperiment.INSTRUMENT_MODEL,"Illumina Genome Analyzer");
+        addAttribute(a,ENAExperiment.LIBRARY_LAYOUT,ENAExperiment.SINGLE);
+        addAttribute(a,ENAExperiment.DESIGN_DESCRIPTION,"Design Description");
+        addAttribute(a,ENAExperiment.LIBRARY_NAME,"Example Library");
+        addAttribute(a,ENAExperiment.LIBRARY_SELECTION,"RANDOM");
+        addAttribute(a,ENAExperiment.LIBRARY_SOURCE,"GENOMIC");
+        addAttribute(a,ENAExperiment.LIBRARY_STRATEGY,"WGS");
+        addAttribute(a,ENAExperiment.INSTRUMENT_MODEL,"Illumina Genome Analyzer");
 
         SampleRef sampleRef = new SampleRef();
         sampleRef.setAlias(sampleAlias);
@@ -233,4 +208,26 @@ public class TestHelper {
         assayData.getFiles().add(file);
         return assayData;
     }
+
+    public static void addAttribute (Submittable submittable , String name, Attribute attribute) {
+        if (!submittable.getAttributes().containsKey(name))
+            submittable.getAttributes().put(name,new ArrayList<Attribute>());
+
+        submittable.getAttributes().get(name).add(attribute);
+    }
+
+    public static void addAttribute (Submittable submittable , String name, String value) {
+    Attribute attribute = attribute(value);
+        if (!submittable.getAttributes().containsKey(name)) {
+            submittable.getAttributes().put(name,new ArrayList<Attribute>());
+        }
+        submittable.getAttributes().get(name).add(attribute);
+    }
+
+    public static Attribute attribute(String value) {
+        Attribute attribute = new Attribute();
+        attribute.setValue(value);
+        return attribute;
+    }
+
 }

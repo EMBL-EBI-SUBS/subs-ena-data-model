@@ -55,7 +55,6 @@ public class ENAStudyProcessorTest {
         final Team team = TestHelper.getTeam("test-team");
         final Study study = TestHelper.getStudy(alias, team,"study_abstract", "Whole Genome Sequencing");
         final LocalDate date = LocalDate.parse("2018-12-25");
-        study.setReleaseDate(date);
         final ProcessingStatusEnum processingStatusEnum = ProcessingStatusEnum.Received;
         processSubmission(study, processingStatusEnum);
     }
@@ -66,13 +65,11 @@ public class ENAStudyProcessorTest {
         final Team team = TestHelper.getTeam("test-team");
         final Study study = TestHelper.getStudy(alias, team,"study_abstract", "Whole Genome Sequencing");
         final LocalDate date = LocalDate.parse("2018-12-25");
-        study.setReleaseDate(date);
         final ProcessingStatusEnum processingStatusEnum = ProcessingStatusEnum.Received;
         processSubmission(study, processingStatusEnum);
         final ProcessingStatusEnum processingStatusEnum2 = ProcessingStatusEnum.Error;
         final Study study2 = TestHelper.getStudy(alias, team,"study_abstract", "Whole Genome Sequencing");
         final LocalDate date2 = LocalDate.parse("2018-12-25");
-        study2.setReleaseDate(date2);
         study2.setId(UUID.randomUUID().toString());
         final ArrayList<SingleValidationResult> singleValidationResultList = new ArrayList<>();
         final ProcessingCertificate processingCertificate = enaStudyProcessor.processAndConvertSubmittable(study2, singleValidationResultList);
@@ -92,7 +89,6 @@ public class ENAStudyProcessorTest {
         final Team team = TestHelper.getTeam("test-team");
         final Study study = TestHelper.getStudy(alias, team,"study_abstract", "Blah");
         final LocalDate date = LocalDate.parse("2018-12-25");
-        study.setReleaseDate(date);
         study.setId(UUID.randomUUID().toString());
         final ArrayList<SingleValidationResult> singleValidationResultList = new ArrayList<>();
         final ProcessingCertificate processingCertificate = enaStudyProcessor.processAndConvertSubmittable(study, singleValidationResultList);
