@@ -217,11 +217,17 @@ public class TestHelper {
     }
 
     public static void addAttribute (Submittable submittable , String name, String value) {
-    Attribute attribute = new Attribute();
-    attribute.setValue(value);
+    Attribute attribute = attribute(value);
         if (!submittable.getAttributes().containsKey(name)) {
             submittable.getAttributes().put(name,new ArrayList<Attribute>());
         }
         submittable.getAttributes().get(name).add(attribute);
     }
+
+    public static Attribute attribute(String value) {
+        Attribute attribute = new Attribute();
+        attribute.setValue(value);
+        return attribute;
+    }
+
 }
