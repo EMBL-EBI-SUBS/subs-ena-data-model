@@ -1,9 +1,7 @@
 package uk.ac.ebi.subs.ena.annotation;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ENAFieldAttribute {
@@ -14,14 +12,8 @@ public @interface ENAFieldAttribute {
      * The attribute name to retrieve
      * @return
      */
-    String attributeName();
+    String name();
     boolean required() default false;
-
-    /**
-     * If set to the default then the value is not copied into the field
-     * @return
-     */
-    String fieldName() default NO_FIELD;
 
     /**
      * If this is set it will use another attributes value as the field name.
@@ -29,5 +21,7 @@ public @interface ENAFieldAttribute {
      * @return
      */
     String attributeFieldName() default NO_FIELD;
+
+    String [] allowedValues() default {};
 
 }

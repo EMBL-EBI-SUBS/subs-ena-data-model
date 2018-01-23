@@ -12,6 +12,7 @@ import uk.ac.ebi.subs.data.submittable.ENAStudy;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.MappingHelper;
 import uk.ac.ebi.subs.data.submittable.Study;
+import uk.ac.ebi.subs.ena.helper.TestHelper;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import javax.xml.bind.JAXBException;
@@ -133,39 +134,32 @@ public class StudySerialisationTest extends SerialisationTest {
     @Test
     public void testMarshalStudyAbstract() throws Exception {
         Study study = new Study();
-        Attribute attribute = new Attribute();
-        attribute.setName(ENAStudy.STUDY_ABSTRACT);
-        attribute.setValue(UUID.randomUUID().toString());
-        study.getAttributes().add(attribute);
+        String attributeValue = UUID.randomUUID().toString();
+        TestHelper.addAttribute(study,ENAStudy.STUDY_ABSTRACT,attributeValue);
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,STUDY_ABSTRACT_XPATH);
-        assertThat("study abstract attribute serialised to XML", attribute.getValue(), equalTo(str));
+        assertThat("study abstract attribute serialised to XML", attributeValue, equalTo(str));
     }
 
     @Test
     public void testMarshalStudyType() throws Exception {
         Study study = new Study();
-        Attribute attribute = new Attribute();
-        attribute.setName(ENAStudy.STUDY_TYPE);
-        attribute.setValue("Whole Genome Sequencing");
-        study.getAttributes().add(attribute);
+        String studyType = "Whole Genome Sequencing";
+        TestHelper.addAttribute(study,ENAStudy.STUDY_TYPE,studyType);
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,STUDY_TYPE_XPATH);
-        assertThat("study type attribute serialised to XML", attribute.getValue(), equalTo(str));
+        assertThat("study type attribute serialised to XML", studyType, equalTo(str));
     }
 
     @Test
     public void testMarshalInvalidStudyType() throws Exception {
         Study study = new Study();
-        Attribute attribute = new Attribute();
-        attribute.setName(ENAStudy.STUDY_TYPE);
-        String incorrectStudyType = UUID.randomUUID().toString();
-        attribute.setValue(incorrectStudyType);
-        study.getAttributes().add(attribute);
+        TestHelper.addAttribute(study,ENAStudy.STUDY_TYPE,UUID.randomUUID().toString());
+        TestHelper.addAttribute(study,ENAStudy.STUDY_ABSTRACT,UUID.randomUUID().toString());
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
