@@ -68,10 +68,10 @@ public abstract class AbstractSRALoaderService<T extends ENASubmittable> impleme
         parameterMap.put(getSchema().toUpperCase(),new UnirestWrapper.Field("submittable.xml",submittableInputStream));
         parameterMap.put("SUBMISSION",new UnirestWrapper.Field("submission.xml",submissionXMLInputStream));
 
-        HttpResponse<String> stringHttpResponse = unirestWrapper.postJson(parameterMap);
+        final String recieptString = unirestWrapper.postJson(parameterMap);
 
-        logger.info(stringHttpResponse.getBody());
-        final RECEIPTDocument receiptDocument = RECEIPTDocument.Factory.parse(stringHttpResponse.getBody());
+        logger.info(recieptString);
+        final RECEIPTDocument receiptDocument = RECEIPTDocument.Factory.parse(recieptString);
         receipt = receiptDocument.getRECEIPT();
 
         if (receipt.getSuccess()) {
