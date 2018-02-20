@@ -23,8 +23,8 @@ public class UnirestWrapper {
     @Value("${ena.submission.url:https://www-test.ebi.ac.uk/ena/submit/drop-box/submit}")
     String submissionUrl;
 
-    public HttpResponse<String> postJson(Map<String, Field> parameters ){
-        HttpResponse<String> response = null;
+    public String postJson(Map<String, Field> parameters ){
+        String response = null;
         try {
             final HttpRequestWithBody httpRequestWithBody = Unirest.post(submissionUrl).basicAuth(username, password);
 
@@ -39,7 +39,7 @@ public class UnirestWrapper {
 
             }
 
-            response = httpRequestWithBody.asString();
+            response = httpRequestWithBody.asString().getBody();
 
         } catch (UnirestException e) {
             throw new RuntimeException(e);
