@@ -30,7 +30,7 @@ public class SampleSRALoaderTest extends AbstractSRALoaderTest {
         String alias = UUID.randomUUID().toString();
         SAMPLESETDocument samplesetDocument = getSamplesetDocument(alias,getCenterName());
         String submissionXML = createSubmittable("sample.xml", SubmissionType.ACTIONS.ACTION.ADD.Schema.SAMPLE,alias);
-        sraLoader.executeSRASubmission(submissionXML, samplesetDocument.xmlText());
+        sraLoader.executeSRASubmission("SAMPLE", submissionXML, samplesetDocument.xmlText());
         final String accession = sraLoader.getAccession();
         assertThat(accession,startsWith("ERS"));
     }
