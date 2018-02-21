@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="receipt.xsl"?>
+<RECEIPT receiptDate="2018-02-20T13:49:01.902Z" submissionFile="submission.xml" success="true">
+    <SAMPLE accession="ERS2212146" alias="2a29a487-978f-4405-8ba4-1be86d260454@USI-test-team" status="PRIVATE">
+        <EXT_ID accession="test_sample_ID" type="biosample"/>
+    </SAMPLE>
+    <SUBMISSION accession="ERA1216814" alias="14e32f01-bf93-4e3e-9cbb-3792f1fac76b"/>
+    <MESSAGES>
+        <INFO>Submission has been committed.</INFO>
+        <INFO>This submission is a TEST submission and will be discarded within 24 hours</INFO>
+    </MESSAGES>
+    <ACTIONS>ADD</ACTIONS>
+</RECEIPT>

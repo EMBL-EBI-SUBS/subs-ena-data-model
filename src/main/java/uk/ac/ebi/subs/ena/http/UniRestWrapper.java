@@ -1,10 +1,8 @@
 package uk.ac.ebi.subs.ena.http;
 
-import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
-import com.mashape.unirest.request.body.MultipartBody;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +10,7 @@ import java.io.InputStream;
 import java.util.Map;
 
 @Service
-public class UnirestWrapper {
+public class UniRestWrapper {
 
     @Value("${ena.login_name:Webin-46220}")
     String username;
@@ -23,21 +21,14 @@ public class UnirestWrapper {
     @Value("${ena.submission.url:https://www-test.ebi.ac.uk/ena/submit/drop-box/submit}")
     String submissionUrl;
 
-    public String postJson(Map<String, Field> parameters ){
-        String response = null;
+    public String postJson(String submittableType, Map<String, Field> parameters ){
+        String response;
         try {
             final HttpRequestWithBody httpRequestWithBody = Unirest.post(submissionUrl).basicAuth(username, password);
 
-            MultipartBody multipartBody = null;
-
-            for (String key :parameters.keySet()) {
-                if (multipartBody != null) {
-                    multipartBody = multipartBody.field(key, parameters.get(key).inputStream, parameters.get(key).filename);
-                } else {
-                    multipartBody = httpRequestWithBody.field(key, parameters.get(key).inputStream, parameters.get(key).filename);
-                }
-
-            }
+            httpRequestWithBody
+                    .field("SUBMISSION", parameters.get("SUBMISSION").inputStream, parameters.get("SUBMISSION").filename)
+                    .field(submittableType, parameters.get(submittableType).inputStream, parameters.get(submittableType).filename);
 
             response = httpRequestWithBody.asString().getBody();
 
