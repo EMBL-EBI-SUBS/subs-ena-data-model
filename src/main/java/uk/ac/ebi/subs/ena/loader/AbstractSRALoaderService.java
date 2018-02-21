@@ -1,6 +1,5 @@
 package uk.ac.ebi.subs.ena.loader;
 
-import com.mashape.unirest.http.HttpResponse;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,7 @@ import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
 import uk.ac.ebi.ena.sra.xml.SUBMISSIONSETDocument;
 import uk.ac.ebi.ena.sra.xml.SubmissionType;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
-import uk.ac.ebi.subs.ena.http.UnirestWrapper;
+import uk.ac.ebi.subs.ena.http.UniRestWrapper;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -45,7 +44,7 @@ public abstract class AbstractSRALoaderService<T extends ENASubmittable> impleme
     String accession = null;
 
     @Autowired
-    UnirestWrapper unirestWrapper;
+    UniRestWrapper uniRestWrapper;
 
     static {
         try {
@@ -59,19 +58,19 @@ public abstract class AbstractSRALoaderService<T extends ENASubmittable> impleme
     /**
      * Executes an ENA submission for a submittable using Unirest
      */
-    public boolean executeSRASubmission(String submissionXML, String submittableXML) throws Exception {
+    public boolean executeSRASubmission(String submittableType, String submissionXML, String submittableXML) throws Exception {
         final InputStream submissionXMLInputStream = IOUtils.toInputStream(submissionXML, Charset.forName("UTF-8"));
         final InputStream submittableInputStream = IOUtils.toInputStream(submittableXML, Charset.forName("UTF-8"));
 
 
-        Map<String,UnirestWrapper.Field> parameterMap = new HashMap<>();
-        parameterMap.put(getSchema().toUpperCase(),new UnirestWrapper.Field("submittable.xml",submittableInputStream));
-        parameterMap.put("SUBMISSION",new UnirestWrapper.Field("submission.xml",submissionXMLInputStream));
+        Map<String, UniRestWrapper.Field> parameterMap = new HashMap<>();
+        parameterMap.put(submittableType ,new UniRestWrapper.Field("submittable.xml", submittableInputStream));
+        parameterMap.put("SUBMISSION", new UniRestWrapper.Field("submission.xml", submissionXMLInputStream));
 
-        final String recieptString = unirestWrapper.postJson(parameterMap);
+        final String receiptString = uniRestWrapper.postJson(submittableType, parameterMap);
 
-        logger.info(recieptString);
-        final RECEIPTDocument receiptDocument = RECEIPTDocument.Factory.parse(recieptString);
+        logger.info(receiptString);
+        final RECEIPTDocument receiptDocument = RECEIPTDocument.Factory.parse(receiptString);
         receipt = receiptDocument.getRECEIPT();
 
         if (receipt.getSuccess()) {
@@ -90,11 +89,12 @@ public abstract class AbstractSRALoaderService<T extends ENASubmittable> impleme
      * Executes an ENA for an ENA submittable
      */
     public boolean executeSRASubmission(ENASubmittable enaSubmittable, boolean validateOnly) throws Exception {
-        final String submissionXML = createSubmissionXML(enaSubmittable, enaSubmittable.getId().toString(), validateOnly);
+        final String submissionXML = createSubmissionXML(enaSubmittable, enaSubmittable.getId(), validateOnly);
         Document document = documentBuilder.newDocument();
         marshaller.marshal(enaSubmittable,new DOMResult(document));
         String submittableXML = getDocumentString(document);
-        final boolean success = executeSRASubmission(submissionXML, submittableXML);
+        String submittableType = getSchema().toUpperCase();
+        final boolean success = executeSRASubmission(submittableType, submissionXML, submittableXML);
         enaSubmittable.setAccession(getAccession());
         return success;
     }

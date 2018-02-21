@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="receipt.xsl"?>
+<RECEIPT receiptDate="2018-02-20T13:49:02.393Z" submissionFile="submission.xml" success="true">
+    <STUDY accession="ERP106989" alias="2a29a487-978f-4405-8ba4-1be86d260454@USI-test-team" status="PRIVATE" holdUntilDate="2018-02-20Z">
+        <EXT_ID accession="PRJEB25108" type="Project"/>
+    </STUDY>
+    <SUBMISSION accession="ERA1216815" alias="6bb4a20c-b475-4333-81bf-aa7487723496"/>
+    <MESSAGES>
+        <INFO>All objects in this submission are set to private status (HOLD).</INFO>
+        <INFO>Submission has been committed.</INFO>
+        <INFO>This submission is a TEST submission and will be discarded within 24 hours</INFO>
+    </MESSAGES>
+    <ACTIONS>ADD</ACTIONS>
+    <ACTIONS>HOLD</ACTIONS>
+</RECEIPT>
