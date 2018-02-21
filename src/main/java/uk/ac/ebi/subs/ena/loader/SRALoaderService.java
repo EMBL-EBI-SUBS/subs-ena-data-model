@@ -7,8 +7,7 @@ import uk.ac.ebi.subs.data.submittable.ENASubmittable;
  */
 public interface SRALoaderService<T extends ENASubmittable> {
     boolean executeSRASubmission(T enaSubmittable, boolean validateOnly) throws Exception;
-    boolean executeSRASubmission(String submissionXML, String submittableXML) throws Exception;
-    //ValidationResult getValidationResult();
+    boolean executeSRASubmission(String submittableType, String submissionXML, String submittableXML) throws Exception;
     String getSchema ();
     String [] getErrorMessages();
     String [] getInfoMessages();

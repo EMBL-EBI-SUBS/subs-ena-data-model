@@ -32,7 +32,7 @@ public class StudySRALoaderTest extends AbstractSRALoaderTest{
         String alias = UUID.randomUUID().toString();
         STUDYSETDocument studysetDocument = getStudysetDocument(alias,getCenterName());
         String submissionXML = createSubmittable("study.xml", SubmissionType.ACTIONS.ACTION.ADD.Schema.STUDY,alias);
-        sraLoader.executeSRASubmission(submissionXML, studysetDocument.xmlText());
+        sraLoader.executeSRASubmission("STUDY", submissionXML, studysetDocument.xmlText());
         final String accession = sraLoader.getAccession();
         assertThat(accession,startsWith("ERP"));
     }
