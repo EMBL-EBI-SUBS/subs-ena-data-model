@@ -12,10 +12,10 @@ import java.util.Map;
 @Service
 public class UniRestWrapper {
 
-    @Value("${ena.login_name:Webin-46220}")
+    @Value("${ena.login_name}")
     String username;
 
-    @Value("${ena.password:Nq9F5Ig}")
+    @Value("${ena.password}")
     String password;
 
     @Value("${ena.submission.url:https://www-test.ebi.ac.uk/ena/submit/drop-box/submit}")
