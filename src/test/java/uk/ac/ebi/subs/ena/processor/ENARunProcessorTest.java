@@ -38,6 +38,7 @@ import static org.mockito.Mockito.doReturn;
 @SpringBootTest(classes = {EnaAgentApplication.class})
 public class ENARunProcessorTest {
 
+    public static final String ACCESSION_ID_FROM_RECEIPT = "ERR2359245";
     @Autowired
     private ENAExperimentProcessor enaExperimentProcessor;
 
@@ -53,39 +54,27 @@ public class ENARunProcessorTest {
     @MockBean
     private UniRestWrapper uniRestWrapper;
 
-    private String sampleReceiptString;
-    private String studyReceiptString;
-    private String experimentReceiptString;
     private String runReceiptString;
 
     @Before
     public void setup() throws Exception {
-        sampleReceiptString = convertXMLFiletoString("receipts/sample_receipt.xml");
-        studyReceiptString = convertXMLFiletoString("receipts/study_receipt.xml");
-        experimentReceiptString = convertXMLFiletoString("receipts/experiment_receipt.xml");
-        runReceiptString = convertXMLFiletoString("receipts/run_receipt.xml");
+        runReceiptString = convertXMLFileToString("receipts/run_receipt.xml");
     }
 
     @Test
     public void process() throws Exception {
-        doReturn(sampleReceiptString).when(uniRestWrapper).postJson(eq("SAMPLE"),anyMap());
-        doReturn(studyReceiptString).when(uniRestWrapper).postJson(eq("STUDY"),anyMap());
-        doReturn(experimentReceiptString).when(uniRestWrapper).postJson(eq("EXPERIMENT"),anyMap());
         doReturn(runReceiptString).when(uniRestWrapper).postJson(eq("RUN"),anyMap());
 
         String alias = UUID.randomUUID().toString();
         final Team team = TestHelper.getTeam("test-team");
-        ENASampleProcessorTest.process(enaSampleProcessor,alias, team);
-        ENAStudyProcessorTest.process(enaStudyProcessor,alias,team);
-        ENAExperimentProcessorTest.process(enaExperimentProcessor, alias, team);
 
         final AssayData assayData = TestHelper.getAssayData(alias, team, alias);
         final ArrayList<SingleValidationResult> singleValidationResultList = new ArrayList<>();
         final ProcessingCertificate processingCertificate = enaRunProcessor.processAndConvertSubmittable(assayData, singleValidationResultList);
-        assertThat(processingCertificate, is(equalTo(new ProcessingCertificate(assayData, Archive.Ena, ProcessingStatusEnum.Received, assayData.getAccession()))));
+        assertThat(processingCertificate, is(equalTo(new ProcessingCertificate(assayData, Archive.Ena, ProcessingStatusEnum.Received, ACCESSION_ID_FROM_RECEIPT))));
     }
 
-    private String convertXMLFiletoString(String pathToFile) throws Exception {
+    private String convertXMLFileToString(String pathToFile) throws Exception {
         Path path = Paths.get(getClass().getClassLoader()
                 .getResource(pathToFile).toURI());
 
