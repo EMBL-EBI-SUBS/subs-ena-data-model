@@ -93,7 +93,7 @@ public class RunSRALoaderTest extends AbstractSRALoaderTest {
 
     @After
     public void finish () throws IOException {
-        //ftpClient.deleteFile(fastQFile.getName());
+        ftpClient.deleteFile(fastQFile.getName());
         ftpClient.disconnect();
 
         Files.deleteIfExists(Paths.get(FASTQ_FILE));
@@ -136,6 +136,7 @@ public class RunSRALoaderTest extends AbstractSRALoaderTest {
     private FTPClient connectToWebinFTP() throws IOException {
         FTPClient ftp = new FTPClient();
         ftp.connect(enaFTPServerURL);
+        ftp.enterLocalPassiveMode();
         int reply = ftp.getReplyCode();
 
         if (!FTPReply.isPositiveCompletion(reply))  {
