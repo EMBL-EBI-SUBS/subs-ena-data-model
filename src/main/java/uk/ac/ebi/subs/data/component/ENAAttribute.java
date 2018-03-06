@@ -60,7 +60,7 @@ public class ENAAttribute {
     @Override
     public int hashCode() {
         int result = tag.hashCode();
-        result = 31 * result + value.hashCode();
+        result = 31 * result + (value != null ? value.hashCode() : 0);
         result = 31 * result + (units != null ? units.hashCode() : 0);
         return result;
     }
