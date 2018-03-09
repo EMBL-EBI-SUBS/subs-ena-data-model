@@ -67,7 +67,7 @@ public abstract class AbstractSRALoaderService<T extends ENASubmittable> impleme
         parameterMap.put(submittableType ,new UniRestWrapper.Field("submittable.xml", submittableInputStream));
         parameterMap.put("SUBMISSION", new UniRestWrapper.Field("submission.xml", submissionXMLInputStream));
 
-        final String receiptString = uniRestWrapper.postJson(submittableType, parameterMap);
+        final String receiptString = uniRestWrapper.postJson(parameterMap);
 
         logger.info(receiptString);
         final RECEIPTDocument receiptDocument = RECEIPTDocument.Factory.parse(receiptString);
@@ -79,6 +79,7 @@ public abstract class AbstractSRALoaderService<T extends ENASubmittable> impleme
                 throw new Exception("Found " + iDs.length + " accessions");
             }
             accession = iDs[0].getAccession();
+
         }
 
         return receipt.getSuccess();

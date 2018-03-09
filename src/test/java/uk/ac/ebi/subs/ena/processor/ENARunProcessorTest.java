@@ -63,7 +63,7 @@ public class ENARunProcessorTest {
 
     @Test
     public void process() throws Exception {
-        doReturn(runReceiptString).when(uniRestWrapper).postJson(eq("RUN"),anyMap());
+        doReturn(runReceiptString).when(uniRestWrapper).postJson(anyMap());
 
         String alias = UUID.randomUUID().toString();
         final Team team = TestHelper.getTeam("test-team");
