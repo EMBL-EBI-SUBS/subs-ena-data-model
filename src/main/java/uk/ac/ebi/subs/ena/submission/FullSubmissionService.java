@@ -1,10 +1,12 @@
 package uk.ac.ebi.subs.ena.submission;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.ac.ebi.ena.sra.xml.ID;
 import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
 import uk.ac.ebi.ena.sra.xml.SUBMISSIONSETDocument;
 import uk.ac.ebi.ena.sra.xml.SubmissionType;
@@ -12,6 +14,8 @@ import uk.ac.ebi.subs.data.submittable.*;
 import uk.ac.ebi.subs.ena.action.*;
 import uk.ac.ebi.subs.ena.http.UniRestWrapper;
 
+import javax.xml.transform.TransformerException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -46,20 +50,21 @@ public class FullSubmissionService {
     public RECEIPTDocument.RECEIPT submit (
             String submissionAlias,
             String centerName,
-            Map<Class,Object> paramMap) throws Exception {
+            Map<Class<? extends ActionService>,Object> paramMap) throws XmlException, IOException, TransformerException {
         final SUBMISSIONSETDocument submissionsetDocument = SUBMISSIONSETDocument.Factory.newInstance();
         final SubmissionType submissionType = submissionsetDocument.addNewSUBMISSIONSET().addNewSUBMISSION();
         final SubmissionType.ACTIONS actions = submissionType.addNewACTIONS();
         submissionType.setAlias(submissionAlias);
         submissionType.setCenterName(centerName);
         Map<String, UniRestWrapper.Field> parameterMap = new HashMap<>();
+        Map<String, Map<String,Submittable>> schemaAliasMapMap = new HashMap<>();
 
         int i = 0;
 
         List<SubmissionType.ACTIONS.ACTION> actionList = new ArrayList<>();
 
         for (ActionService actionService : actionServiceList) {
-            final Object actionServiceParam = paramMap.get(actionService.getSubmittableClass());
+            final Object actionServiceParam = paramMap.get(actionService.getClass());
 
             if (actionServiceParam != null) {
 
@@ -72,6 +77,16 @@ public class FullSubmissionService {
                     SubmittablesActionService submittablesActionService = (SubmittablesActionService) actionService;
                     Submittable[] submittables = (Submittable[]) actionServiceParam;
                     if (submittables != null && submittables.length > 0) {
+
+                        Map<String,Submittable> submittableMap = new HashMap<>();
+
+                        for (Submittable submittable : submittables) {
+                            submittableMap.put(AbstractENASubmittable.getENAAlias(submittable.getAlias(),submittable.getTeam().getName()),submittable);
+                        }
+
+                        schemaAliasMapMap.put(submittablesActionService.getSchemaName(),submittableMap);
+
+
                         InputStream xmlInputStream = submittablesActionService.getXMLInputStream(submittables);
                         parameterMap.put(submittablesActionService.getSchemaName().toUpperCase(),
                                 new UniRestWrapper.Field(
@@ -91,7 +106,22 @@ public class FullSubmissionService {
         final String receiptString = uniRestWrapper.postJson(parameterMap);
         logger.info(receiptString);
         final RECEIPTDocument receiptDocument = RECEIPTDocument.Factory.parse(receiptString);
+        updateAccession(receiptDocument.getRECEIPT().getSTUDYArray(),schemaAliasMapMap.get(StudyActionService.SCHEMA));
+        updateAccession(receiptDocument.getRECEIPT().getSAMPLEArray(),schemaAliasMapMap.get(SampleActionService.SCHEMA));
+        updateAccession(receiptDocument.getRECEIPT().getEXPERIMENTArray(),schemaAliasMapMap.get(AssayActionService.SCHEMA));
+        updateAccession(receiptDocument.getRECEIPT().getRUNArray(),schemaAliasMapMap.get(AssayDataActionService.SCHEMA));
+
         return receiptDocument.getRECEIPT();
+    }
+
+    private void updateAccession (ID[] ids, Map<String, Submittable> submittableMap) {
+        if (submittableMap != null && ids != null) {
+            for (ID id : ids) {
+                final Submittable submittable = submittableMap.get(id.getAlias());
+                if (submittable != null && id.getAccession() != null)
+                    submittable.setAccession(id.getAccession());
+            }
+        }
     }
 
 }
