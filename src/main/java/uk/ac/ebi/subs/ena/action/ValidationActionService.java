@@ -20,4 +20,9 @@ public class ValidationActionService implements ActionService<Boolean> {
     public Class<Boolean> getSubmittableClass() {
         return Boolean.class;
     }
+
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 }
