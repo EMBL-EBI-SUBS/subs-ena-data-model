@@ -3,6 +3,8 @@ package uk.ac.ebi.subs.ena.action;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.xmlbeans.XmlException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.oxm.Marshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,6 +27,7 @@ import java.util.List;
 
 public abstract class AbstractSubmittablesActionService<S extends Submittable,T extends ENASubmittable<S>> implements SubmittablesActionService<S> {
 
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     Class<T> enaClass;
     protected Marshaller marshaller;
     protected String schemaName = null;
@@ -107,11 +110,12 @@ public abstract class AbstractSubmittablesActionService<S extends Submittable,T 
         for (S submittable : submittableObject) {
 
             try {
-                Document submittableDocument = getDocument(T.create(enaClass, submittable));
+                final T enaSubmittable = T.create(enaClass, submittable);
+                Document submittableDocument = getDocument(enaSubmittable);
                 final Node node = document.importNode(submittableDocument.getFirstChild(), true);
                 try {
                     final String documentString = getDocumentString(node);
-                    System.out.println(documentString);
+                    logger.info(documentString);
                 } catch (TransformerException e) {
                     e.printStackTrace();
                 }
@@ -144,5 +148,10 @@ public abstract class AbstractSubmittablesActionService<S extends Submittable,T 
     }
 
     abstract String getSetElementName ();
+
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 
 }
