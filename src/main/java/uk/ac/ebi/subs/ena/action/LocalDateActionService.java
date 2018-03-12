@@ -32,4 +32,9 @@ public class LocalDateActionService implements ActionService<LocalDate> {
     public Class<LocalDate> getSubmittableClass() {
         return LocalDate.class;
     }
+
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 }
