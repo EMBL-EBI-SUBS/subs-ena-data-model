@@ -1,22 +1,38 @@
 package uk.ac.ebi.subs.ena.helper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import uk.ac.ebi.ena.sra.xml.*;
-import uk.ac.ebi.subs.data.Submission;
-import uk.ac.ebi.subs.data.component.*;
-import uk.ac.ebi.subs.data.status.ProcessingStatusEnum;
-import uk.ac.ebi.subs.data.submittable.*;
-import uk.ac.ebi.subs.processing.ProcessingCertificate;
-import uk.ac.ebi.subs.processing.ProcessingCertificateEnvelope;
-import uk.ac.ebi.subs.processing.SubmissionEnvelope;
+import uk.ac.ebi.ena.sra.xml.EXPERIMENTSETDocument;
+import uk.ac.ebi.ena.sra.xml.ExperimentType;
+import uk.ac.ebi.ena.sra.xml.LibraryDescriptorType;
+import uk.ac.ebi.ena.sra.xml.LibraryType;
+import uk.ac.ebi.ena.sra.xml.RUNSETDocument;
+import uk.ac.ebi.ena.sra.xml.RunType;
+import uk.ac.ebi.ena.sra.xml.SAMPLESETDocument;
+import uk.ac.ebi.ena.sra.xml.STUDYSETDocument;
+import uk.ac.ebi.ena.sra.xml.SampleDescriptorType;
+import uk.ac.ebi.ena.sra.xml.SampleType;
+import uk.ac.ebi.ena.sra.xml.StudyType;
+import uk.ac.ebi.ena.sra.xml.TypeIlluminaModel;
+import uk.ac.ebi.ena.sra.xml.TypeLibrarySelection;
+import uk.ac.ebi.ena.sra.xml.TypeLibrarySource;
+import uk.ac.ebi.ena.sra.xml.TypeLibraryStrategy;
+import uk.ac.ebi.subs.data.component.AssayRef;
+import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.File;
+import uk.ac.ebi.subs.data.component.SampleRef;
+import uk.ac.ebi.subs.data.component.SampleUse;
+import uk.ac.ebi.subs.data.component.StudyRef;
+import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.submittable.Assay;
+import uk.ac.ebi.subs.data.submittable.AssayData;
+import uk.ac.ebi.subs.data.submittable.ENAExperiment;
+import uk.ac.ebi.subs.data.submittable.ENARun;
+import uk.ac.ebi.subs.data.submittable.ENASample;
+import uk.ac.ebi.subs.data.submittable.ENAStudy;
+import uk.ac.ebi.subs.data.submittable.Sample;
+import uk.ac.ebi.subs.data.submittable.Study;
+import uk.ac.ebi.subs.data.submittable.Submittable;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -131,6 +147,32 @@ public class TestHelper {
         return enaExperiment;
     }
 
+    public static ENARun getENARun(String alias, Team team) throws IllegalAccessException {
+        ENARun enaRun = new ENARun();
+        enaRun.setAlias(alias);
+        enaRun.setTeam(team);
+        enaRun.setId(UUID.randomUUID().toString());
+
+        AssayRef assayRef = new AssayRef();
+        assayRef.setAlias(alias);
+        assayRef.setTeam(team.getName());
+        enaRun.setAssayRef(assayRef);
+
+        List<File> files = new ArrayList<>();
+        File aFile = new File();
+        aFile.setChecksum("12345678901234567890123456789012");
+        aFile.setChecksumMethod("MD5");
+        aFile.setLabel("some label");
+        aFile.setName("test_file.cram");
+        aFile.setType("cram");
+        aFile.setUnencryptedChecksum("unencryptedChecksum");
+        files.add(aFile);
+
+        enaRun.setFiles(files);
+
+        return  enaRun;
+    }
+
     public static Team getTeam (String centerName) {
         Team team = new Team();
         team.setName(centerName);
@@ -192,6 +234,7 @@ public class TestHelper {
 
     public static AssayData getAssayData (String alias, Team team, String assayAlias) {
         AssayData assayData = new AssayData();
+        assayData.setId(UUID.randomUUID().toString());
         assayData.setAlias(alias);
         assayData.setTeam(team);
         assayData.setAlias(alias);

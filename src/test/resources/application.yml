@@ -4,3 +4,5 @@ ena:
   processor_list: ENAStudyProcessor,ENASampleProcessor,ENAExperimentProcessor
   submission:
     url: https://www-test.ebi.ac.uk/ena/submit/drop-box/submit
+  ftp:
+    url: webin.ebi.ac.uk

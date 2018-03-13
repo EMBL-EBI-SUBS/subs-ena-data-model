@@ -16,7 +16,9 @@ import java.util.UUID;
 
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
-import static uk.ac.ebi.subs.ena.helper.TestHelper.*;
+import static uk.ac.ebi.subs.ena.helper.TestHelper.getExperimentSetDocument;
+import static uk.ac.ebi.subs.ena.helper.TestHelper.getSamplesetDocument;
+import static uk.ac.ebi.subs.ena.helper.TestHelper.getStudysetDocument;
 
 /**
  * Created by neilg on 17/05/2017.
@@ -38,17 +40,17 @@ public class ExperimentSRALoaderTest extends AbstractSRALoaderTest {
         String alias = UUID.randomUUID().toString();
         STUDYSETDocument studysetDocument = getStudysetDocument(alias,getCenterName());
         String studySubmissionXML = createSubmittable("study.xml", SubmissionType.ACTIONS.ACTION.ADD.Schema.STUDY,alias + "_study");
-        studySRALoader.executeSRASubmission(studySubmissionXML, studysetDocument.xmlText());
+        studySRALoader.executeSRASubmission("STUDY", studySubmissionXML, studysetDocument.xmlText());
         final String studyAccession = studySRALoader.getAccession();
 
         SAMPLESETDocument samplesetDocument = getSamplesetDocument(alias,getCenterName());
         String sampleSubmissionXML = createSubmittable("sample.xml", SubmissionType.ACTIONS.ACTION.ADD.Schema.SAMPLE,alias + "sample");
-        sampleSRALoader.executeSRASubmission(sampleSubmissionXML, samplesetDocument.xmlText());
+        sampleSRALoader.executeSRASubmission("SAMPLE", sampleSubmissionXML, samplesetDocument.xmlText());
         final String sampleAccession = sampleSRALoader.getAccession();
         EXPERIMENTSETDocument experimentsetDocument = getExperimentSetDocument(alias,alias,alias,getCenterName());
 
         String experimentSubmissionXML = createSubmittable("experiment.xml", Schema.EXPERIMENT,alias);
-        experimentSRALoader.executeSRASubmission(experimentSubmissionXML, experimentsetDocument.xmlText());
+        experimentSRALoader.executeSRASubmission("EXPERIMENT", experimentSubmissionXML, experimentsetDocument.xmlText());
         final String experimentAccession = experimentSRALoader.getAccession();
         assertThat(experimentAccession,startsWith("ERX"));
     }
