@@ -1,10 +1,8 @@
 package uk.ac.ebi.subs.ena.processor;
 
-import org.apache.xmlbeans.XmlException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.ena.sra.xml.ID;
 import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
 import uk.ac.ebi.subs.data.submittable.*;
 import uk.ac.ebi.subs.ena.action.*;
@@ -12,11 +10,8 @@ import uk.ac.ebi.subs.ena.submission.FullSubmissionService;
 import uk.ac.ebi.subs.processing.SubmissionEnvelope;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Service
 public class ENAProcessor {
@@ -28,7 +23,7 @@ public class ENAProcessor {
         this.fullSubmissionService = fullSubmissionService;
     }
 
-    Collection<SingleValidationResult> process(SubmissionEnvelope submissionEnvelope) {
+    List<String> process(SubmissionEnvelope submissionEnvelope) {
         String submissionId = submissionEnvelope.getSubmission().getId();
         String centerName = submissionEnvelope.getSubmission().getTeam().toString();
         List<SingleValidationResult> singleValidationResultList = new ArrayList<>();
@@ -40,8 +35,7 @@ public class ENAProcessor {
             }
         };
 
-        final Map<Class<? extends ActionService>, Object> newParamMap = createParamMap(submissionEnvelope,newFilter);
-        process(submissionId, centerName, newParamMap, "Error submitting new submission " + submissionEnvelope.getSubmission().getId() + " to the ENA");
+        final Map<Class<? extends ActionService>, Object> newParamMap = createParamMap(submissionEnvelope, newFilter);
 
         Predicate<? super Submittable> updateFilter = new Predicate<Submittable>() {
             @Override
@@ -50,39 +44,65 @@ public class ENAProcessor {
             }
         };
 
-        final Map<Class<? extends ActionService>, Object> updateParamMap = createParamMap(submissionEnvelope,updateFilter);
-        process(submissionId + "_UPDATE", centerName, updateParamMap, "Error submitting updates submission " + submissionEnvelope.getSubmission().getId() + " to the ENA");
+        final Map<Class<? extends ActionService>, Object> updateParamMap = createParamMap(submissionEnvelope, updateFilter);
 
-        return singleValidationResultList;
+        final List<String> errorMessageList = process(
+                submissionId,
+                centerName,
+                newParamMap);
+        errorMessageList.addAll(process(
+                submissionId + "_UPDATE",
+                centerName,
+                updateParamMap));
+
+        return errorMessageList;
     }
 
-    private void process(String submissionId, String centerName, Map<Class<? extends ActionService>, Object> newParamMap, String msg) {
+    /**
+     * Submits submission to FullSubmissionService and processes the receipt to extract any errors
+     *
+     * @param submissionId
+     * @param centerName
+     * @param newParamMap
+     */
+    private List<String> process(String submissionId, String centerName, Map<Class<? extends ActionService>, Object> newParamMap) {
+        List<String> errorMessageList = new ArrayList<String>();
         try {
-            final RECEIPTDocument.RECEIPT submit = fullSubmissionService.submit(submissionId, centerName, newParamMap);
-            final ID[] studyArray = submit.getSTUDYArray();
-            for (ID studyID : submit.getSTUDYArray()) {
-                final ID.Status.Enum status = studyID.getStatus();
+            if (newParamMap.size() > 0) {
+                final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionId, centerName, newParamMap);
+                for (String infoMessage : receipt.getMESSAGES().getINFOArray()) {
+                    logger.info("Info message from the ENA submission for submissionId " + submissionId + " : " + infoMessage);
+                }
+                errorMessageList = Arrays.asList(receipt.getMESSAGES().getERRORArray());
             }
         } catch (Exception e) {
-            logger.error(msg, e);
+            logger.error("Error submitting submission " + submissionId + " to the ENA", e);
             throw new ENAProcessorException(e);
         }
+        return errorMessageList;
     }
 
-    private Map<Class<? extends ActionService>,Object> createParamMap(SubmissionEnvelope submissionEnvelope, Predicate<? super Submittable> filter) {
-        Map<Class<? extends ActionService>,Object> paramMap = new HashMap<>();
-        if (submissionEnvelope.getStudies().size() > 0) {
-            paramMap.put(StudyActionService.class,submissionEnvelope.getStudies().stream().filter(filter).toArray());
-        }
-        if (submissionEnvelope.getSamples().size() > 0) {
-            paramMap.put(SampleActionService.class, submissionEnvelope.getSamples().stream().filter(filter).toArray());
-        }
-        if (submissionEnvelope.getAssays().size() > 0) {
-            paramMap.put(AssayActionService.class,submissionEnvelope.getAssays().stream().filter(filter).toArray());
-        }
-        if (submissionEnvelope.getAssayData().size() > 0) {
-            paramMap.put(AssayDataActionService.class,submissionEnvelope.getAssayData().stream().filter(filter).toArray());
-        }
+    private Map<Class<? extends ActionService>, Object> createParamMap(SubmissionEnvelope submissionEnvelope, Predicate<? super Submittable> filter) {
+        Map<Class<? extends ActionService>, Object> paramMap = new HashMap<>();
+        final Study[] studies = submissionEnvelope.getStudies().stream().filter(filter).toArray(Study[]::new);
+
+        if (studies.length > 0)
+            paramMap.put(StudyActionService.class, studies);
+
+        final Sample[] samples = submissionEnvelope.getSamples().stream().filter(filter).toArray(Sample[]::new);
+
+        if (samples.length > 0)
+            paramMap.put(SampleActionService.class, samples);
+
+        final Assay[] assays = submissionEnvelope.getAssays().stream().filter(filter).toArray(Assay[]::new);
+
+        if (assays.length > 0)
+            paramMap.put(AssayActionService.class, assays);
+
+        final AssayData[] assayData = submissionEnvelope.getAssayData().stream().filter(filter).toArray(AssayData[]::new);
+
+        if (assayData.length > 0)
+            paramMap.put(AssayDataActionService.class, assays);
 
         return paramMap;
     }
