@@ -101,6 +101,7 @@ public class FullSubmissionService {
 
         final SubmissionType.ACTIONS.ACTION[] newActions = actionList.toArray(new SubmissionType.ACTIONS.ACTION[actionList.size()]);
         actions.setACTIONArray(newActions);
+        logger.info(submissionsetDocument.xmlText());
         final InputStream submittableInputStream = IOUtils.toInputStream(submissionsetDocument.xmlText(), Charset.forName("UTF-8"));
         parameterMap.put("SUBMISSION", new UniRestWrapper.Field("submission.xml", submittableInputStream));
         final String receiptString = uniRestWrapper.postJson(parameterMap);
