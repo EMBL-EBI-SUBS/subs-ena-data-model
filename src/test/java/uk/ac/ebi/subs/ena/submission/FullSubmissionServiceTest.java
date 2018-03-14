@@ -1,5 +1,6 @@
 package uk.ac.ebi.subs.ena.submission;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -14,14 +15,12 @@ import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.*;
 import uk.ac.ebi.subs.ena.EnaAgentApplication;
-import uk.ac.ebi.subs.ena.action.ActionService;
-import uk.ac.ebi.subs.ena.action.AssayActionService;
-import uk.ac.ebi.subs.ena.action.SampleActionService;
-import uk.ac.ebi.subs.ena.action.StudyActionService;
+import uk.ac.ebi.subs.ena.action.*;
 import uk.ac.ebi.subs.ena.helper.TestHelper;
 import uk.ac.ebi.subs.data.component.File;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -54,57 +53,71 @@ public class FullSubmissionServiceTest {
     @Autowired
     FullSubmissionService fullSubmissionService;
 
-    Study[] studies;
-    Sample[] samples;
-    Assay[] assays;
+    Study[] submittedStudies;
+    Study[] originalStudies;
+    Sample[] submittedSamples;
+    Sample[] originalSamples;
+    Assay[] submittedAssays;
+    Assay[] originalAssays;
     AssayData[] assayDatas;
     String submissionAlias;
     Team team;
     Map<Class<? extends ActionService>,Object> parameterMap = new HashMap<>();
 
     @Before
-    public void setup () {
+    public void setup () throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         submissionAlias = UUID.randomUUID().toString();
         team = TestHelper.getTeam(UUID.randomUUID().toString());
-        studies = new Study[SUBMITTABLE_COUNT];
+        submittedStudies = new Study[SUBMITTABLE_COUNT];
+        originalStudies = new Study[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            studies[i] = TestHelper.getStudy(UUID.randomUUID().toString(), team, "abstract", "Whole Genome Sequencing");
+            final String studyAlias = UUID.randomUUID().toString();
+            submittedStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing");
+            originalStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing");
         }
 
-        samples = new Sample[SUBMITTABLE_COUNT];
+        submittedSamples = new Sample[SUBMITTABLE_COUNT];
+        originalSamples = new Sample[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            samples[i] = TestHelper.getSample(UUID.randomUUID().toString(),team);
+            final String sampleAlias = UUID.randomUUID().toString();
+            submittedSamples[i] = TestHelper.getSample(sampleAlias,team);
+            originalSamples[i] = TestHelper.getSample(sampleAlias,team);
         }
 
-        assays = new Assay[SUBMITTABLE_COUNT];
+        submittedAssays = new Assay[SUBMITTABLE_COUNT];
+        originalAssays = new Assay[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            samples[i] = TestHelper.getSample(UUID.randomUUID().toString(),team);
-            assays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team,samples[i].getAlias(),studies[0].getAlias());
+            String assayAlias = UUID.randomUUID().toString();
+            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
+            originalAssays[i] =  TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
         }
 
     }
 
     @Test
     public void submitStudies() throws Exception {
-        parameterMap.put(StudyActionService.class,studies);
+        parameterMap.put(StudyActionService.class, submittedStudies);
         final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
         assertThat(receipt.getSuccess(), is(true));
-        for (Submittable submittable : studies) {
+        for (Submittable submittable : submittedStudies) {
             assertThat(submittable.getAccession(), startsWith("ERP"));
         }
     }
 
+    @Test
     public void submitAndUpdateStudies() throws Exception {
-        Study [] modifiedStudies = new Study[studies.length];
-
         submitStudies();
-        for (Study study : studies) {
-            study.setDescription("Modified description");
+
+        for (int i = 0; i < originalStudies.length; i++) {
+            originalStudies[i].setAccession(submittedStudies[i].getAccession());
+            originalStudies[i].setDescription("updated description");
         }
-        parameterMap.put(StudyActionService.class,studies);
+
+        parameterMap.clear();
+        parameterMap.put(StudyActionService.class, originalStudies);
         final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
         assertThat(receipt.getSuccess(), is(true));
     }
@@ -112,61 +125,89 @@ public class FullSubmissionServiceTest {
 
     @Test
     public void submitStudiesAndSamples() throws Exception {
-        parameterMap.put(StudyActionService.class,studies);
-        parameterMap.put(SampleActionService.class,samples);
+        parameterMap.put(StudyActionService.class, submittedStudies);
+        parameterMap.put(SampleActionService.class, submittedSamples);
         final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
         assertThat(receipt.getSuccess(), is(true));
     }
 
     @Test
     public void submitSamples() throws Exception {
-        parameterMap.put(SampleActionService.class,samples);
+        parameterMap.put(SampleActionService.class, submittedSamples);
         final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
         assertThat(receipt.getSuccess(), is(true));
-        for (Submittable submittable : samples) {
+        for (Submittable submittable : submittedSamples) {
             assertThat(submittable.getAccession(), startsWith("ERS"));
         }
     }
 
     @Test
-    public void submitStudySamplesAndExperiment() throws Exception {
-        parameterMap.put(StudyActionService.class,studies);
-        parameterMap.put(SampleActionService.class,samples);
-        parameterMap.put(AssayActionService.class,assays);
+    public void submitAndUpdateSamples() throws Exception {
+        submitSamples();
+
+        for (int i = 0; i < originalSamples.length; i++) {
+            originalSamples[i].setAccession(submittedSamples[i].getAccession());
+            originalSamples[i].setDescription("updated description");
+        }
+
+        parameterMap.clear();
+        parameterMap.put(SampleActionService.class, originalSamples);
         final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
         assertThat(receipt.getSuccess(), is(true));
-        for (Submittable submittable : assays) {
+        final RECEIPTDocument.RECEIPT.ACTIONS.Enum[] actionsArray = receipt.getACTIONSArray();
+    }
+
+    @Test
+    public void submitStudySamplesAndExperiment() throws Exception {
+        parameterMap.put(StudyActionService.class, submittedStudies);
+        parameterMap.put(SampleActionService.class, submittedSamples);
+        parameterMap.put(AssayActionService.class, submittedAssays);
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+        assertThat(receipt.getSuccess(), is(true));
+        for (Submittable submittable : submittedAssays) {
             assertThat(submittable.getAccession(), startsWith("ERX"));
         }
     }
 
-    //@Test
+    @Test
     public void submitStudySamplesExperimentAndRun() throws Exception {
         FTPClient ftpClient = connectToWebinFTP();
-        parameterMap.put(StudyActionService.class,studies);
-        parameterMap.put(SampleActionService.class,samples);
-        parameterMap.put(AssayActionService.class,assays);
+        parameterMap.put(StudyActionService.class, submittedStudies);
+        parameterMap.put(SampleActionService.class, submittedSamples);
+        parameterMap.put(AssayActionService.class, submittedAssays);
 
         assayDatas = new AssayData[SUBMITTABLE_COUNT];
+        List<java.io.File> fileList = new ArrayList<>();
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            samples[i] = TestHelper.getSample(UUID.randomUUID().toString(),team);
-            assays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team,samples[i].getAlias(),studies[0].getAlias());
-            assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team,assays[i].getAlias());
+            submittedSamples[i] = TestHelper.getSample(UUID.randomUUID().toString(),team);
+            submittedAssays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
+            assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team, submittedAssays[i].getAlias());
             File file = new File();
             file.setChecksum("abcdefgh12345678abcdefgh12345678");
             file.setChecksumMethod("MD5");
-            String fileName = UUID.randomUUID().toString() + ".fastq";
+            String fileName = UUID.randomUUID().toString() + ".fastq.gz";
             createTestFile(fileName);
-            java.io.File uploadedFile = uploadFile(ftpClient, fileName);
+            final java.io.File uploadedFile = uploadFile(ftpClient, fileName);
+            fileList.add(uploadedFile);
             file.setName(fileName);
             file.setType("fastq");
+            assayDatas[i].getFiles().clear();
             assayDatas[i].getFiles().add(file);
         }
 
+        parameterMap.put(AssayDataActionService.class,assayDatas);
+
         final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+
+        for (java.io.File file : fileList) {
+            deleteFile(ftpClient,file.getName());
+            file.delete();
+
+        }
+
         assertThat(receipt.getSuccess(), is(true));
-        for (Submittable submittable : assays) {
+        for (Submittable submittable : assayDatas) {
             assertThat(submittable.getAccession(), startsWith("ERX"));
         }
     }
@@ -202,6 +243,10 @@ public class FullSubmissionServiceTest {
             throw new RuntimeException("Failed to upload file " + file.getName() + " to " + enaFTPServerURL);
         }
         return file;
+    }
+
+    private boolean deleteFile(FTPClient ftpClient, String fileName) throws IOException {
+        return ftpClient.deleteFile(fileName);
     }
 
     private void createTestFile(String fastaFileName) throws IOException {
