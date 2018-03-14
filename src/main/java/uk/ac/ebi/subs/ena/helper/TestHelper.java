@@ -49,6 +49,7 @@ public class TestHelper {
     static ObjectMapper objectMapper;
 
     static {
+        objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
@@ -246,6 +247,10 @@ public class TestHelper {
         studyTypeAttribute.setValue(studyType);
         addAttribute(study,ENAStudy.STUDY_TYPE,studyTypeAttribute);
         return study;
+    }
+
+    public static Study getStudy (String alias, Team team) {
+        return getStudy(alias,team,"study abstract","Whole Genome Sequencing");
     }
 
     public static Sample getSample(String alias, Team team) {
