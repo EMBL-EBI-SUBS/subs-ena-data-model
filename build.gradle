@@ -1,5 +1,5 @@
 group 'uk.ac.ebi.subs'
-version '1.0.2-SNAPSHOT'
+version '1.1.0-SNAPSHOT'
 
 buildscript {
     repositories {
@@ -50,6 +50,7 @@ dependencies {
     testCompile 'commons-net:commons-net:1.2.1'
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
 }
 
 processTestResources {
