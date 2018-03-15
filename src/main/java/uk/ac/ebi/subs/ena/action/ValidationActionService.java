@@ -21,8 +21,4 @@ public class ValidationActionService implements ActionService<Boolean> {
         return Boolean.class;
     }
 
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
 }
