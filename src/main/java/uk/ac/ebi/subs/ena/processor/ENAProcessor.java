@@ -9,6 +9,8 @@ import uk.ac.ebi.subs.ena.action.*;
 import uk.ac.ebi.subs.ena.submission.FullSubmissionService;
 import uk.ac.ebi.subs.processing.SubmissionEnvelope;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
+import uk.ac.ebi.subs.validator.data.structures.SingleValidationResultStatus;
+import uk.ac.ebi.subs.validator.data.structures.ValidationAuthor;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -23,10 +25,9 @@ public class ENAProcessor {
         this.fullSubmissionService = fullSubmissionService;
     }
 
-    public List<String> process(SubmissionEnvelope submissionEnvelope) {
+    public List<SingleValidationResult> process(SubmissionEnvelope submissionEnvelope) {
         String submissionId = submissionEnvelope.getSubmission().getId();
         String centerName = submissionEnvelope.getSubmission().getTeam().toString();
-        List<SingleValidationResult> singleValidationResultList = new ArrayList<>();
 
         Predicate<? super Submittable> newFilter = new Predicate<Submittable>() {
             @Override
@@ -46,16 +47,16 @@ public class ENAProcessor {
 
         final Map<Class<? extends ActionService>, Object> updateParamMap = createParamMap(submissionEnvelope, updateFilter);
 
-        final List<String> errorMessageList = process(
+        List<SingleValidationResult> singleValidationResults = process(
                 submissionId,
                 centerName,
                 newParamMap);
-        errorMessageList.addAll(process(
+        singleValidationResults.addAll(process(
                 submissionId + "_UPDATE",
                 centerName,
                 updateParamMap));
 
-        return errorMessageList;
+        return singleValidationResults;
     }
 
     /**
@@ -65,21 +66,29 @@ public class ENAProcessor {
      * @param centerName
      * @param newParamMap
      */
-    private List<String> process(String submissionId, String centerName, Map<Class<? extends ActionService>, Object> newParamMap) {
-        List<String> errorMessageList = new ArrayList<String>();
+    private List<SingleValidationResult> process(String submissionId, String centerName, Map<Class<? extends ActionService>, Object> newParamMap) {
+        List<SingleValidationResult> singleValidationResults = new ArrayList<>();
+
         try {
             if (newParamMap.size() > 0) {
-                final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionId, centerName, newParamMap);
+                final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionId, centerName, newParamMap,singleValidationResults);
                 for (String infoMessage : receipt.getMESSAGES().getINFOArray()) {
                     logger.info("Info message from the ENA submission for submissionId " + submissionId + " : " + infoMessage);
                 }
-                errorMessageList = Arrays.asList(receipt.getMESSAGES().getERRORArray());
+                for (String errorMessage : receipt.getMESSAGES().getERRORArray()) {
+                    final SingleValidationResult singleValidationResult = new SingleValidationResult();
+                    singleValidationResult.setMessage(errorMessage);
+                    singleValidationResult.setValidationStatus(SingleValidationResultStatus.Error);
+                    singleValidationResult.setValidationAuthor(ValidationAuthor.Ena);
+                    singleValidationResults.add(singleValidationResult);
+                }
+
             }
         } catch (Exception e) {
             logger.error("Error submitting submission " + submissionId + " to the ENA", e);
             throw new ENAProcessorException(e);
         }
-        return errorMessageList;
+        return singleValidationResults;
     }
 
     private Map<Class<? extends ActionService>, Object> createParamMap(SubmissionEnvelope submissionEnvelope, Predicate<? super Submittable> filter) {
