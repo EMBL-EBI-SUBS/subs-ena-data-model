@@ -38,6 +38,7 @@ import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.doReturn;
 
 import org.apache.commons.beanutils.BeanUtils;
+import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {EnaAgentApplication.class})
@@ -124,8 +125,8 @@ public class ENAProcessorTest {
         SubmissionEnvelope submissionEnvelope = new SubmissionEnvelope();
         submissionEnvelope.setStudies(Arrays.asList(submittedStudies));
         submissionEnvelope.setSubmission(submission);
-        final List<String> errorMessageList = enaProcessor.process(submissionEnvelope);
-        assertThat(errorMessageList.isEmpty(), Is.is(true));
+        final List<SingleValidationResult> singleValidationResultList = enaProcessor.process(submissionEnvelope);
+        assertThat(singleValidationResultList.isEmpty(), Is.is(true));
     }
 
     @Test
@@ -142,8 +143,8 @@ public class ENAProcessorTest {
         SubmissionEnvelope submissionEnvelope = new SubmissionEnvelope();
         submissionEnvelope.setStudies(Arrays.asList(originalStudies));
         submissionEnvelope.setSubmission(submission);
-        final List<String> errorMessageList = enaProcessor.process(submissionEnvelope);
-        assertThat(errorMessageList.isEmpty(), Is.is(true));
+        final List<SingleValidationResult> singleValidationResultList = enaProcessor.process(submissionEnvelope);
+        assertThat(singleValidationResultList.isEmpty(), Is.is(true));
     }
 
     //@Test
@@ -160,8 +161,8 @@ public class ENAProcessorTest {
         SubmissionEnvelope submissionEnvelope = new SubmissionEnvelope();
         submissionEnvelope.setStudies(studyList);
         submissionEnvelope.setSubmission(submission);
-        final List<String> errorMessageList = enaProcessor.process(submissionEnvelope);
-        assertThat(errorMessageList.isEmpty(), Is.is(true));
+        final List<SingleValidationResult> singleValidationResultList = enaProcessor.process(submissionEnvelope);
+        assertThat(singleValidationResultList.isEmpty(), Is.is(true));
     }
 
     private String getStudySubmissionReceipt(List<Study> studyList, Document receiptDocument) throws XPathExpressionException, IllegalAccessException, InvocationTargetException, InstantiationException, TransformerException {
