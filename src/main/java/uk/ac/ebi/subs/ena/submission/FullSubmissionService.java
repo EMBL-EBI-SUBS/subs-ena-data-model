@@ -13,6 +13,7 @@ import uk.ac.ebi.ena.sra.xml.SubmissionType;
 import uk.ac.ebi.subs.data.submittable.*;
 import uk.ac.ebi.subs.ena.action.*;
 import uk.ac.ebi.subs.ena.http.UniRestWrapper;
+import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
@@ -50,7 +51,8 @@ public class FullSubmissionService {
     public RECEIPTDocument.RECEIPT submit (
             String submissionAlias,
             String centerName,
-            Map<Class<? extends ActionService>,Object> paramMap) throws XmlException, IOException, TransformerException {
+            Map<Class<? extends ActionService>,Object> paramMap,
+            List<SingleValidationResult> singleValidationResults) throws XmlException, IOException, TransformerException {
         final SUBMISSIONSETDocument submissionsetDocument = SUBMISSIONSETDocument.Factory.newInstance();
         final SubmissionType submissionType = submissionsetDocument.addNewSUBMISSIONSET().addNewSUBMISSION();
         final SubmissionType.ACTIONS actions = submissionType.addNewACTIONS();
@@ -87,7 +89,7 @@ public class FullSubmissionService {
                         schemaAliasMapMap.put(submittablesActionService.getSchemaName(),submittableMap);
 
 
-                        InputStream xmlInputStream = submittablesActionService.getXMLInputStream(submittables);
+                        InputStream xmlInputStream = submittablesActionService.getXMLInputStream(submittables,singleValidationResults);
                         parameterMap.put(submittablesActionService.getSchemaName().toUpperCase(),
                                 new UniRestWrapper.Field(
                                         submittablesActionService.getSchemaName() + ".xml",
