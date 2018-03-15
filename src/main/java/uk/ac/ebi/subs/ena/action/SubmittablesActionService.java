@@ -5,6 +5,7 @@ import org.springframework.oxm.Marshaller;
 import uk.ac.ebi.ena.sra.xml.SubmissionType;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.Submittable;
+import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
@@ -13,5 +14,5 @@ import java.util.List;
 
 public interface SubmittablesActionService<T extends Submittable> extends ActionService<T[]> {
     String getSchemaName ();
-    InputStream getXMLInputStream (T[] submittables) throws IOException, XmlException, TransformerException;
+    InputStream getXMLInputStream (T[] submittables,List<SingleValidationResult> singleValidationResults) throws IOException, XmlException, TransformerException;
 }
