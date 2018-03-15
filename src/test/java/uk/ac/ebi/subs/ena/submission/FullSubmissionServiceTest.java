@@ -18,6 +18,7 @@ import uk.ac.ebi.subs.ena.EnaAgentApplication;
 import uk.ac.ebi.subs.ena.action.*;
 import uk.ac.ebi.subs.ena.helper.TestHelper;
 import uk.ac.ebi.subs.data.component.File;
+import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -63,6 +64,7 @@ public class FullSubmissionServiceTest {
     String submissionAlias;
     Team team;
     Map<Class<? extends ActionService>,Object> parameterMap = new HashMap<>();
+    List<SingleValidationResult> singleValidationResults = new ArrayList<>();
 
     @Before
     public void setup () throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -100,7 +102,7 @@ public class FullSubmissionServiceTest {
     @Test
     public void submitStudies() throws Exception {
         parameterMap.put(StudyActionService.class, submittedStudies);
-        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
         assertThat(receipt.getSuccess(), is(true));
         for (Submittable submittable : submittedStudies) {
             assertThat(submittable.getAccession(), startsWith("ERP"));
@@ -118,7 +120,7 @@ public class FullSubmissionServiceTest {
 
         parameterMap.clear();
         parameterMap.put(StudyActionService.class, originalStudies);
-        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
         assertThat(receipt.getSuccess(), is(true));
     }
 
@@ -127,14 +129,14 @@ public class FullSubmissionServiceTest {
     public void submitStudiesAndSamples() throws Exception {
         parameterMap.put(StudyActionService.class, submittedStudies);
         parameterMap.put(SampleActionService.class, submittedSamples);
-        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
         assertThat(receipt.getSuccess(), is(true));
     }
 
     @Test
     public void submitSamples() throws Exception {
         parameterMap.put(SampleActionService.class, submittedSamples);
-        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
         assertThat(receipt.getSuccess(), is(true));
         for (Submittable submittable : submittedSamples) {
             assertThat(submittable.getAccession(), startsWith("ERS"));
@@ -152,7 +154,7 @@ public class FullSubmissionServiceTest {
 
         parameterMap.clear();
         parameterMap.put(SampleActionService.class, originalSamples);
-        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
         assertThat(receipt.getSuccess(), is(true));
         final RECEIPTDocument.RECEIPT.ACTIONS.Enum[] actionsArray = receipt.getACTIONSArray();
     }
@@ -162,7 +164,7 @@ public class FullSubmissionServiceTest {
         parameterMap.put(StudyActionService.class, submittedStudies);
         parameterMap.put(SampleActionService.class, submittedSamples);
         parameterMap.put(AssayActionService.class, submittedAssays);
-        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
         assertThat(receipt.getSuccess(), is(true));
         for (Submittable submittable : submittedAssays) {
             assertThat(submittable.getAccession(), startsWith("ERX"));
@@ -198,7 +200,7 @@ public class FullSubmissionServiceTest {
 
         parameterMap.put(AssayDataActionService.class,assayDatas);
 
-        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap);
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
 
         for (java.io.File file : fileList) {
             deleteFile(ftpClient,file.getName());
