@@ -13,6 +13,7 @@ import uk.ac.ebi.ena.sra.xml.ObjectType;
 import uk.ac.ebi.ena.sra.xml.SubmissionType;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.Submittable;
+import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -103,7 +104,7 @@ public abstract class AbstractSubmittablesActionService<S extends Submittable,T 
         return writer.toString();
     }
 
-    protected Document getDocument(final S[] submittableObject) throws IOException {
+    protected Document getDocument(final S[] submittableObject, List<SingleValidationResult> singleValidationResults) throws IOException {
         final Document document = documentBuilder.newDocument();
         Element rootElement = document.createElement(getSetElementName());
         document.appendChild(rootElement);
@@ -111,6 +112,7 @@ public abstract class AbstractSubmittablesActionService<S extends Submittable,T 
 
             try {
                 final T enaSubmittable = T.create(enaClass, submittable);
+                singleValidationResults.addAll(singleValidationResults);
                 Document submittableDocument = getDocument(enaSubmittable);
                 final Node node = document.importNode(submittableDocument.getFirstChild(), true);
                 try {
@@ -140,18 +142,13 @@ public abstract class AbstractSubmittablesActionService<S extends Submittable,T 
     }
 
     @Override
-    public InputStream getXMLInputStream(S[] submittables) throws IOException, XmlException, TransformerException {
+    public InputStream getXMLInputStream(S[] submittables,List<SingleValidationResult> singleValidationResults) throws IOException, XmlException, TransformerException {
         if (submittables != null && submittables.length > 0) {
-            return nodeToInputStream(getDocument(submittables));
+            return nodeToInputStream(getDocument(submittables,singleValidationResults));
         }
         return null;
     }
 
     abstract String getSetElementName ();
-
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
 
 }
