@@ -33,8 +33,4 @@ public class LocalDateActionService implements ActionService<LocalDate> {
         return LocalDate.class;
     }
 
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
 }
