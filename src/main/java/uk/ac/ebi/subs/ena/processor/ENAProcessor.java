@@ -23,7 +23,7 @@ public class ENAProcessor {
         this.fullSubmissionService = fullSubmissionService;
     }
 
-    List<String> process(SubmissionEnvelope submissionEnvelope) {
+    public List<String> process(SubmissionEnvelope submissionEnvelope) {
         String submissionId = submissionEnvelope.getSubmission().getId();
         String centerName = submissionEnvelope.getSubmission().getTeam().toString();
         List<SingleValidationResult> singleValidationResultList = new ArrayList<>();
