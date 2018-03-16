@@ -22,8 +22,6 @@ import java.util.*;
  */
 public abstract class AbstractENASubmittable<T extends BaseSubmittable> implements ENASubmittable<T>  {
 
-    public static final String USI_TEAM_PREFIX = "@USI-";
-
     private Submittable baseSubmittable;
     private List<SingleValidationResult> validationResultList = new ArrayList<>();
 
@@ -206,12 +204,12 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
 
     @Override
     public String getAlias() {
-        return getENAAlias(baseSubmittable.getAlias(),getTeamName());
+        return ENASubmittable.getENAAlias(baseSubmittable.getAlias(),getTeamName());
     }
 
     @Override
     public void setAlias(String alias) {
-        baseSubmittable.setAlias(removeENAAlias(alias));
+        baseSubmittable.setAlias(ENASubmittable.removeENAAlias(alias));
     }
 
     @Override
@@ -331,20 +329,6 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
     @Override
     public boolean isValid() {
         return validationResultList.isEmpty();
-    }
-
-    public static String getENAAlias (String alias, String teamName) {
-        if (alias != null)
-            return alias + USI_TEAM_PREFIX + teamName;
-        else return null;
-    }
-
-    public static String removeENAAlias (String alias) {
-        if (alias.indexOf(USI_TEAM_PREFIX) > 0)
-            return alias.substring(0, alias.lastIndexOf("@"));
-        else {
-            return alias;
-        }
     }
 
     public void addAttribute (String name, Attribute attribute) {
