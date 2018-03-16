@@ -93,25 +93,27 @@ public class ENAProcessorTest {
         originalStudies = new Study[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            submittedStudies[i] = TestHelper.getStudy(UUID.randomUUID().toString(), team, "abstract", "Whole Genome Sequencing");
-            originalStudies[i] = (Study) BeanUtils.cloneBean(submittedStudies[i]);
+            String studyAlias = UUID.randomUUID().toString();
+            submittedStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing");
+            originalStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing");
         }
 
         submittedSamples = new Sample[SUBMITTABLE_COUNT];
         originalSamples = new Sample[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            submittedSamples[i] = TestHelper.getSample(UUID.randomUUID().toString(),team);
-            originalSamples[i] = (Sample) BeanUtils.cloneBean(submittedSamples[i]);
+            String sampleAlias = UUID.randomUUID().toString();
+            submittedSamples[i] = TestHelper.getSample(sampleAlias,team);
+            originalSamples[i] = TestHelper.getSample(sampleAlias,team);
         }
 
         submittedAssays = new Assay[SUBMITTABLE_COUNT];
         originalAssays = new Assay[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            submittedSamples[i] = TestHelper.getSample(UUID.randomUUID().toString(),team);
-            submittedAssays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
-            originalAssays[i] = (Assay) BeanUtils.cloneBean(submittedAssays[i]);
+            String assayAlias = UUID.randomUUID().toString();
+            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
+            originalAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
         }
     }
 
@@ -197,12 +199,10 @@ public class ENAProcessorTest {
         for (int i = 0; i < nodeList.getLength(); i++) {
             if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 final Submittable submittable = submittableList[i];
-                final Submittable originalSubmittable = (Submittable) BeanUtils.cloneBean(submittable);
-                final ENASubmittable enaSubmittable = ENASubmittable.create(enaClass, originalSubmittable);
                 Element element = (Element) nodeList.item(i);
                 final NamedNodeMap attributes = element.getAttributes();
                 Node nodeAttr = attributes.getNamedItem("alias");
-                nodeAttr.setTextContent(enaSubmittable.getAlias());
+                nodeAttr.setTextContent(ENASubmittable.getENAAlias(submittable.getAlias(),submittable.getTeam().getName()));
             }
         }
 

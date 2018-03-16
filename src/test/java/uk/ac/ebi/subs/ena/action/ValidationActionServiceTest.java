@@ -24,10 +24,5 @@ public class ValidationActionServiceTest {
         assertThat(actionXML.isSetVALIDATE(), is(true));
     }
 
-    @Test
-    public void testCreateNoValidateActionXML() throws Exception {
-        final SubmissionType.ACTIONS.ACTION actionXML = validationActionService.createActionXML(false);
-        assertThat(actionXML, is(nullValue()));
-    }
 
 }

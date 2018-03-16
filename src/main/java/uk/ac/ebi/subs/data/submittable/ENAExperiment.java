@@ -171,13 +171,13 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
             if (sampleRef.getTeam() == null) {
                 sampleRef.setTeam(getTeamName());
             }
-            sampleRef.setAlias(getENAAlias(sampleRef.getAlias(),sampleRef.getTeam()));
+            sampleRef.setAlias(ENASubmittable.getENAAlias(sampleRef.getAlias(),sampleRef.getTeam()));
             return sampleRef;
         }
     }
 
     public void setSampleRef (SampleRef sampleRef) {
-        sampleRef.setAlias(removeENAAlias(sampleRef.getAlias()));
+        sampleRef.setAlias(ENASubmittable.removeENAAlias(sampleRef.getAlias()));
         SampleUse sampleUse = new SampleUse(sampleRef);
         getBaseObject().getSampleUses().add(sampleUse);
     }
@@ -215,13 +215,13 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
         if (studyRef.getTeam() == null) {
             studyRef.setTeam(getTeamName());
         }
-        studyRef.setAlias(getENAAlias(studyRef.getAlias(),studyRef.getTeam()));
+        studyRef.setAlias(ENASubmittable.getENAAlias(studyRef.getAlias(),studyRef.getTeam()));
         return studyRef;
 
     }
 
     public void setStudyRef(StudyRef studyRef) {
-        studyRef.setAlias(removeENAAlias(studyRef.getAlias()));
+        studyRef.setAlias(ENASubmittable.removeENAAlias(studyRef.getAlias()));
         getBaseObject().setStudyRef(studyRef);
     }
 

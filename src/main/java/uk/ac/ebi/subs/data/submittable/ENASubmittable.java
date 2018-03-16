@@ -9,6 +9,9 @@ import java.util.List;
  * Created by neilg on 09/04/2017.
  */
 public interface ENASubmittable<T extends Submittable> extends Submittable {
+
+    public static final String USI_TEAM_PREFIX = "@USI-";
+
     /**
      * Gets the Submittable object that underpines this object
      * @return
@@ -90,5 +93,19 @@ public interface ENASubmittable<T extends Submittable> extends Submittable {
     static <T extends ENASubmittable> T create(Class<T> clasz) throws IllegalAccessException, InstantiationException {
         final T t = clasz.newInstance();
         return t;
+    }
+
+    public static String getENAAlias (String alias, String teamName) {
+        if (alias != null)
+            return alias + USI_TEAM_PREFIX + teamName;
+        else return null;
+    }
+
+    public static String removeENAAlias (String alias) {
+        if (alias.indexOf(USI_TEAM_PREFIX) > 0)
+            return alias.substring(0, alias.lastIndexOf("@"));
+        else {
+            return alias;
+        }
     }
 }
