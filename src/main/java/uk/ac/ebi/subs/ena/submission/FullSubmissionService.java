@@ -66,40 +66,32 @@ public class FullSubmissionService {
         List<SubmissionType.ACTIONS.ACTION> actionList = new ArrayList<>();
 
         for (ActionService actionService : actionServiceList) {
+
             final Object actionServiceParam = paramMap.get(actionService.getClass());
 
-            if (actionServiceParam != null) {
-
-                final SubmissionType.ACTIONS.ACTION actionXML = actionService.createActionXML(actionServiceParam);
-                if (actionXML != null) {
+            final SubmissionType.ACTIONS.ACTION actionXML = actionService.createActionXML(actionServiceParam);
+            if (actionXML != null) {
                     actionList.add(actionXML);
-                }
-
-                if (actionService instanceof SubmittablesActionService) {
-                    SubmittablesActionService submittablesActionService = (SubmittablesActionService) actionService;
-                    Submittable[] submittables = (Submittable[]) actionServiceParam;
-                    if (submittables != null && submittables.length > 0) {
-
-                        Map<String,Submittable> submittableMap = new HashMap<>();
-
-                        for (Submittable submittable : submittables) {
-                            submittableMap.put(AbstractENASubmittable.getENAAlias(submittable.getAlias(),submittable.getTeam().getName()),submittable);
-                        }
-
-                        schemaAliasMapMap.put(submittablesActionService.getSchemaName(),submittableMap);
-
-
-                        InputStream xmlInputStream = submittablesActionService.getXMLInputStream(submittables,singleValidationResults);
-                        parameterMap.put(submittablesActionService.getSchemaName().toUpperCase(),
-                                new UniRestWrapper.Field(
-                                        submittablesActionService.getSchemaName() + ".xml",
-                                        xmlInputStream));
-                    }
-
-                }
             }
 
+            if (actionService instanceof SubmittablesActionService) {
+                SubmittablesActionService submittablesActionService = (SubmittablesActionService) actionService;
+                Submittable[] submittables = (Submittable[]) actionServiceParam;
+                if (submittables != null && submittables.length > 0) {
+
+                    Map<String,Submittable> submittableMap = new HashMap<>();
+
+                    for (Submittable submittable : submittables) {
+                        submittableMap.put(ENASubmittable.getENAAlias(submittable.getAlias(),submittable.getTeam().getName()),submittable);
+                    }
+                    schemaAliasMapMap.put(submittablesActionService.getSchemaName(),submittableMap);
+
+                    InputStream xmlInputStream = submittablesActionService.getXMLInputStream(submittables,singleValidationResults);parameterMap.put(submittablesActionService.getSchemaName().toUpperCase(), new UniRestWrapper.Field(
+                            submittablesActionService.getSchemaName() + ".xml", xmlInputStream)); }
+                }
         }
+
+
 
         final SubmissionType.ACTIONS.ACTION[] newActions = actionList.toArray(new SubmissionType.ACTIONS.ACTION[actionList.size()]);
         actions.setACTIONArray(newActions);
