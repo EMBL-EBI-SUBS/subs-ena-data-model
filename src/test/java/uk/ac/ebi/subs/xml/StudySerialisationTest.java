@@ -58,7 +58,7 @@ public class StudySerialisationTest extends SerialisationTest {
 
     @Test
     public void testSubs591StudyXML() throws Exception {
-        Study study = getStudyFromResource("/uk/ac/ebi/subs/ena/submittable/subs-591-study.json");
+        Study study = TestHelper.getStudyFromResource("/uk/ac/ebi/subs/ena/submittable/subs-591-study.json");
         ENAStudy enaStudy = new ENAStudy(study);
         final List<SingleValidationResult> validationResultList = enaStudy.getValidationResultList();
         assertTrue("validation errors", validationResultList.size() == 1);
@@ -181,18 +181,7 @@ public class StudySerialisationTest extends SerialisationTest {
     }
 
     public Study getStudyFromResource () throws IOException {
-        return getStudyFromResource(STUDY_RESOURCE);
-    }
-
-    public Study getStudyFromResource (String studyResource) throws IOException {
-        final InputStream inputStream = getClass().getResourceAsStream(studyResource);
-        final Study study = objectMapper.readValue(inputStream, Study.class);
-
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        final UUID uuid = UUID.randomUUID();
-        study.setId(uuid.toString());
-        return study;
-
+        return TestHelper.getStudyFromResource(STUDY_RESOURCE);
     }
 
     @Test

@@ -339,7 +339,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
 
     @Test
     public void testExperimentSerialisation () throws IOException, IllegalAccessException, JAXBException, ParserConfigurationException, TransformerException {
-        final Assay assayFromResource = getAssayFromResource(ASSAY_RESOURCE);
+        final Assay assayFromResource = TestHelper.getAssayFromResource(ASSAY_RESOURCE);
         ENAExperiment enaExperiment = new ENAExperiment(assayFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
@@ -348,16 +348,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         assertNotNull(enaExperiment);
     }
 
-    public Assay getAssayFromResource (String assayResource) throws IOException {
-        final InputStream inputStream = getClass().getResourceAsStream(assayResource);
-        final Assay assay = objectMapper.readValue(inputStream, Assay.class);
 
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        final UUID uuid = UUID.randomUUID();
-        assay.setId(uuid.toString());
-        return assay;
-
-    }
 
     static Assay createAssay () {
         return createAssay(ILLUMINA, ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL);

@@ -1,5 +1,8 @@
 package uk.ac.ebi.subs.ena.helper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import uk.ac.ebi.ena.sra.xml.EXPERIMENTSETDocument;
 import uk.ac.ebi.ena.sra.xml.ExperimentType;
 import uk.ac.ebi.ena.sra.xml.LibraryDescriptorType;
@@ -32,6 +35,8 @@ import uk.ac.ebi.subs.data.submittable.Sample;
 import uk.ac.ebi.subs.data.submittable.Study;
 import uk.ac.ebi.subs.data.submittable.Submittable;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +46,57 @@ import java.util.UUID;
  */
 public class TestHelper {
 
+    static ObjectMapper objectMapper;
 
+    static {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
+    public static Study getStudyFromResource(String studyResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(studyResource);
+        final Study study = objectMapper.readValue(inputStream, Study.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        study.setId(uuid.toString());
+        return study;
+
+    }
+
+    public static Assay getAssayFromResource(String assayResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(assayResource);
+        final Assay assay = objectMapper.readValue(inputStream, Assay.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        assay.setId(uuid.toString());
+        return assay;
+
+    }
+
+    static Sample getSampleFromResource (String sampleResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(sampleResource);
+        final Sample sample = objectMapper.readValue(inputStream, Sample.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        sample.setId(uuid.toString());
+        return sample;
+
+    }
+
+    static AssayData getAssayDataFromResource (String assayDataResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(assayDataResource);
+        final AssayData assayData = objectMapper.readValue(inputStream, AssayData.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        assayData.setId(uuid.toString());
+        return assayData;
+
+    }
 
     public static STUDYSETDocument getStudysetDocument(String alias, String centerName) {
         STUDYSETDocument studysetDocument = STUDYSETDocument.Factory.newInstance();
@@ -192,6 +247,10 @@ public class TestHelper {
         studyTypeAttribute.setValue(studyType);
         addAttribute(study,ENAStudy.STUDY_TYPE,studyTypeAttribute);
         return study;
+    }
+
+    public static Study getStudy (String alias, Team team) {
+        return getStudy(alias,team,"study abstract","Whole Genome Sequencing");
     }
 
     public static Sample getSample(String alias, Team team) {

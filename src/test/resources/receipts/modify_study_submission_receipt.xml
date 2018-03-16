@@ -1,0 +1,39 @@
+<?xml-stylesheet type="text/xsl" href="receipt.xsl"?>
+<RECEIPT receiptDate="2018-03-14T14:23:04.530Z" submissionFile="submission.xml" success="true">
+    <STUDY accession="ERP107674" alias="24b21608-1426-4a06-8d58-988085fbc51e@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25747" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107675" alias="1ef04382-6f80-4815-b6df-b4131fb5890c@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25748" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107676" alias="5e923edc-7763-4c06-b087-ad66b5f79b60@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25749" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107677" alias="944d7b65-58f8-4273-98b1-c0de003974bf@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25750" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107678" alias="eaa159fc-608c-4d77-869a-f3f9011d2dfb@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25751" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107679" alias="62830daf-7f75-4672-b307-3997c63383de@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25752" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107680" alias="a226d388-6251-4436-9f01-6b0d1d5b9f6f@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25753" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107681" alias="d7de015c-9fd4-4c82-bcb4-52d5a441a7ad@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25754" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107682" alias="46dac393-de2d-43ce-ba19-8c41e54f433a@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25755" type="Project"/>
+    </STUDY>
+    <STUDY accession="ERP107683" alias="a731a1b0-3666-45a9-9e4c-202f49e33089@USI-933bf87c-cee8-42ae-8372-9d1d6f361511" status="PRIVATE" holdUntilDate="2020-03-14Z">
+        <EXT_ID accession="PRJEB25756" type="Project"/>
+    </STUDY>
+    <SUBMISSION accession="ERA1246100" alias="ebdbc78a-7c3e-47e8-8dd8-a1415a312f92"/>
+    <MESSAGES>
+        <INFO>Submission has been committed.</INFO>
+        <INFO>This submission is a TEST submission and will be discarded within 24 hours</INFO>
+    </MESSAGES>
+    <ACTIONS>MODIFY</ACTIONS>
+</RECEIPT>

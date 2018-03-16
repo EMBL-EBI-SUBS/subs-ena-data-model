@@ -12,6 +12,12 @@
       }
 
     ],
+    "study_abstract": [
+      {
+        "value" : "Study abstract"
+      }
+
+    ],
     "Project Coordinator": [
       {
         "value" : "Joe Bloggs"
