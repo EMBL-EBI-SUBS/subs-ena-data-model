@@ -1,7 +1,7 @@
 ena:
   login_name: ${enaLoginName}
   password: ${enaPassword}
-  action_services: StudyActionService,SampleActionService,AssayActionService,AssayDataActionService,ValidationActionService
+  action_services: StudyActionService,SampleActionService,AssayActionService,AssayDataActionService
   submission:
     url: https://www-test.ebi.ac.uk/ena/submit/drop-box/submit
   ftp:
