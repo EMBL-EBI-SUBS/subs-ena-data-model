@@ -19,12 +19,12 @@ public class ENARun extends AbstractENASubmittable<AssayData> {
 
     public AssayRef getAssayRef () {
         final AssayRef assayRef = getBaseObject().getAssayRef();
-        assayRef.setAlias(getENAAlias(assayRef.getAlias(),assayRef.getTeam()));
+        assayRef.setAlias(ENASubmittable.getENAAlias(assayRef.getAlias(),assayRef.getTeam()));
         return assayRef;
     }
 
     public void setAssayRef (AssayRef assayRef) {
-        assayRef.setAlias(removeENAAlias(assayRef.getAlias()));
+        assayRef.setAlias(ENASubmittable.removeENAAlias(assayRef.getAlias()));
         getBaseObject().setAssayRef(assayRef);
     }
 
