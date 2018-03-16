@@ -104,7 +104,7 @@ public abstract class AbstractSubmittablesActionService<S extends Submittable,T 
         return writer.toString();
     }
 
-    protected Document getDocument(final S[] submittableObject, List<SingleValidationResult> singleValidationResults) throws IOException {
+    protected Document getDocument(final S[] submittableObject, List<SingleValidationResult> singleValidationResultList) throws IOException {
         final Document document = documentBuilder.newDocument();
         Element rootElement = document.createElement(getSetElementName());
         document.appendChild(rootElement);
@@ -112,7 +112,8 @@ public abstract class AbstractSubmittablesActionService<S extends Submittable,T 
 
             try {
                 final T enaSubmittable = T.create(enaClass, submittable);
-                singleValidationResults.addAll(singleValidationResults);
+                if (singleValidationResultList != null)
+                    singleValidationResultList.addAll(enaSubmittable.getValidationResultList());
                 Document submittableDocument = getDocument(enaSubmittable);
                 final Node node = document.importNode(submittableDocument.getFirstChild(), true);
                 try {
