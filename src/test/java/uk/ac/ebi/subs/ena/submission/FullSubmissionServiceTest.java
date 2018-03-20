@@ -171,7 +171,7 @@ public class FullSubmissionServiceTest {
         }
     }
 
-    //@Test
+    @Test
     public void submitStudySamplesExperimentAndRun() throws Exception {
         FTPClient ftpClient = connectToWebinFTP();
         parameterMap.put(StudyActionService.class, submittedStudies);
@@ -186,7 +186,7 @@ public class FullSubmissionServiceTest {
             submittedAssays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
             assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team, submittedAssays[i].getAlias());
             File file = new File();
-            file.setChecksum("abcdefgh12345678abcdefgh12345678");
+            file.setChecksum("2debfdcf79f03e4a65a667d21ef9de14");
             file.setChecksumMethod("MD5");
             String fileName = UUID.randomUUID().toString() + ".fastq.gz";
             createTestFile(fileName);
@@ -210,7 +210,7 @@ public class FullSubmissionServiceTest {
 
         assertThat(receipt.getSuccess(), is(true));
         for (Submittable submittable : assayDatas) {
-            assertThat(submittable.getAccession(), startsWith("ERX"));
+            assertThat(submittable.getAccession(), startsWith("ERR"));
         }
     }
 
