@@ -299,11 +299,12 @@ public class TestHelper {
         assayData.setAlias(alias);
         AssayRef assayRef = new AssayRef();
         assayRef.setAlias(assayAlias);
+        assayRef.setTeam(team.getName());
         assayData.setAssayRef(assayRef);
         assayData.setTitle("Test Title");
         File file = new File();
         file.setType("fastq");
-        file.setChecksum("12345678abcdefgh12345678abcdefgh");
+        file.setChecksum("2debfdcf79f03e4a65a667d21ef9de14");
         file.setName("Test.fastq.gz");
         file.setChecksumMethod("MD5");
         assayData.getFiles().add(file);
