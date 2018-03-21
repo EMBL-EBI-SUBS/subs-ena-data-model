@@ -111,7 +111,7 @@ public class ENAProcessor {
         final AssayData[] assayData = submissionEnvelope.getAssayData().stream().filter(filter).toArray(AssayData[]::new);
 
         if (assayData.length > 0)
-            paramMap.put(AssayDataActionService.class, assays);
+            paramMap.put(AssayDataActionService.class, assayData);
 
         return paramMap;
     }
