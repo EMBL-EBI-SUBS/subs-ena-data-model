@@ -3,6 +3,7 @@ package uk.ac.ebi.subs.data.submittable;
 import uk.ac.ebi.subs.data.component.AssayRef;
 import uk.ac.ebi.subs.data.component.File;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,14 +19,17 @@ public class ENARun extends AbstractENASubmittable<AssayData> {
     }
 
     public AssayRef getAssayRef () {
-        final AssayRef assayRef = getBaseObject().getAssayRef();
+        if (getBaseObject().getAssayRefs() == null || getBaseObject().getAssayRefs().isEmpty()){
+            return null;
+        }
+        final AssayRef assayRef = getBaseObject().getAssayRefs().iterator().next();
         assayRef.setAlias(ENASubmittable.getENAAlias(assayRef.getAlias(),assayRef.getTeam()));
         return assayRef;
     }
 
     public void setAssayRef (AssayRef assayRef) {
         assayRef.setAlias(ENASubmittable.removeENAAlias(assayRef.getAlias()));
-        getBaseObject().setAssayRef(assayRef);
+        getBaseObject().setAssayRefs(Arrays.asList(assayRef));
     }
 
     public List<File> getFiles () {

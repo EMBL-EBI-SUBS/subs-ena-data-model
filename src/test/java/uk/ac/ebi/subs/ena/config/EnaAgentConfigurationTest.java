@@ -26,6 +26,7 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
@@ -136,7 +137,7 @@ public class EnaAgentConfigurationTest {
         assayData.getFiles().add(file);
         AssayRef assayRef = new AssayRef();
         assayRef.setAccession(UUID.randomUUID().toString());
-        assayData.setAssayRef(assayRef);
+        assayData.setAssayRefs(Arrays.asList(assayRef));
         return assayData;
     }
 
