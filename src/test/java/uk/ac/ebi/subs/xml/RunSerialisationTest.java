@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -90,7 +91,7 @@ public class RunSerialisationTest extends SerialisationTest {
         AssayData assayData = createAssayData();
         AssayRef assayRef = new AssayRef();
         assayRef.setAccession(UUID.randomUUID().toString());
-        assayData.setAssayRef(assayRef);
+        assayData.setAssayRefs(Arrays.asList(assayRef));
         ENARun enaRun = new ENARun(assayData);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaRun,new DOMResult(document));
@@ -174,7 +175,7 @@ public class RunSerialisationTest extends SerialisationTest {
         assayData.setAlias(alias);
         AssayRef assayRef = new AssayRef();
         assayRef.setAlias(assayAlias);
-        assayData.setAssayRef(assayRef);
+        assayData.setAssayRefs(Arrays.asList(assayRef));
         assayData.setTitle("Test Title");
         File file = new File();
         file.setType("fastq");

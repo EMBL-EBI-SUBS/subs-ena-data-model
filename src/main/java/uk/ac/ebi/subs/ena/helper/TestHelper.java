@@ -38,6 +38,7 @@ import uk.ac.ebi.subs.data.submittable.Submittable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -300,7 +301,7 @@ public class TestHelper {
         AssayRef assayRef = new AssayRef();
         assayRef.setAlias(assayAlias);
         assayRef.setTeam(team.getName());
-        assayData.setAssayRef(assayRef);
+        assayData.setAssayRefs(Arrays.asList(assayRef));
         assayData.setTitle("Test Title");
         File file = new File();
         file.setType("fastq");
