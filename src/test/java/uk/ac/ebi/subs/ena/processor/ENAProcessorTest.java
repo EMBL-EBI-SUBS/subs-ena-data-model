@@ -52,7 +52,7 @@ public class ENAProcessorTest {
 
     String submissionAlias;
     Team team;
-    String centerName;
+    String centreName;
     Submission submission;
     public static final int SUBMITTABLE_COUNT = 10;
     DocumentBuilder documentBuilder;
@@ -82,8 +82,9 @@ public class ENAProcessorTest {
         transformer = transformerFactory.newTransformer();
 
         team = new Team();
-        centerName = UUID.randomUUID().toString();
-        team.setName(centerName);
+        centreName = UUID.randomUUID().toString();
+        team.setName("subs."+centreName);
+        team.getProfile().put("centre name",centreName);
         submission = new Submission();
         submissionAlias = UUID.randomUUID().toString();
         submission.setTeam(team);

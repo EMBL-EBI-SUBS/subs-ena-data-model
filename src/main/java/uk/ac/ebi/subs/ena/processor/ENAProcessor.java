@@ -4,15 +4,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
-import uk.ac.ebi.subs.data.submittable.*;
-import uk.ac.ebi.subs.ena.action.*;
+import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.submittable.Assay;
+import uk.ac.ebi.subs.data.submittable.AssayData;
+import uk.ac.ebi.subs.data.submittable.Sample;
+import uk.ac.ebi.subs.data.submittable.Study;
+import uk.ac.ebi.subs.data.submittable.Submittable;
+import uk.ac.ebi.subs.ena.action.ActionService;
+import uk.ac.ebi.subs.ena.action.AssayActionService;
+import uk.ac.ebi.subs.ena.action.AssayDataActionService;
+import uk.ac.ebi.subs.ena.action.SampleActionService;
+import uk.ac.ebi.subs.ena.action.StudyActionService;
 import uk.ac.ebi.subs.ena.submission.FullSubmissionService;
 import uk.ac.ebi.subs.processing.SubmissionEnvelope;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 import uk.ac.ebi.subs.validator.data.structures.SingleValidationResultStatus;
 import uk.ac.ebi.subs.validator.data.structures.ValidationAuthor;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 @Service
@@ -27,7 +39,7 @@ public class ENAProcessor {
 
     public List<SingleValidationResult> process(SubmissionEnvelope submissionEnvelope) {
         String submissionId = submissionEnvelope.getSubmission().getId();
-        String centerName = submissionEnvelope.getSubmission().getTeam().toString();
+        String centerName = centerName(submissionEnvelope);
 
         Predicate<? super Submittable> newFilter = new Predicate<Submittable>() {
             @Override
@@ -59,6 +71,18 @@ public class ENAProcessor {
         return singleValidationResults;
     }
 
+    private String centerName(SubmissionEnvelope submissionEnvelope) {
+        Team team = submissionEnvelope.getSubmission().getTeam();
+
+        if (team.getProfile() != null &&
+                team.getProfile().get("centre name") != null &&
+                !team.getProfile().get("centre name").isEmpty()) {
+            return  team.getProfile().get("centre name");
+        }
+
+        return team.toString();
+    }
+
     /**
      * Submits submission to FullSubmissionService and processes the receipt to extract any errors
      *
@@ -71,7 +95,7 @@ public class ENAProcessor {
 
         try {
             if (newParamMap.size() > 0) {
-                final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionId, centerName, newParamMap,singleValidationResults);
+                final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionId, centerName, newParamMap, singleValidationResults);
                 for (String infoMessage : receipt.getMESSAGES().getINFOArray()) {
                     logger.info("Info message from the ENA submission for submissionId " + submissionId + " : " + infoMessage);
                 }
