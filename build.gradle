@@ -1,5 +1,5 @@
 group 'uk.ac.ebi.subs'
-version '1.0.1-SNAPSHOT'
+version '2.1.0-SNAPSHOT'
 
 buildscript {
     repositories {
@@ -36,19 +36,21 @@ dependencies {
     compile ("org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.4")
     compile ("commons-lang:commons-lang:2.6")
     compile ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    compile ("uk.ac.ebi.subs:validator-common:1.0.1-SNAPSHOT") {
+    compile ("uk.ac.ebi.subs:validator-common:2.1.1-SNAPSHOT") {
         exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
     }
 
-    compile("uk.ac.ebi.subs:subs-processing-model:1.0.1-SNAPSHOT")
+    compile("uk.ac.ebi.subs:subs-processing-model:2.0.0-SNAPSHOT")
     compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT")
 
     compile 'uk.ac.ebi.ena.sra:sra-xml:1.5.+'
     compile("com.mashape.unirest:unirest-java:1.4.9")
     compile 'commons-io:commons-io:2.6'
     testCompile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    testCompile 'commons-net:commons-net:1.2.1'
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
+    testCompile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.8.3'
 }
 
 processTestResources {

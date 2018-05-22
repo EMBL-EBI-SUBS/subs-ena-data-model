@@ -2,21 +2,43 @@ package uk.ac.ebi.subs.ena.helper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import uk.ac.ebi.ena.sra.xml.*;
-import uk.ac.ebi.subs.data.Submission;
-import uk.ac.ebi.subs.data.component.*;
-import uk.ac.ebi.subs.data.status.ProcessingStatusEnum;
-import uk.ac.ebi.subs.data.submittable.*;
-import uk.ac.ebi.subs.processing.ProcessingCertificate;
-import uk.ac.ebi.subs.processing.ProcessingCertificateEnvelope;
-import uk.ac.ebi.subs.processing.SubmissionEnvelope;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import uk.ac.ebi.ena.sra.xml.EXPERIMENTSETDocument;
+import uk.ac.ebi.ena.sra.xml.ExperimentType;
+import uk.ac.ebi.ena.sra.xml.LibraryDescriptorType;
+import uk.ac.ebi.ena.sra.xml.LibraryType;
+import uk.ac.ebi.ena.sra.xml.RUNSETDocument;
+import uk.ac.ebi.ena.sra.xml.RunType;
+import uk.ac.ebi.ena.sra.xml.SAMPLESETDocument;
+import uk.ac.ebi.ena.sra.xml.STUDYSETDocument;
+import uk.ac.ebi.ena.sra.xml.SampleDescriptorType;
+import uk.ac.ebi.ena.sra.xml.SampleType;
+import uk.ac.ebi.ena.sra.xml.StudyType;
+import uk.ac.ebi.ena.sra.xml.TypeIlluminaModel;
+import uk.ac.ebi.ena.sra.xml.TypeLibrarySelection;
+import uk.ac.ebi.ena.sra.xml.TypeLibrarySource;
+import uk.ac.ebi.ena.sra.xml.TypeLibraryStrategy;
+import uk.ac.ebi.subs.data.component.AssayRef;
+import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.File;
+import uk.ac.ebi.subs.data.component.SampleRef;
+import uk.ac.ebi.subs.data.component.SampleUse;
+import uk.ac.ebi.subs.data.component.StudyRef;
+import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.submittable.Assay;
+import uk.ac.ebi.subs.data.submittable.AssayData;
+import uk.ac.ebi.subs.data.submittable.ENAExperiment;
+import uk.ac.ebi.subs.data.submittable.ENARun;
+import uk.ac.ebi.subs.data.submittable.ENASample;
+import uk.ac.ebi.subs.data.submittable.ENAStudy;
+import uk.ac.ebi.subs.data.submittable.Sample;
+import uk.ac.ebi.subs.data.submittable.Study;
+import uk.ac.ebi.subs.data.submittable.Submittable;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +47,57 @@ import java.util.UUID;
  */
 public class TestHelper {
 
+    static ObjectMapper objectMapper;
 
+    static {
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
+
+    public static Study getStudyFromResource(String studyResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(studyResource);
+        final Study study = objectMapper.readValue(inputStream, Study.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        study.setId(uuid.toString());
+        return study;
+
+    }
+
+    public static Assay getAssayFromResource(String assayResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(assayResource);
+        final Assay assay = objectMapper.readValue(inputStream, Assay.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        assay.setId(uuid.toString());
+        return assay;
+
+    }
+
+    static Sample getSampleFromResource (String sampleResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(sampleResource);
+        final Sample sample = objectMapper.readValue(inputStream, Sample.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        sample.setId(uuid.toString());
+        return sample;
+
+    }
+
+    static AssayData getAssayDataFromResource (String assayDataResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(assayDataResource);
+        final AssayData assayData = objectMapper.readValue(inputStream, AssayData.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        assayData.setId(uuid.toString());
+        return assayData;
+
+    }
 
     public static STUDYSETDocument getStudysetDocument(String alias, String centerName) {
         STUDYSETDocument studysetDocument = STUDYSETDocument.Factory.newInstance();
@@ -131,6 +203,32 @@ public class TestHelper {
         return enaExperiment;
     }
 
+    public static ENARun getENARun(String alias, Team team) throws IllegalAccessException {
+        ENARun enaRun = new ENARun();
+        enaRun.setAlias(alias);
+        enaRun.setTeam(team);
+        enaRun.setId(UUID.randomUUID().toString());
+
+        AssayRef assayRef = new AssayRef();
+        assayRef.setAlias(alias);
+        assayRef.setTeam(team.getName());
+        enaRun.setAssayRef(assayRef);
+
+        List<File> files = new ArrayList<>();
+        File aFile = new File();
+        aFile.setChecksum("12345678901234567890123456789012");
+        aFile.setChecksumMethod("MD5");
+        aFile.setLabel("some label");
+        aFile.setName("test_file.cram");
+        aFile.setType("cram");
+        aFile.setUnencryptedChecksum("unencryptedChecksum");
+        files.add(aFile);
+
+        enaRun.setFiles(files);
+
+        return  enaRun;
+    }
+
     public static Team getTeam (String centerName) {
         Team team = new Team();
         team.setName(centerName);
@@ -150,6 +248,10 @@ public class TestHelper {
         studyTypeAttribute.setValue(studyType);
         addAttribute(study,ENAStudy.STUDY_TYPE,studyTypeAttribute);
         return study;
+    }
+
+    public static Study getStudy (String alias, Team team) {
+        return getStudy(alias,team,"study abstract","Whole Genome Sequencing");
     }
 
     public static Sample getSample(String alias, Team team) {
@@ -192,16 +294,18 @@ public class TestHelper {
 
     public static AssayData getAssayData (String alias, Team team, String assayAlias) {
         AssayData assayData = new AssayData();
+        assayData.setId(UUID.randomUUID().toString());
         assayData.setAlias(alias);
         assayData.setTeam(team);
         assayData.setAlias(alias);
         AssayRef assayRef = new AssayRef();
         assayRef.setAlias(assayAlias);
-        assayData.setAssayRef(assayRef);
+        assayRef.setTeam(team.getName());
+        assayData.setAssayRefs(Arrays.asList(assayRef));
         assayData.setTitle("Test Title");
         File file = new File();
         file.setType("fastq");
-        file.setChecksum("12345678abcdefgh12345678abcdefgh");
+        file.setChecksum("2debfdcf79f03e4a65a667d21ef9de14");
         file.setName("Test.fastq.gz");
         file.setChecksumMethod("MD5");
         assayData.getFiles().add(file);

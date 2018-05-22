@@ -40,7 +40,9 @@ import java.net.URL;
 import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.core.Is.is;
 
 /**
  * Created by neilg on 28/03/2017.
@@ -185,6 +187,7 @@ public abstract class SerialisationTest {
         }
 
         final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, baseSubmittableFromResource);
+        assertThat(enaSubmittable.getValidationResultList().isEmpty(), is(true));
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaSubmittable, new DOMResult(document));
         logger.info(getDocumentString(document));
@@ -208,6 +211,7 @@ public abstract class SerialisationTest {
         clonedSubmittable.setId(null);
 
         final ENASubmittable enaSubmittable = ENASubmittable.create(baseSubmittableFactoryClass, submittable);
+        assertThat(enaSubmittable.getValidationResultList().isEmpty(), is(true));
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaSubmittable, new DOMResult(document));
         String documentString = getDocumentString(document);
