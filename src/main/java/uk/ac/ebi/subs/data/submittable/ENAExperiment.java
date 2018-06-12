@@ -172,6 +172,7 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
                 sampleRef.setTeam(getTeamName());
             }
             sampleRef.setAlias(ENASubmittable.getENAAlias(sampleRef.getAlias(),sampleRef.getTeam()));
+
             return sampleRef;
         }
     }
