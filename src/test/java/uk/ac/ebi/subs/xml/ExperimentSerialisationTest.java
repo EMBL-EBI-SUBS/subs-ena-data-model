@@ -1,6 +1,5 @@
 package uk.ac.ebi.subs.xml;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.hamcrest.core.IsNull;
 import org.junit.Before;
@@ -27,7 +26,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -35,10 +33,10 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ExperimentSerialisationTest extends SerialisationTest {
@@ -54,6 +52,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public static final String CAPILLARY = "CAPILLARY";
 
     String ASSAY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/assay_template.json";
+    private static final String ASSAY_RESOURCE_II = "/uk/ac/ebi/subs/ena/submittable/assay_template_ii.json";
 
     static String EXPERIMENT_ACCESSION_XPATH = "/EXPERIMENT/@accession";
     static String EXPERIMENT_ALIAS_XPATH = "/EXPERIMENT/@alias";
@@ -325,7 +324,6 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         final List<SingleValidationResult> validationResultList = enaExperiment.getValidationResultList();
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-
     }
 
     @Test
@@ -338,16 +336,37 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     }
 
     @Test
-    public void testExperimentSerialisation () throws IOException, IllegalAccessException, JAXBException, ParserConfigurationException, TransformerException {
+    public void testExperimentSerialisation() throws IOException, IllegalAccessException, JAXBException, ParserConfigurationException, TransformerException {
         final Assay assayFromResource = TestHelper.getAssayFromResource(ASSAY_RESOURCE);
         ENAExperiment enaExperiment = new ENAExperiment(assayFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
-        marshaller.marshal(enaExperiment,new DOMResult(document));
+        marshaller.marshal(enaExperiment, new DOMResult(document));
         final String documentString = getDocumentString(document);
         logger.info(documentString);
         assertNotNull(enaExperiment);
     }
 
+    @Test
+    public void testSampleRefSerialisation() throws IOException, IllegalAccessException, ParserConfigurationException, JAXBException, TransformerException {
+        Assay assayFromResource = TestHelper.getAssayFromResource(ASSAY_RESOURCE_II);
+        ENAExperiment enaExperiment = new ENAExperiment(assayFromResource);
+
+        Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaExperiment, new DOMResult(document));
+        logger.info(getDocumentString(document));
+
+        assertThat(
+                document.getElementsByTagName("SAMPLE_DESCRIPTOR").item(0).getAttributes().getNamedItem("refname"),
+                is(notNullValue()));
+
+        assertThat(
+                document.getElementsByTagName("SAMPLE_DESCRIPTOR").item(0).getAttributes().getNamedItem("refname").getNodeValue(),
+                equalTo("SAM123456"));
+
+        assertThat(
+                document.getElementsByTagName("SAMPLE_DESCRIPTOR").item(0).getAttributes().getNamedItem("refcenter"),
+                is(nullValue()));
+    }
 
 
     static Assay createAssay () {
@@ -372,7 +391,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
 
     @Test
     public void testMarshalUnmarshallExperiment () throws Exception {
-        serialiseDeserialiseTest(ASSAY_RESOURCE,ENAExperiment.class,Assay.class);
+        serialiseDeserialiseTest(ASSAY_RESOURCE, ENAExperiment.class, Assay.class);
     }
 
 
