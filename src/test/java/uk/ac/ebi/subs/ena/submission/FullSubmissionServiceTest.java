@@ -44,13 +44,20 @@ public class FullSubmissionServiceTest {
     @Value("${ena.password}")
     String ftpPassword;
 
-    private String FASTQ_FILE_NAME = "test_forward_" + UUID.randomUUID().toString() + ".gz";
-
-    private String FASTQ_FILE = "src/test/resources/uk/ac/ebi/subs/ena/" + FASTQ_FILE_NAME;
-
-    private File fastQFile;
-
     public static final int SUBMITTABLE_COUNT = 10;
+    private final String[] BIOSAMPLE_ACCESSIONS = {
+            "SAMEA168881",
+            "SAMEA168882",
+            "SAMEA168883",
+            "SAMEA168884",
+            "SAMEA168885",
+            "SAMEA168886",
+            "SAMEA168887",
+            "SAMEA168888",
+            "SAMEA168889",
+            "SAMEA168890"
+    };
+
     @Autowired
     FullSubmissionService fullSubmissionService;
 
@@ -59,7 +66,8 @@ public class FullSubmissionServiceTest {
     Sample[] submittedSamples;
     Sample[] originalSamples;
     Assay[] submittedAssays;
-    Assay[] originalAssays;
+
+
     AssayData[] assayDatas;
     String submissionAlias;
     Team team;
@@ -89,12 +97,10 @@ public class FullSubmissionServiceTest {
         }
 
         submittedAssays = new Assay[SUBMITTABLE_COUNT];
-        originalAssays = new Assay[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
             String assayAlias = UUID.randomUUID().toString();
-            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
-            originalAssays[i] =  TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
+            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, BIOSAMPLE_ACCESSIONS[i], submittedStudies[0].getAlias());
         }
 
     }
@@ -160,9 +166,8 @@ public class FullSubmissionServiceTest {
     }
 
     @Test
-    public void submitStudySamplesAndExperiment() throws Exception {
+    public void submitStudyAndExperiment() throws Exception {
         parameterMap.put(StudyActionService.class, submittedStudies);
-        parameterMap.put(SampleActionService.class, submittedSamples);
         parameterMap.put(AssayActionService.class, submittedAssays);
         final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
         assertThat(receipt.getSuccess(), is(true));
@@ -172,18 +177,15 @@ public class FullSubmissionServiceTest {
     }
 
     @Test
-    public void submitStudySamplesExperimentAndRun() throws Exception {
+    public void submitStudyExperimentAndRun() throws Exception {
         FTPClient ftpClient = connectToWebinFTP();
         parameterMap.put(StudyActionService.class, submittedStudies);
-        parameterMap.put(SampleActionService.class, submittedSamples);
         parameterMap.put(AssayActionService.class, submittedAssays);
 
         assayDatas = new AssayData[SUBMITTABLE_COUNT];
         List<java.io.File> fileList = new ArrayList<>();
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            submittedSamples[i] = TestHelper.getSample(UUID.randomUUID().toString(),team);
-            submittedAssays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
             assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team, submittedAssays[i].getAccession());
             File file = new File();
             file.setChecksum("2debfdcf79f03e4a65a667d21ef9de14");
