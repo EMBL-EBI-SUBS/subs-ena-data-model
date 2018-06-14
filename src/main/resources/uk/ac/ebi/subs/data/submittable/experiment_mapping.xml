@@ -10,7 +10,7 @@
         <java-type name="Assay" xml-transient="true"/>
         <java-type name="ENAExperiment" xml-accessor-type="NONE">
             <xml-root-element name="EXPERIMENT"/>
-            <xml-type prop-order="accession alias teamName title studyRef designDescription sampleRef libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary enaAttributeList"/>
+            <xml-type prop-order="accession alias teamName title studyRef designDescription sampleAccession libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary enaAttributeList"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
@@ -23,8 +23,9 @@
                              type="uk.ac.ebi.subs.data.component.StudyRef">
                 </xml-element>
                 <xml-element java-attribute="designDescription" nillable="true" xml-path="DESIGN/DESIGN_DESCRIPTION/text()"/>
-                <xml-element java-attribute="sampleRef" name="SAMPLE_REF" xml-path="DESIGN/SAMPLE_DESCRIPTOR"
-                             type="uk.ac.ebi.subs.data.component.SampleRef"/>
+
+                <xml-attribute java-attribute="sampleAccession" xml-path="DESIGN/SAMPLE_DESCRIPTOR/@refname"/>
+
                 <xml-element java-attribute="libraryName" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_NAME/text()"/>
                 <xml-element java-attribute="libraryStrategy" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_STRATEGY/text()"/>
                 <xml-element java-attribute="librarySource" xml-path="DESIGN/LIBRARY_DESCRIPTOR/LIBRARY_SOURCE/text()"/>

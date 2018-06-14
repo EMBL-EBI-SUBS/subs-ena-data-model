@@ -2,6 +2,7 @@ package uk.ac.ebi.subs.xml;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.hamcrest.core.IsNull;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +52,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public static final String ION_TORRENT = "ION_TORRENT";
     public static final String CAPILLARY = "CAPILLARY";
 
-    String ASSAY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/assay_template.json";
+    String ASSAY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/assay_template_ii.json";
     private static final String ASSAY_RESOURCE_II = "/uk/ac/ebi/subs/ena/submittable/assay_template_ii.json";
 
     static String EXPERIMENT_ACCESSION_XPATH = "/EXPERIMENT/@accession";
@@ -61,7 +62,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     static String EXPERIMENT_STUDY_REF_ACCESSION = "/EXPERIMENT[1]/STUDY_REF[1]/@accession";
     static String EXPERIMENT_STUDY_REF_NAME = "/EXPERIMENT[1]/STUDY_REF[1]/@ref_name";
     static String EXPERIMENT_SAMPLE_REF_ACCESSION = "/EXPERIMENT[1]/DESIGN[1]/SAMPLE_DESCRIPTOR[1]/@accession";
-    static String EXPERIMENT_SAMPLE_REF_NAME = "/EXPERIMENT[1]/DESIGN[1]/SAMPLE_DESCRIPTOR[1]/@ref_name";
+    static String EXPERIMENT_SAMPLE_REF_NAME = "/EXPERIMENT[1]/DESIGN[1]/SAMPLE_DESCRIPTOR[1]/@refname";
     static String ILLUMINA_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/ILLUMINA[1]/INSTRUMENT_MODEL[1]/text()";
     static String LS454_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/LS454[1]/INSTRUMENT_MODEL[1]/text()";
     static String HELICOS_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/HELICOS[1]/INSTRUMENT_MODEL[1]/text()";
@@ -188,20 +189,34 @@ public class ExperimentSerialisationTest extends SerialisationTest {
 
     @Test
     public void testMarshalExperimentSampleRef() throws Exception {
+        String expectedRefname = "I AM THE BIOSAMPLE ACCESSION AND I SHOULD BE IN THE SAMPLE_DESCRIPTOR REFNAME attribute";
+
         Assay assay = createAssay();
         SampleRef sampleRef = new SampleRef();
-        sampleRef.setAccession(UUID.randomUUID().toString());
+        sampleRef.setAccession(expectedRefname);
         SampleUse sampleUse = new SampleUse(sampleRef);
         assay.getSampleUses().add(sampleUse);
+
         ENAExperiment enaExperiment = new ENAExperiment(assay);
-        StringWriter stringWriter = new StringWriter();
-        objectMapper.writeValue(stringWriter,assay);
-        String assayString = stringWriter.toString();
-        logger.info(assayString);
+
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String sampleAccession = executeXPathQueryNodeValue(document, EXPERIMENT_SAMPLE_REF_ACCESSION);
-        assertThat("experiment alias serialised to XML", sampleRef.getAccession(), equalTo(sampleAccession));
+
+        if (logger.isInfoEnabled()) {
+            StringWriter stringWriter = new StringWriter();
+            objectMapper.writeValue(stringWriter, assay);
+            String assayString = stringWriter.toString();
+            logger.info("assay string {}",assayString);
+
+            logger.info("document string {}",getDocumentString(document));
+        }
+
+
+        String sampleAccession = executeXPathQueryNodeValue(document, EXPERIMENT_SAMPLE_REF_NAME);
+
+        assertThat("sample accession serialised to XML",
+                sampleAccession,
+                equalTo(expectedRefname));
     }
 
     @Test

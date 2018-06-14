@@ -113,8 +113,8 @@ public class ENAProcessorTest {
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
             String assayAlias = UUID.randomUUID().toString();
-            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
-            originalAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
+            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
+            originalAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
         }
     }
 

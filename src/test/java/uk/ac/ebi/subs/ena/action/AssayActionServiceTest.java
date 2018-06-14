@@ -33,7 +33,7 @@ public class AssayActionServiceTest {
         String alias = UUID.randomUUID().toString();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
-        final Assay assay = TestHelper.getAssay(alias, team,"alias","alias");
+        final Assay assay = TestHelper.getAssay(alias, team,"SAMEA4862012","alias");
         Assay [] assays = new Assay[]{assay};
         final SubmissionType.ACTIONS.ACTION actionXML = assayActionService.createActionXML(assays);
         assertThat(actionXML.isSetADD(), is(true));
@@ -44,7 +44,7 @@ public class AssayActionServiceTest {
         String alias = UUID.randomUUID().toString();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
-        final Assay assay = TestHelper.getAssay(alias, team,"alias","alias");
+        final Assay assay = TestHelper.getAssay(alias, team,"SAMEA4862012","alias");
         assay.setAccession(UUID.randomUUID().toString());
         Assay [] assays = new Assay[]{assay};
         final SubmissionType.ACTIONS.ACTION actionXML = assayActionService.createActionXML(assays);

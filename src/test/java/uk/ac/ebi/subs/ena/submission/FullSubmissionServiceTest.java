@@ -93,8 +93,8 @@ public class FullSubmissionServiceTest {
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
             String assayAlias = UUID.randomUUID().toString();
-            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
-            originalAssays[i] =  TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
+            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
+            originalAssays[i] =  TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
         }
 
     }
@@ -183,8 +183,8 @@ public class FullSubmissionServiceTest {
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
             submittedSamples[i] = TestHelper.getSample(UUID.randomUUID().toString(),team);
-            submittedAssays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team, submittedSamples[i].getAlias(), submittedStudies[0].getAlias());
-            assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team, submittedAssays[i].getAlias());
+            submittedAssays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
+            assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team, submittedAssays[i].getAccession());
             File file = new File();
             file.setChecksum("2debfdcf79f03e4a65a667d21ef9de14");
             file.setChecksumMethod("MD5");

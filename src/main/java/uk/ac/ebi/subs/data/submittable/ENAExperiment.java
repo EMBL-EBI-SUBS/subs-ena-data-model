@@ -162,6 +162,24 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
         }
     }
 
+    public String getSampleAccession(){
+        Assay assay = getBaseObject();
+        if (assay.getSampleUses().isEmpty()){
+            return null;
+        }
+        else {
+            final SampleRef sampleRef = assay.getSampleUses().get(0).getSampleRef();
+            return sampleRef.getAccession();
+        }
+    }
+
+    public void setSampleAccession(String accession) {
+        SampleRef sampleRef = new SampleRef();
+        sampleRef.setAccession(accession);
+        SampleUse sampleUse = new SampleUse(sampleRef);
+        getBaseObject().getSampleUses().add(sampleUse);
+    }
+
     public SampleRef getSampleRef () {
         Assay assay = getBaseObject();
         if (assay.getSampleUses().isEmpty())

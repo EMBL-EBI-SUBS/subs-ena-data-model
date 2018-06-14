@@ -265,7 +265,7 @@ public class TestHelper {
         return sample;
     }
 
-    public static Assay getAssay(String alias, Team team, String sampleAlias, String studyAlias) {
+    public static Assay getAssay(String alias, Team team, String biosampleAccession, String studyAlias) {
         Assay a = new Assay();
         a.setId(UUID.randomUUID().toString());
         a.setAlias(alias);
@@ -282,7 +282,7 @@ public class TestHelper {
         addAttribute(a,ENAExperiment.LIBRARY_STRATEGY,"WGS");
 
         SampleRef sampleRef = new SampleRef();
-        sampleRef.setAlias(sampleAlias);
+        sampleRef.setAccession(biosampleAccession);
         SampleUse sampleUse = new SampleUse(sampleRef);
         a.getSampleUses().add(sampleUse);
 
