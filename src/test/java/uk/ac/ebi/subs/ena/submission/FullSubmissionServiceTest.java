@@ -186,7 +186,9 @@ public class FullSubmissionServiceTest {
         List<java.io.File> fileList = new ArrayList<>();
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team, submittedAssays[i].getAccession());
+            submittedAssays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team, BIOSAMPLE_ACCESSIONS[i], submittedStudies[0].getAlias());
+            assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team, submittedAssays[i].getAlias());
+
             File file = new File();
             file.setChecksum("2debfdcf79f03e4a65a667d21ef9de14");
             file.setChecksumMethod("MD5");
