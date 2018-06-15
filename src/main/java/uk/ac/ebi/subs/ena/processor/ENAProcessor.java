@@ -15,6 +15,7 @@ import uk.ac.ebi.subs.ena.action.AssayActionService;
 import uk.ac.ebi.subs.ena.action.AssayDataActionService;
 import uk.ac.ebi.subs.ena.action.SampleActionService;
 import uk.ac.ebi.subs.ena.action.StudyActionService;
+import uk.ac.ebi.subs.ena.config.TypeProcessingConfig;
 import uk.ac.ebi.subs.ena.submission.FullSubmissionService;
 import uk.ac.ebi.subs.processing.SubmissionEnvelope;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
@@ -32,9 +33,11 @@ public class ENAProcessor {
     protected static final Logger logger = LoggerFactory.getLogger(ENAProcessor.class);
 
     FullSubmissionService fullSubmissionService;
+    TypeProcessingConfig typeProcessingConfig;
 
-    public ENAProcessor(FullSubmissionService fullSubmissionService) {
+    public ENAProcessor(FullSubmissionService fullSubmissionService, TypeProcessingConfig typeProcessingConfig) {
         this.fullSubmissionService = fullSubmissionService;
+        this.typeProcessingConfig = typeProcessingConfig;
     }
 
     public List<SingleValidationResult> process(SubmissionEnvelope submissionEnvelope) {
@@ -117,26 +120,38 @@ public class ENAProcessor {
 
     private Map<Class<? extends ActionService>, Object> createParamMap(SubmissionEnvelope submissionEnvelope, Predicate<? super Submittable> filter) {
         Map<Class<? extends ActionService>, Object> paramMap = new HashMap<>();
-        final Study[] studies = submissionEnvelope.getStudies().stream().filter(filter).toArray(Study[]::new);
 
-        if (studies.length > 0)
-            paramMap.put(StudyActionService.class, studies);
+        if (typeProcessingConfig.isStudiesEnabled()) {
+            final Study[] studies = submissionEnvelope.getStudies().stream().filter(filter).toArray(Study[]::new);
 
-        final Sample[] samples = submissionEnvelope.getSamples().stream().filter(filter).toArray(Sample[]::new);
+            if (studies.length > 0) {
+                paramMap.put(StudyActionService.class, studies);
+            }
+        }
 
-        if (samples.length > 0)
-            paramMap.put(SampleActionService.class, samples);
+        if (typeProcessingConfig.isSamplesEnabled()) {
+            final Sample[] samples = submissionEnvelope.getSamples().stream().filter(filter).toArray(Sample[]::new);
 
-        final Assay[] assays = submissionEnvelope.getAssays().stream().filter(filter).toArray(Assay[]::new);
+            if (samples.length > 0) {
+                paramMap.put(SampleActionService.class, samples);
+            }
+        }
 
-        if (assays.length > 0)
-            paramMap.put(AssayActionService.class, assays);
+        if (typeProcessingConfig.isAssaysEnabled()) {
+            final Assay[] assays = submissionEnvelope.getAssays().stream().filter(filter).toArray(Assay[]::new);
 
-        final AssayData[] assayData = submissionEnvelope.getAssayData().stream().filter(filter).toArray(AssayData[]::new);
+            if (assays.length > 0) {
+                paramMap.put(AssayActionService.class, assays);
+            }
+        }
 
-        if (assayData.length > 0)
-            paramMap.put(AssayDataActionService.class, assayData);
+        if (typeProcessingConfig.isAssayDataEnabled()) {
+            final AssayData[] assayData = submissionEnvelope.getAssayData().stream().filter(filter).toArray(AssayData[]::new);
 
+            if (assayData.length > 0) {
+                paramMap.put(AssayDataActionService.class, assayData);
+            }
+        }
         return paramMap;
     }
 
