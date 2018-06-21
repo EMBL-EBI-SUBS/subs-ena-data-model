@@ -1,8 +1,8 @@
 package uk.ac.ebi.subs.xml;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.hamcrest.core.IsNull;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -35,10 +34,10 @@ import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ExperimentSerialisationTest extends SerialisationTest {
@@ -53,7 +52,8 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public static final String ION_TORRENT = "ION_TORRENT";
     public static final String CAPILLARY = "CAPILLARY";
 
-    String ASSAY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/assay_template.json";
+    String ASSAY_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/assay_template_ii.json";
+    private static final String ASSAY_RESOURCE_II = "/uk/ac/ebi/subs/ena/submittable/assay_template_ii.json";
 
     static String EXPERIMENT_ACCESSION_XPATH = "/EXPERIMENT/@accession";
     static String EXPERIMENT_ALIAS_XPATH = "/EXPERIMENT/@alias";
@@ -62,7 +62,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     static String EXPERIMENT_STUDY_REF_ACCESSION = "/EXPERIMENT[1]/STUDY_REF[1]/@accession";
     static String EXPERIMENT_STUDY_REF_NAME = "/EXPERIMENT[1]/STUDY_REF[1]/@ref_name";
     static String EXPERIMENT_SAMPLE_REF_ACCESSION = "/EXPERIMENT[1]/DESIGN[1]/SAMPLE_DESCRIPTOR[1]/@accession";
-    static String EXPERIMENT_SAMPLE_REF_NAME = "/EXPERIMENT[1]/DESIGN[1]/SAMPLE_DESCRIPTOR[1]/@ref_name";
+    static String EXPERIMENT_SAMPLE_REF_NAME = "/EXPERIMENT[1]/DESIGN[1]/SAMPLE_DESCRIPTOR[1]/@refname";
     static String ILLUMINA_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/ILLUMINA[1]/INSTRUMENT_MODEL[1]/text()";
     static String LS454_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/LS454[1]/INSTRUMENT_MODEL[1]/text()";
     static String HELICOS_INSTRUMENT_MODEL_XPATH = "/EXPERIMENT[1]/PLATFORM[1]/HELICOS[1]/INSTRUMENT_MODEL[1]/text()";
@@ -189,20 +189,34 @@ public class ExperimentSerialisationTest extends SerialisationTest {
 
     @Test
     public void testMarshalExperimentSampleRef() throws Exception {
+        String expectedRefname = "I AM THE BIOSAMPLE ACCESSION AND I SHOULD BE IN THE SAMPLE_DESCRIPTOR REFNAME attribute";
+
         Assay assay = createAssay();
         SampleRef sampleRef = new SampleRef();
-        sampleRef.setAccession(UUID.randomUUID().toString());
+        sampleRef.setAccession(expectedRefname);
         SampleUse sampleUse = new SampleUse(sampleRef);
         assay.getSampleUses().add(sampleUse);
+
         ENAExperiment enaExperiment = new ENAExperiment(assay);
-        StringWriter stringWriter = new StringWriter();
-        objectMapper.writeValue(stringWriter,assay);
-        String assayString = stringWriter.toString();
-        logger.info(assayString);
+
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-        String sampleAccession = executeXPathQueryNodeValue(document, EXPERIMENT_SAMPLE_REF_ACCESSION);
-        assertThat("experiment alias serialised to XML", sampleRef.getAccession(), equalTo(sampleAccession));
+
+        if (logger.isInfoEnabled()) {
+            StringWriter stringWriter = new StringWriter();
+            objectMapper.writeValue(stringWriter, assay);
+            String assayString = stringWriter.toString();
+            logger.info("assay string {}",assayString);
+
+            logger.info("document string {}",getDocumentString(document));
+        }
+
+
+        String sampleAccession = executeXPathQueryNodeValue(document, EXPERIMENT_SAMPLE_REF_NAME);
+
+        assertThat("sample accession serialised to XML",
+                sampleAccession,
+                equalTo(expectedRefname));
     }
 
     @Test
@@ -325,7 +339,6 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         final List<SingleValidationResult> validationResultList = enaExperiment.getValidationResultList();
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
-
     }
 
     @Test
@@ -338,16 +351,37 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     }
 
     @Test
-    public void testExperimentSerialisation () throws IOException, IllegalAccessException, JAXBException, ParserConfigurationException, TransformerException {
+    public void testExperimentSerialisation() throws IOException, IllegalAccessException, JAXBException, ParserConfigurationException, TransformerException {
         final Assay assayFromResource = TestHelper.getAssayFromResource(ASSAY_RESOURCE);
         ENAExperiment enaExperiment = new ENAExperiment(assayFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
-        marshaller.marshal(enaExperiment,new DOMResult(document));
+        marshaller.marshal(enaExperiment, new DOMResult(document));
         final String documentString = getDocumentString(document);
         logger.info(documentString);
         assertNotNull(enaExperiment);
     }
 
+    @Test
+    public void testSampleRefSerialisation() throws IOException, IllegalAccessException, ParserConfigurationException, JAXBException, TransformerException {
+        Assay assayFromResource = TestHelper.getAssayFromResource(ASSAY_RESOURCE_II);
+        ENAExperiment enaExperiment = new ENAExperiment(assayFromResource);
+
+        Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaExperiment, new DOMResult(document));
+        logger.info(getDocumentString(document));
+
+        assertThat(
+                document.getElementsByTagName("SAMPLE_DESCRIPTOR").item(0).getAttributes().getNamedItem("refname"),
+                is(notNullValue()));
+
+        assertThat(
+                document.getElementsByTagName("SAMPLE_DESCRIPTOR").item(0).getAttributes().getNamedItem("refname").getNodeValue(),
+                equalTo("SAM123456"));
+
+        assertThat(
+                document.getElementsByTagName("SAMPLE_DESCRIPTOR").item(0).getAttributes().getNamedItem("refcenter"),
+                is(nullValue()));
+    }
 
 
     static Assay createAssay () {
@@ -372,7 +406,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
 
     @Test
     public void testMarshalUnmarshallExperiment () throws Exception {
-        serialiseDeserialiseTest(ASSAY_RESOURCE,ENAExperiment.class,Assay.class);
+        serialiseDeserialiseTest(ASSAY_RESOURCE, ENAExperiment.class, Assay.class);
     }
 
 
