@@ -1,12 +1,12 @@
 package uk.ac.ebi.subs.xml;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
-import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.ProjectRef;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.ENAStudy;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
@@ -18,7 +18,6 @@ import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
@@ -166,6 +165,25 @@ public class StudySerialisationTest extends SerialisationTest {
         final List<SingleValidationResult> validationResultList = enaStudy.getValidationResultList();
 
         assertThat("Study is invalid",enaStudy.isValid(),equalTo(false));
+    }
+
+    @Test
+    public void testMarshalProjectRef() throws Exception {
+        Study study = new Study();
+        ProjectRef projectRef = new ProjectRef();
+        projectRef.setAccession("BIOSTUDY123456");
+        study.setProjectRef(projectRef);
+        ENAStudy enaStudy = new ENAStudy(study);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaStudy, new DOMResult(document));
+
+        final String documentString = getDocumentString(document);
+        assertThat(documentString, CoreMatchers.containsString("<STUDY_ATTRIBUTE><TAG>USI-BIOSTUDY-ID</TAG><VALUE>BIOSTUDY123456</VALUE></STUDY_ATTRIBUTE>"));
+
+//        String tag = executeXPathQueryNodeValue(document, "/STUDY/STUDY_ATTRIBUTES[0]/STUDY_ATTRIBUTE/TAG");
+//        assertThat(tag, equalTo("USI-BIOSTUDY-ID"));
+//        String value = executeXPathQueryNodeValue(document, "/STUDY/STUDY_ATTRIBUTES[0]/STUDY_ATTRIBUTE/VALUE");
+//        assertThat(value, equalTo("BIOSTUDY123456"));
     }
 
     @Before

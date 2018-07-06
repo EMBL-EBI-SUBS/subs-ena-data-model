@@ -1,6 +1,7 @@
 package uk.ac.ebi.subs.data.submittable;
 
 import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.ProjectRef;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.ena.annotation.ENAField;
 import uk.ac.ebi.subs.ena.annotation.ENAFieldAttribute;
@@ -22,7 +23,7 @@ import java.util.*;
  */
 public abstract class AbstractENASubmittable<T extends BaseSubmittable> implements ENASubmittable<T>  {
 
-    private Submittable baseSubmittable;
+    protected Submittable baseSubmittable;
     private List<SingleValidationResult> validationResultList = new ArrayList<>();
 
     public AbstractENASubmittable(Submittable baseSubmittable) throws IllegalAccessException {
