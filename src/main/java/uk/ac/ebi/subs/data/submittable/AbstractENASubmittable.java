@@ -1,6 +1,7 @@
 package uk.ac.ebi.subs.data.submittable;
 
 import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.Attributes;
 import uk.ac.ebi.subs.data.component.ProjectRef;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.ena.annotation.ENAField;
@@ -14,6 +15,8 @@ import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import java.lang.reflect.Field;
 import java.util.*;
+
+import static uk.ac.ebi.subs.data.submittable.ENAStudy.USI_BIOSTUDY_ID;
 
 /**
  * Abstract implmentation for all ENA submittables.
@@ -149,7 +152,6 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
                 if (!enaFieldAttribute.attributeFieldName().equals(ENAFieldAttribute.NO_FIELD)) {
                     attributefieldMap.put(enaFieldAttribute.name(),enaFieldAttribute.attributeFieldName());
                 }
-
             }
         }
 
@@ -175,11 +177,17 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
 
                 }
             } else if (field.getType().isMemberClass()) {
-
                 deSerialiseFields(field.getType(),field.get(obj));
             }
-
         }
+
+        // Deserialise USI-BIOSTUDY-ID Study Attribute back to a Study ProjectRef
+//        Collection<Attribute> biostudyId = this.getAttributes().get(USI_BIOSTUDY_ID);
+//        if (biostudyId != null) {
+//            ProjectRef projectRef = new ProjectRef();
+//            projectRef.setAccession(biostudyId.iterator().next().getValue());
+//            ((Study) baseSubmittable).setProjectRef(projectRef);
+//        }
     }
 
 

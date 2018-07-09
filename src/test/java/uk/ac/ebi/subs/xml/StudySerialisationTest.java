@@ -180,7 +180,8 @@ public class StudySerialisationTest extends SerialisationTest {
         final String documentString = getDocumentString(document);
         assertThat(documentString, CoreMatchers.containsString("<STUDY_ATTRIBUTE><TAG>USI-BIOSTUDY-ID</TAG><VALUE>BIOSTUDY123456</VALUE></STUDY_ATTRIBUTE>"));
 
-//        String tag = executeXPathQueryNodeValue(document, "/STUDY/STUDY_ATTRIBUTES[0]/STUDY_ATTRIBUTE/TAG");
+//        String tag = executeXPathQueryNodeValue(document, "//STUDY_ATTRIBUTE[TAG[text()=\"USI-BIOSTUDY-ID\"]]/TAG");
+//        System.out.println(tag);
 //        assertThat(tag, equalTo("USI-BIOSTUDY-ID"));
 //        String value = executeXPathQueryNodeValue(document, "/STUDY/STUDY_ATTRIBUTES[0]/STUDY_ATTRIBUTE/VALUE");
 //        assertThat(value, equalTo("BIOSTUDY123456"));
@@ -204,7 +205,7 @@ public class StudySerialisationTest extends SerialisationTest {
 
     @Test
     public void testMarshalUnmarshallStudy () throws Exception {
-        serialiseDeserialiseTest(STUDY_RESOURCE,ENAStudy.class,Study.class);
+        serialiseDeserialiseTest(STUDY_RESOURCE, ENAStudy.class, Study.class);
     }
 
 

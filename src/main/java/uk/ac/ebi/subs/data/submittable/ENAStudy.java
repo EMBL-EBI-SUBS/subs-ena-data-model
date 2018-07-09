@@ -92,29 +92,37 @@ public class ENAStudy extends AbstractENASubmittable<Study> {
     @Override
     public Map<String, Collection<Attribute>> getAttributes() {
         Map<String, Collection<Attribute>> attributes;
-
         ProjectRef projectRef = ((Study) baseSubmittable).getProjectRef();
-        if (projectRef != null) {
+
+        if (projectRef != null && projectRef.getAccession() != null && !super.getAttributes().containsKey(USI_BIOSTUDY_ID)) {
+
             attributes = super.getAttributes()
                     .entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-            Attribute biostudyId = new Attribute();
-            biostudyId.setValue(projectRef.getAccession());
-            attributes.put(USI_BIOSTUDY_ID, Arrays.asList(biostudyId));
+            Attribute attribute = new Attribute();
+            attribute.setValue(projectRef.getAccession());
+            attributes.put(USI_BIOSTUDY_ID, Arrays.asList(attribute));
             return attributes;
         }
-
         return super.getAttributes();
     }
 
     @Override
     public void setAttributes(Map<String, Collection<Attribute>> attributes) {
-        Map<String, Collection<Attribute>> filteredAttributes = attributes
-                .entrySet().stream()
-                .filter(entrySet -> !entrySet.getKey().equals(USI_BIOSTUDY_ID))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        if(attributes.containsKey(USI_BIOSTUDY_ID)) {
+            ProjectRef projectRef = new ProjectRef();
+            projectRef.setAccession(attributes.get(USI_BIOSTUDY_ID).iterator().next().getValue());
+            ((Study) baseSubmittable).setProjectRef(projectRef);
 
-        super.setAttributes(filteredAttributes);
+            Map<String, Collection<Attribute>> filteredAttributes = attributes
+                    .entrySet().stream()
+                    .filter(entrySet -> !entrySet.getKey().equals(USI_BIOSTUDY_ID))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+            super.setAttributes(filteredAttributes);
+        } else {
+            super.setAttributes(attributes);
+        }
     }
 }
