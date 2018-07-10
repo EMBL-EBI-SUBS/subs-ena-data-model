@@ -180,14 +180,6 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
                 deSerialiseFields(field.getType(),field.get(obj));
             }
         }
-
-        // Deserialise USI-BIOSTUDY-ID Study Attribute back to a Study ProjectRef
-//        Collection<Attribute> biostudyId = this.getAttributes().get(USI_BIOSTUDY_ID);
-//        if (biostudyId != null) {
-//            ProjectRef projectRef = new ProjectRef();
-//            projectRef.setAccession(biostudyId.iterator().next().getValue());
-//            ((Study) baseSubmittable).setProjectRef(projectRef);
-//        }
     }
 
 
