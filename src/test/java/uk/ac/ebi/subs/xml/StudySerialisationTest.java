@@ -1,6 +1,5 @@
 package uk.ac.ebi.subs.xml;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static uk.ac.ebi.subs.data.submittable.ENAStudy.USI_BIOSTUDY_ID;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class StudySerialisationTest extends SerialisationTest {
@@ -177,14 +177,11 @@ public class StudySerialisationTest extends SerialisationTest {
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy, new DOMResult(document));
 
-        final String documentString = getDocumentString(document);
-        assertThat(documentString, CoreMatchers.containsString("<STUDY_ATTRIBUTE><TAG>USI-BIOSTUDY-ID</TAG><VALUE>BIOSTUDY123456</VALUE></STUDY_ATTRIBUTE>"));
+        String tag = executeXPathQueryNodeValue(document, "//STUDY_ATTRIBUTE/TAG/text()");
+        assertThat(tag, equalTo(USI_BIOSTUDY_ID));
 
-//        String tag = executeXPathQueryNodeValue(document, "//STUDY_ATTRIBUTE[TAG[text()=\"USI-BIOSTUDY-ID\"]]/TAG");
-//        System.out.println(tag);
-//        assertThat(tag, equalTo("USI-BIOSTUDY-ID"));
-//        String value = executeXPathQueryNodeValue(document, "/STUDY/STUDY_ATTRIBUTES[0]/STUDY_ATTRIBUTE/VALUE");
-//        assertThat(value, equalTo("BIOSTUDY123456"));
+        String value = executeXPathQueryNodeValue(document, "//STUDY_ATTRIBUTE/VALUE/text()");
+        assertThat(value, equalTo("BIOSTUDY123456"));
     }
 
     @Before
