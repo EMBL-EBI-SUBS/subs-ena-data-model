@@ -25,6 +25,7 @@ import uk.ac.ebi.subs.data.component.SampleRef;
 import uk.ac.ebi.subs.data.component.SampleUse;
 import uk.ac.ebi.subs.data.component.StudyRef;
 import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.submittable.Analysis;
 import uk.ac.ebi.subs.data.submittable.Assay;
 import uk.ac.ebi.subs.data.submittable.AssayData;
 import uk.ac.ebi.subs.data.submittable.ENAExperiment;
@@ -74,6 +75,17 @@ public class TestHelper {
         final UUID uuid = UUID.randomUUID();
         assay.setId(uuid.toString());
         return assay;
+
+    }
+
+    public static Analysis getAnalysisFromResource(String analysisResource) throws IOException {
+        final InputStream inputStream = ObjectMapper.class.getResourceAsStream(analysisResource);
+        final Analysis analysis = objectMapper.readValue(inputStream, Analysis.class);
+
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        final UUID uuid = UUID.randomUUID();
+        analysis.setId(uuid.toString());
+        return analysis;
 
     }
 

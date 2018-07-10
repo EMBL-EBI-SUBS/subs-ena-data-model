@@ -25,6 +25,7 @@ public class MappingHelper {
     public static String RUN_MARSHALLER = "uk/ac/ebi/subs/data/submittable/run_mapping.xml";
     public static String SAMPLE_MARSHALLER = "uk/ac/ebi/subs/data/submittable/sample_mapping.xml";
     public static String STUDY_MARSHALLER = "uk/ac/ebi/subs/data/submittable/study_mapping.xml";
+    public static String ANALYSIS_MARSHALLER = "uk/ac/ebi/subs/data/submittable/analysis_mapping.xml";
 
 
     public static StreamSource createStreamSource (String resourceName) throws URISyntaxException {
