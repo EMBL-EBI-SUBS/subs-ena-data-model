@@ -11,6 +11,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import uk.ac.ebi.subs.data.submittable.ENAExperiment;
 import uk.ac.ebi.subs.data.submittable.ENARun;
 import uk.ac.ebi.subs.data.submittable.ENASample;
+import uk.ac.ebi.subs.data.submittable.ENASequenceVariationAnalysis;
 import uk.ac.ebi.subs.data.submittable.ENAStudy;
 
 import javax.xml.transform.stream.StreamSource;
@@ -43,6 +44,9 @@ public class EnaAgentConfiguration {
     @Value("classpath:uk/ac/ebi/subs/data/submittable/sample_mapping.xml")
     Resource sampleMappingResource;
 
+    @Value("classpath:uk/ac/ebi/subs/data/submittable/seq_var_analysis_mapping.xml")
+    Resource seqVarAnalysisMappingResource;
+
     @Bean(name = "study")
     Jaxb2Marshaller jaxb2StudyMarshaller() throws IOException {
         Class enaStudyClass = ENAStudy.class;
@@ -65,6 +69,12 @@ public class EnaAgentConfiguration {
     Jaxb2Marshaller jaxb2RunMarshaller() throws IOException {
         Class enaRunClass = ENARun.class;
         return getJaxb2Marshaller(runMappingResource, enaRunClass);
+    }
+
+    @Bean(name = "sequenceVariationAnalysis")
+    Jaxb2Marshaller jaxb2SequenceVariationAnalysisMarshaller() throws IOException {
+        Class enaSequenceVariationAnalysisClass = ENASequenceVariationAnalysis.class;
+        return getJaxb2Marshaller(seqVarAnalysisMappingResource, enaSequenceVariationAnalysisClass);
     }
 
     private Jaxb2Marshaller getJaxb2Marshaller(Resource resource, Class enaStudyClass) throws IOException {
