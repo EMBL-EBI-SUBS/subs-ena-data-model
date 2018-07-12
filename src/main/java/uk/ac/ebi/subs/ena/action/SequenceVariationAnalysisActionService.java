@@ -9,7 +9,7 @@ import uk.ac.ebi.subs.data.submittable.ENASequenceVariationAnalysis;
 @Service
 public class SequenceVariationAnalysisActionService extends AbstractSubmittablesActionService<Analysis, ENASequenceVariationAnalysis> {
 
-    public static final String SCHEMA = "sequenceVariationAnalysis";
+    public static final String SCHEMA = "analysis";
 
     public SequenceVariationAnalysisActionService(@Qualifier(SCHEMA) Marshaller marshaller) {
         super(marshaller, SCHEMA, ENASequenceVariationAnalysis.class);

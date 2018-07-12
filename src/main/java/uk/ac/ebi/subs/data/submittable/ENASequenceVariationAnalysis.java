@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 
 public class ENASequenceVariationAnalysis extends AbstractENASubmittable<Analysis> {
 
-    private static final String ASSEMBLY_NAME_ATTRIBUTE = "assembly name";
-    private static final String EXPERIMENT_TYPE_ATTRIBUTE = "experiment type";
-    private static final String PROGRAM_ATRRIBUTE = "program";
-    private static final String PLATFORM_ATTRIBUTE = "platform";
-    private static final String IMPUTATION_ATTRIBUTE = "imputation";
+    public static final String ASSEMBLY_NAME_ATTRIBUTE = "assembly name";
+    public static final String EXPERIMENT_TYPE_ATTRIBUTE = "experiment type";
+    public static final String PROGRAM_ATRRIBUTE = "program";
+    public static final String PLATFORM_ATTRIBUTE = "platform";
+    public static final String IMPUTATION_ATTRIBUTE = "imputation";
 
     public ENASequenceVariationAnalysis(Analysis analysis) throws IllegalAccessException {
         super(analysis);

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
 import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.submittable.Analysis;
 import uk.ac.ebi.subs.data.submittable.Assay;
 import uk.ac.ebi.subs.data.submittable.AssayData;
 import uk.ac.ebi.subs.data.submittable.Sample;
@@ -14,6 +15,7 @@ import uk.ac.ebi.subs.ena.action.ActionService;
 import uk.ac.ebi.subs.ena.action.AssayActionService;
 import uk.ac.ebi.subs.ena.action.AssayDataActionService;
 import uk.ac.ebi.subs.ena.action.SampleActionService;
+import uk.ac.ebi.subs.ena.action.SequenceVariationAnalysisActionService;
 import uk.ac.ebi.subs.ena.action.StudyActionService;
 import uk.ac.ebi.subs.ena.config.TypeProcessingConfig;
 import uk.ac.ebi.subs.ena.submission.FullSubmissionService;
@@ -138,7 +140,8 @@ public class ENAProcessor {
         }
 
         if (typeProcessingConfig.isAssaysEnabled()) {
-            final Assay[] assays = submissionEnvelope.getAssays().stream().filter(filter).toArray(Assay[]::new);
+            final Assay[] assays = submissionEnvelope.getAssays().stream()
+                    .filter(filter).toArray(Assay[]::new);
 
             if (assays.length > 0) {
                 paramMap.put(AssayActionService.class, assays);
@@ -150,6 +153,18 @@ public class ENAProcessor {
 
             if (assayData.length > 0) {
                 paramMap.put(AssayDataActionService.class, assayData);
+            }
+        }
+
+        if (typeProcessingConfig.isSequenceVariationEnabled()) {
+            final Analysis[] seqVarAnalysis = submissionEnvelope.getAnalyses().stream()
+                    .filter(filter)
+                    .filter(analysis -> analysis.getAnalysisType() != null)
+                    .filter(analysis -> analysis.getAnalysisType().equals("sequence variation") )
+                    .toArray(Analysis[]::new);
+
+            if (seqVarAnalysis.length > 0) {
+                paramMap.put(SequenceVariationAnalysisActionService.class, seqVarAnalysis);
             }
         }
         return paramMap;

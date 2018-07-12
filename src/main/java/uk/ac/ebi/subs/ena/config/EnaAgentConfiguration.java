@@ -71,7 +71,7 @@ public class EnaAgentConfiguration {
         return getJaxb2Marshaller(runMappingResource, enaRunClass);
     }
 
-    @Bean(name = "sequenceVariationAnalysis")
+    @Bean(name = "analysis")
     Jaxb2Marshaller jaxb2SequenceVariationAnalysisMarshaller() throws IOException {
         Class enaSequenceVariationAnalysisClass = ENASequenceVariationAnalysis.class;
         return getJaxb2Marshaller(seqVarAnalysisMappingResource, enaSequenceVariationAnalysisClass);

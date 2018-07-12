@@ -63,6 +63,7 @@ public class ENAProcessorTest {
     public static final String SAMPLE_RECEIPT_XPATH_QUERY = "/RECEIPT/SAMPLE";
     public static final String ASSAY_RECEIPT_XPATH_QUERY = "/RECEIPT/EXPERIMENT";
     public static final String ASSAY_DATA_RECEIPT_XPATH_QUERY = "/RECEIPT/RUN";
+    public static final String ANALYSIS_DATA_RECEIPT_XPATH_QUERY = "/RECEIPT/ANALYSIS";
     public static final String STUDY_SUBMISSION_RECEIPT_RESOURCE = "/receipts/study_submission_receipt.xml";
     public static final String MODIFY_STUDY_SUBMISSION_RECEIPT_RESOURCE = "/receipts/modify_study_submission_receipt.xml";
     private Study[] submittedStudies;
@@ -71,6 +72,8 @@ public class ENAProcessorTest {
     private Sample[] originalSamples;
     private Assay[] submittedAssays;
     private Assay[] originalAssays;
+    private Analysis[] submittedSeqVarAnalysis;
+    private Analysis[] originalSeqVarAnalysis;
 
     @Before
     public void setup() throws Exception {
@@ -115,6 +118,15 @@ public class ENAProcessorTest {
             String assayAlias = UUID.randomUUID().toString();
             submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
             originalAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
+        }
+
+        submittedSeqVarAnalysis = new Analysis[SUBMITTABLE_COUNT];
+        originalSeqVarAnalysis = new Analysis[SUBMITTABLE_COUNT];
+
+        for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
+            String alias = UUID.randomUUID().toString();
+            submittedSeqVarAnalysis[i] = TestHelper.getSeqVarAnalysis(alias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
+            originalSeqVarAnalysis[i] = TestHelper.getSeqVarAnalysis(alias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
         }
     }
 

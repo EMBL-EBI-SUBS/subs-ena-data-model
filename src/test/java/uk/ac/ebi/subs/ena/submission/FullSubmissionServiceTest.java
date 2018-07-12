@@ -1,6 +1,5 @@
 package uk.ac.ebi.subs.ena.submission;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -66,6 +65,7 @@ public class FullSubmissionServiceTest {
     Sample[] submittedSamples;
     Sample[] originalSamples;
     Assay[] submittedAssays;
+    Analysis[] analyses;
 
 
     AssayData[] assayDatas;
@@ -101,6 +101,13 @@ public class FullSubmissionServiceTest {
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
             String assayAlias = UUID.randomUUID().toString();
             submittedAssays[i] = TestHelper.getAssay(assayAlias,team, BIOSAMPLE_ACCESSIONS[i], submittedStudies[0].getAlias());
+        }
+
+        analyses = new Analysis[SUBMITTABLE_COUNT];
+
+        for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
+            String alias = UUID.randomUUID().toString();
+            analyses[i] = TestHelper.getSeqVarAnalysis(alias,team, BIOSAMPLE_ACCESSIONS[i], submittedStudies[0].getAlias());
         }
 
     }
@@ -215,6 +222,46 @@ public class FullSubmissionServiceTest {
         assertThat(receipt.getSuccess(), is(true));
         for (Submittable submittable : assayDatas) {
             assertThat(submittable.getAccession(), startsWith("ERR"));
+        }
+    }
+
+    @Test
+    public void submitStudyAndSeqVarAnalysis() throws Exception {
+        FTPClient ftpClient = connectToWebinFTP();
+        parameterMap.put(StudyActionService.class, submittedStudies);
+
+        List<java.io.File> fileList = new ArrayList<>();
+
+        for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
+            File file = new File();
+            file.setChecksum("2debfdcf79f03e4a65a667d21ef9de14");
+            file.setChecksumMethod("MD5");
+
+            String fileName = UUID.randomUUID().toString() + ".vcf.gz";
+            createTestFile(fileName);
+
+            final java.io.File uploadedFile = uploadFile(ftpClient, fileName);
+            fileList.add(uploadedFile);
+            file.setName(fileName);
+            file.setType("vcf");
+
+            analyses[i].getFiles().clear();
+            analyses[i].getFiles().add(file);
+        }
+
+        parameterMap.put(SequenceVariationAnalysisActionService.class,analyses);
+
+        final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(submissionAlias,team.getName(),parameterMap,singleValidationResults);
+
+        for (java.io.File file : fileList) {
+            deleteFile(ftpClient,file.getName());
+            file.delete();
+
+        }
+
+        assertThat(receipt.getSuccess(), is(true));
+        for (Submittable submittable : analyses) {
+            assertThat(submittable.getAccession(), startsWith("ERZ"));
         }
     }
 

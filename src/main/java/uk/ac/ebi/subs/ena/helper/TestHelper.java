@@ -31,6 +31,7 @@ import uk.ac.ebi.subs.data.submittable.AssayData;
 import uk.ac.ebi.subs.data.submittable.ENAExperiment;
 import uk.ac.ebi.subs.data.submittable.ENARun;
 import uk.ac.ebi.subs.data.submittable.ENASample;
+import uk.ac.ebi.subs.data.submittable.ENASequenceVariationAnalysis;
 import uk.ac.ebi.subs.data.submittable.ENAStudy;
 import uk.ac.ebi.subs.data.submittable.Sample;
 import uk.ac.ebi.subs.data.submittable.Study;
@@ -276,6 +277,38 @@ public class TestHelper {
         sample.setTitle("Sample title");
         return sample;
     }
+    public static Analysis getSeqVarAnalysis(String alias, Team team, String biosampleAccession, String studyAlias){
+        Analysis a = new Analysis();
+        a.setId(UUID.randomUUID().toString());
+        a.setAlias(alias);
+        a.setTeam(team);
+        a.setTitle("Analysis Title ");
+        a.setDescription("Test analysis");
+        a.setAnalysisType("sequence variation");
+        addAttribute(a,ENASequenceVariationAnalysis.ASSEMBLY_NAME_ATTRIBUTE,"GRCh38");
+        addAttribute(a,ENASequenceVariationAnalysis.EXPERIMENT_TYPE_ATTRIBUTE,"Exome sequencing");
+        addAttribute(a,ENASequenceVariationAnalysis.PROGRAM_ATRRIBUTE,"MiniMap");
+        addAttribute(a,ENASequenceVariationAnalysis.PLATFORM_ATTRIBUTE,"Illumina HiSeq 2500");
+        addAttribute(a,ENASequenceVariationAnalysis.IMPUTATION_ATTRIBUTE,"false");
+
+        File file = new File();
+        file.setType("vcf");
+        file.setChecksum("2debfdcf79f03e4a65a667d21ef9de14");
+        file.setName("Test.vcf.gz");
+        file.setChecksumMethod("MD5");
+        a.getFiles().add(file);
+
+        SampleRef sampleRef = new SampleRef();
+        sampleRef.setAccession(biosampleAccession);
+        a.getSampleRefs().add(sampleRef);
+
+        StudyRef studyRef = new StudyRef();
+        studyRef.setAlias(studyAlias);
+        a.getStudyRefs().add(studyRef);
+
+        return a;
+    }
+
 
     public static Assay getAssay(String alias, Team team, String biosampleAccession, String studyAlias) {
         Assay a = new Assay();
