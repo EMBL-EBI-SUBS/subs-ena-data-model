@@ -105,6 +105,7 @@ public class FullSubmissionService {
         updateAccession(receiptDocument.getRECEIPT().getSAMPLEArray(),schemaAliasMapMap.get(SampleActionService.SCHEMA));
         updateAccession(receiptDocument.getRECEIPT().getEXPERIMENTArray(),schemaAliasMapMap.get(AssayActionService.SCHEMA));
         updateAccession(receiptDocument.getRECEIPT().getRUNArray(),schemaAliasMapMap.get(AssayDataActionService.SCHEMA));
+        updateAccession(receiptDocument.getRECEIPT().getANALYSISArray(),schemaAliasMapMap.get(SequenceVariationAnalysisActionService.SCHEMA));
 
         return receiptDocument.getRECEIPT();
     }
