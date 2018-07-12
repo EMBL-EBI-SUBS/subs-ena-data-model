@@ -7,14 +7,13 @@ import uk.ac.ebi.subs.data.component.StudyRef;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ENAAnalysis extends AbstractENASubmittable<Analysis> {
+public class ENASequenceVariationAnalysis extends AbstractENASubmittable<Analysis> {
 
     private static final String ASSEMBLY_NAME_ATTRIBUTE = "assembly name";
     private static final String EXPERIMENT_TYPE_ATTRIBUTE = "experiment type";
@@ -22,11 +21,11 @@ public class ENAAnalysis extends AbstractENASubmittable<Analysis> {
     private static final String PLATFORM_ATTRIBUTE = "platform";
     private static final String IMPUTATION_ATTRIBUTE = "imputation";
 
-    public ENAAnalysis(Analysis analysis) throws IllegalAccessException {
+    public ENASequenceVariationAnalysis(Analysis analysis) throws IllegalAccessException {
         super(analysis);
     }
 
-    public ENAAnalysis() throws IllegalAccessException {
+    public ENASequenceVariationAnalysis() throws IllegalAccessException {
         super();
     }
 
@@ -51,39 +50,39 @@ public class ENAAnalysis extends AbstractENASubmittable<Analysis> {
         this.getBaseObject().setSampleRefs(sampleRefs);
     }
 
-    public String getAssemblyName(){
+    public String getAssemblyName() {
         Map<String, Collection<Attribute>> attributes = this.getBaseObject().getAttributes();
 
         if (attributes.containsKey(ASSEMBLY_NAME_ATTRIBUTE)) {
             Collection<Attribute> assemblyNames = attributes.remove(ASSEMBLY_NAME_ATTRIBUTE);
 
-            if (!assemblyNames.isEmpty()){
+            if (!assemblyNames.isEmpty()) {
                 return assemblyNames.iterator().next().getValue();
             }
         }
         return null;
     }
 
-    public void setAssemblyName(String assemblyName){
+    public void setAssemblyName(String assemblyName) {
         if (assemblyName != null) {
             setAttribute(ASSEMBLY_NAME_ATTRIBUTE, assemblyName);
         }
     }
 
-    public String getExperimentType(){
+    public String getExperimentType() {
         Map<String, Collection<Attribute>> attributes = this.getBaseObject().getAttributes();
 
         if (attributes.containsKey(EXPERIMENT_TYPE_ATTRIBUTE)) {
             Collection<Attribute> experimentTypes = attributes.remove(EXPERIMENT_TYPE_ATTRIBUTE);
 
-            if (!experimentTypes.isEmpty()){
+            if (!experimentTypes.isEmpty()) {
                 return experimentTypes.iterator().next().getValue();
             }
         }
         return null;
     }
 
-    public void setExperimentType(String experimentType){
+    public void setExperimentType(String experimentType) {
         if (experimentType != null) {
             setAttribute(EXPERIMENT_TYPE_ATTRIBUTE, experimentType);
         }
@@ -103,14 +102,14 @@ public class ENAAnalysis extends AbstractENASubmittable<Analysis> {
         return null;
     }
 
-    public void setPrograms(List<String> programs){
+    public void setPrograms(List<String> programs) {
         if (programs != null) {
             setAttribute(PROGRAM_ATRRIBUTE, programs);
         }
 
     }
 
-    public List<String> getPlatforms(){
+    public List<String> getPlatforms() {
         Map<String, Collection<Attribute>> attributes = this.getBaseObject().getAttributes();
 
         if (attributes.containsKey(PLATFORM_ATTRIBUTE)) {
@@ -125,7 +124,7 @@ public class ENAAnalysis extends AbstractENASubmittable<Analysis> {
         return null;
     }
 
-    public void setPlatforms(List<String> platforms){
+    public void setPlatforms(List<String> platforms) {
         if (platforms != null) {
             setAttribute(PLATFORM_ATTRIBUTE, platforms);
         }

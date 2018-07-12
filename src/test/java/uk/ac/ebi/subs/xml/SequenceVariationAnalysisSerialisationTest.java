@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import uk.ac.ebi.subs.data.submittable.Analysis;
-import uk.ac.ebi.subs.data.submittable.ENAAnalysis;
+import uk.ac.ebi.subs.data.submittable.ENASequenceVariationAnalysis;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
 import uk.ac.ebi.subs.data.submittable.MappingHelper;
 import uk.ac.ebi.subs.ena.helper.TestHelper;
@@ -21,9 +21,9 @@ import java.net.URISyntaxException;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class AnalysisSerialisationTest extends SerialisationTest {
+public class SequenceVariationAnalysisSerialisationTest extends SerialisationTest {
 
-    private final static String ANALYSIS_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/eva.analysis.json";
+    private final static String ANALYSIS_RESOURCE = "/uk/ac/ebi/subs/ena/submittable/seq_var.analysis.json";
 
     private final static String ASSEMBLY_REF_NAME_XPATH = "/ANALYSIS/ANALYSIS_TYPE/SEQUENCE_VARIATION/ASSEMBLY/STANDARD/@refname";
     private final static String SEQ_VAR_EXPERIMENT_TYPE_XPATH = "/ANALYSIS/ANALYSIS_TYPE/SEQUENCE_VARIATION/EXPERIMENT_TYPE/text()";
@@ -35,8 +35,8 @@ public class AnalysisSerialisationTest extends SerialisationTest {
     @Before
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
-        marshaller = MappingHelper.createMarshaller(ENAAnalysis.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.ANALYSIS_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
-        unmarshaller = MappingHelper.createUnmarshaller(ENAAnalysis.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.ANALYSIS_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
+        marshaller = MappingHelper.createMarshaller(ENASequenceVariationAnalysis.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.SEQ_VAR_ANALYSIS_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
+        unmarshaller = MappingHelper.createUnmarshaller(ENASequenceVariationAnalysis.class, MappingHelper.SUBMITTABLE_PACKAGE, MappingHelper.SEQ_VAR_ANALYSIS_MARSHALLER, MappingHelper.COMPONENT_PACKAGE, MappingHelper.ATTRIBUTE_MAPPING);
         marshaller.setProperty(MarshallerProperties.JSON_MARSHAL_EMPTY_COLLECTIONS, false);
     }
 
@@ -86,15 +86,15 @@ public class AnalysisSerialisationTest extends SerialisationTest {
 
     private Document marshallAnalysisResource() throws IOException, IllegalAccessException, ParserConfigurationException, JAXBException {
         final Analysis analysisFromResource = TestHelper.getAnalysisFromResource(ANALYSIS_RESOURCE);
-        ENAAnalysis enaAnalysis = new ENAAnalysis(analysisFromResource);
+        ENASequenceVariationAnalysis enaSequenceVariationAnalysis = new ENASequenceVariationAnalysis(analysisFromResource);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
-        marshaller.marshal(enaAnalysis, new DOMResult(document));
+        marshaller.marshal(enaSequenceVariationAnalysis, new DOMResult(document));
         return document;
     }
 
     @Override
     protected ENASubmittable createENASubmittable() throws IllegalAccessException {
-        return new ENAAnalysis();
+        return new ENASequenceVariationAnalysis();
     }
 
     @Override
