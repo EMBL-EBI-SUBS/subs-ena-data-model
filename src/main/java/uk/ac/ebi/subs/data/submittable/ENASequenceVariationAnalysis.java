@@ -1,7 +1,9 @@
 package uk.ac.ebi.subs.data.submittable;
 
 
+import uk.ac.ebi.subs.data.component.AssayRef;
 import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.File;
 import uk.ac.ebi.subs.data.component.SampleRef;
 import uk.ac.ebi.subs.data.component.StudyRef;
 
@@ -35,7 +37,15 @@ public class ENASequenceVariationAnalysis extends AbstractENASubmittable<Analysi
     }
 
     public List<StudyRef> getStudyRefs() {
-        return this.getBaseObject().getStudyRefs();
+        List<StudyRef> studyRefs = getBaseObject().getStudyRefs();
+        if (studyRefs == null || studyRefs.isEmpty()){
+            return null;
+        }
+        for (StudyRef studyRef : studyRefs){
+            studyRef.setAlias(ENASubmittable.getENAAlias(studyRef.getAlias(),getTeamName()));
+        }
+
+        return studyRefs;
     }
 
     public void setStudyRef(List<StudyRef> studyRefs) {
@@ -177,6 +187,14 @@ public class ENASequenceVariationAnalysis extends AbstractENASubmittable<Analysi
                                 valueAttribute(value)
                         )
                 );
+    }
+
+    public List<File> getFiles () {
+        return getBaseObject().getFiles();
+    }
+
+    public void setFiles (List<File> files) {
+        getBaseObject().setFiles(files);
     }
 
     private static Attribute valueAttribute(String value) {

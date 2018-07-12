@@ -10,8 +10,8 @@
         <java-type name="Analysis" xml-transient="true"/>
         <java-type name="ENASequenceVariationAnalysis" xml-accessor-type="NONE">
             <xml-root-element name="ANALYSIS"/>
-            <xml-type prop-order="accession alias teamName title description studyRef sampleRefs
-                assemblyName experimentType programs platforms imputation enaAttributeList"/>
+            <xml-type prop-order="accession alias teamName title description studyRefs sampleRefs
+                assemblyName experimentType programs platforms imputation files enaAttributeList"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
@@ -21,7 +21,7 @@
                 <xml-attribute java-attribute="teamName" xml-path="IDENTIFIERS/SUBMITTER_ID/@namespace"/>
                 <xml-element java-attribute="title" xml-path="TITLE/text()"/>
                 <xml-element java-attribute="description" xml-path="DESCRIPTION/text()"/>
-                <xml-element java-attribute="studyRef" name="STUDY_REF"
+                <xml-element java-attribute="studyRefs" name="STUDY_REF"
                              type="uk.ac.ebi.subs.data.component.StudyRef">
                 </xml-element>
                 <xml-element java-attribute="sampleRefs" name="SAMPLE_REF"
@@ -32,6 +32,10 @@
                 <xml-element java-attribute="programs" name="ANALYSIS_TYPE/SEQUENCE_VARIATION/PROGRAM" />
                 <xml-element java-attribute="platforms" name="ANALYSIS_TYPE/SEQUENCE_VARIATION/PLATFORM" />
                 <xml-element java-attribute="imputation" name="ANALYSIS_TYPE/SEQUENCE_VARIATION/IMPUTATION" />
+                <xml-element java-attribute="files" name="FILE"
+                             type="uk.ac.ebi.subs.data.component.File" container-type="java.util.ArrayList">
+                    <xml-element-wrapper name="FILES"/>
+                </xml-element>
                 <xml-element java-attribute="enaAttributeList" name="ANALYSIS_ATTRIBUTE"
                              type="uk.ac.ebi.subs.data.component.ENAAttribute" container-type="java.util.ArrayList">
                     <xml-element-wrapper name="ANALYSIS_ATTRIBUTES"/>
