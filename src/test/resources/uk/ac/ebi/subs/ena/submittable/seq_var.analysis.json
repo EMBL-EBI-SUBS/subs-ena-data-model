@@ -1,0 +1,36 @@
+{
+  "alias": "vcf1",
+  "team": {
+    "name": "test team"
+  },
+  "analysisType": "sequence variation",
+  "title": "Variant calling of my favourite population",
+  "description": "This set of variant calls were generated using some data and some software",
+  "studyRefs": [
+    {"alias": "my study", "team":"test team"}
+  ],
+  "sampleRefs": [
+    {"accession": "SAME1234"}
+  ],
+  "files" : [ {
+    "name" : "my_wonderful.vcf.gz",
+    "type" : "vcf"
+  } ],
+  "attributes" : {
+    "assembly name" : [ {
+      "value" : "GRCh38"
+    } ],
+    "experiment type" : [ {
+      "value" : "Genotyping by sequencing"
+    } ],
+    "program" : [ {
+      "value" : "GATK"
+    } ],
+    "platform" : [ {
+      "value" : "Illumina"
+    } ],
+    "imputation": [ {
+      "value" : "false"
+    } ]
+  }
+}

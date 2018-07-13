@@ -10,11 +10,11 @@
         <java-type name="Assay" xml-transient="true"/>
         <java-type name="ENAExperiment" xml-accessor-type="NONE">
             <xml-root-element name="EXPERIMENT"/>
-            <xml-type prop-order="accession alias teamName title studyRef designDescription sampleAccession libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary enaAttributeList"/>
+            <xml-type prop-order="accession alias centerName teamName title studyRef designDescription sampleAccession libraryName libraryStrategy librarySource librarySelection singleLibraryLayout pairedLibraryLayout ls454 illumina helicos abiSolid completeGenomics bgiseq oxfordNanopore pacbioSMRT ionTorrent capillary enaAttributeList"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
-                <xml-attribute java-attribute="teamName" name="center_name"/>
+                <xml-attribute java-attribute="centerName" name="center_name"/>
                 <xml-element java-attribute="accession" name="IDENTIFIERS/PRIMARY_ID"/>
                 <xml-element java-attribute="alias" xml-path="IDENTIFIERS/SUBMITTER_ID/text()"/>
                 <xml-attribute java-attribute="teamName" xml-path="IDENTIFIERS/SUBMITTER_ID/@namespace"/>
