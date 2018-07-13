@@ -26,6 +26,7 @@ import static uk.ac.ebi.subs.data.submittable.ENAStudy.USI_BIOSTUDY_ID;
  */
 public abstract class AbstractENASubmittable<T extends BaseSubmittable> implements ENASubmittable<T>  {
 
+    private static final String CENTER_NAME = "center name";
     protected Submittable baseSubmittable;
     private List<SingleValidationResult> validationResultList = new ArrayList<>();
 
@@ -286,6 +287,18 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         } else {
             final Map<String, Collection<Attribute>> attributes = baseSubmittable.getAttributes();
             return baseSubmittable.getAttributes();
+        }
+    }
+
+    public String getCenterName(){
+        if (this.getBaseObject().getTeam() != null && this.getBaseObject().getTeam().getProfile().containsKey(CENTER_NAME)){
+            return this.getBaseObject().getTeam().getProfile().get(CENTER_NAME);
+        }
+        return null;
+    }
+    public void setCenterName(String centerName){
+        if (this.getBaseObject().getTeam() != null){
+            this.getBaseObject().getTeam().getProfile().put(CENTER_NAME, centerName);
         }
     }
 

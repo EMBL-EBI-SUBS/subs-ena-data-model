@@ -100,12 +100,13 @@ public class StudySerialisationTest extends SerialisationTest {
         Study study = new Study();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
+        team.getProfile().put("center name","EBI");
         study.setTeam(team);
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,STUDY_CENTER_NAME_XPATH);
-        assertThat("study center_name serialised to XML", team.getName(), equalTo(str));
+        assertThat("study center_name serialised to XML", team.getProfile().get("center name"), equalTo(str));
     }
 
     @Test

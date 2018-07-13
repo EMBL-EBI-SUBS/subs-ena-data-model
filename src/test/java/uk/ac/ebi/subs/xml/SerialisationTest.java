@@ -95,9 +95,10 @@ public abstract class SerialisationTest {
         Submittable submittable = createENASubmittable();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
+        team.getProfile().put("center name", "EBI");
         submittable.setTeam(team);
         String xpathQuery = String.format(CENTER_NAME_XPATH, getName());
-        assertXMLSubmittable(submittable, xpathQuery, team.getName());
+        assertXMLSubmittable(submittable, xpathQuery, team.getProfile().get("center name"));
     }
 
     @Test
