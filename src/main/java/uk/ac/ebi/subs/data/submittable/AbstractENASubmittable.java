@@ -1,6 +1,8 @@
 package uk.ac.ebi.subs.data.submittable;
 
 import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.Attributes;
+import uk.ac.ebi.subs.data.component.ProjectRef;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.ena.annotation.ENAField;
 import uk.ac.ebi.subs.ena.annotation.ENAFieldAttribute;
@@ -14,6 +16,8 @@ import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static uk.ac.ebi.subs.data.submittable.ENAStudy.USI_BIOSTUDY_ID;
+
 /**
  * Abstract implmentation for all ENA submittables.
  * Contains the serialisation and de-serialisation code for translating ENA specific fields which are contained as
@@ -22,7 +26,8 @@ import java.util.*;
  */
 public abstract class AbstractENASubmittable<T extends BaseSubmittable> implements ENASubmittable<T>  {
 
-    private Submittable baseSubmittable;
+    private static final String CENTER_NAME = "center name";
+    protected Submittable baseSubmittable;
     private List<SingleValidationResult> validationResultList = new ArrayList<>();
 
     public AbstractENASubmittable(Submittable baseSubmittable) throws IllegalAccessException {
@@ -148,7 +153,6 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
                 if (!enaFieldAttribute.attributeFieldName().equals(ENAFieldAttribute.NO_FIELD)) {
                     attributefieldMap.put(enaFieldAttribute.name(),enaFieldAttribute.attributeFieldName());
                 }
-
             }
         }
 
@@ -174,10 +178,8 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
 
                 }
             } else if (field.getType().isMemberClass()) {
-
                 deSerialiseFields(field.getType(),field.get(obj));
             }
-
         }
     }
 
@@ -285,6 +287,18 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         } else {
             final Map<String, Collection<Attribute>> attributes = baseSubmittable.getAttributes();
             return baseSubmittable.getAttributes();
+        }
+    }
+
+    public String getCenterName(){
+        if (this.getBaseObject().getTeam() != null && this.getBaseObject().getTeam().getProfile().containsKey(CENTER_NAME)){
+            return this.getBaseObject().getTeam().getProfile().get(CENTER_NAME);
+        }
+        return null;
+    }
+    public void setCenterName(String centerName){
+        if (this.getBaseObject().getTeam() != null){
+            this.getBaseObject().getTeam().getProfile().put(CENTER_NAME, centerName);
         }
     }
 

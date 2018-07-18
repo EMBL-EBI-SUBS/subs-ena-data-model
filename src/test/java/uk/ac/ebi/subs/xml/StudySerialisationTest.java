@@ -1,12 +1,11 @@
 package uk.ac.ebi.subs.xml;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
-import uk.ac.ebi.subs.data.component.Attribute;
+import uk.ac.ebi.subs.data.component.ProjectRef;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.ENAStudy;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
@@ -18,7 +17,6 @@ import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.dom.DOMResult;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static uk.ac.ebi.subs.data.submittable.ENAStudy.USI_BIOSTUDY_ID;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class StudySerialisationTest extends SerialisationTest {
@@ -101,12 +100,13 @@ public class StudySerialisationTest extends SerialisationTest {
         Study study = new Study();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
+        team.getProfile().put("center name","EBI");
         study.setTeam(team);
         ENAStudy enaStudy = new ENAStudy(study);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaStudy,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,STUDY_CENTER_NAME_XPATH);
-        assertThat("study center_name serialised to XML", team.getName(), equalTo(str));
+        assertThat("study center_name serialised to XML", team.getProfile().get("center name"), equalTo(str));
     }
 
     @Test
@@ -168,6 +168,23 @@ public class StudySerialisationTest extends SerialisationTest {
         assertThat("Study is invalid",enaStudy.isValid(),equalTo(false));
     }
 
+    @Test
+    public void testMarshalProjectRef() throws Exception {
+        Study study = new Study();
+        ProjectRef projectRef = new ProjectRef();
+        projectRef.setAccession("BIOSTUDY123456");
+        study.setProjectRef(projectRef);
+        ENAStudy enaStudy = new ENAStudy(study);
+        final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
+        marshaller.marshal(enaStudy, new DOMResult(document));
+
+        String tag = executeXPathQueryNodeValue(document, "//STUDY_ATTRIBUTE/TAG/text()");
+        assertThat(tag, equalTo(USI_BIOSTUDY_ID));
+
+        String value = executeXPathQueryNodeValue(document, "//STUDY_ATTRIBUTE/VALUE/text()");
+        assertThat(value, equalTo("BIOSTUDY123456"));
+    }
+
     @Before
     public void setUp() throws IOException, JAXBException, URISyntaxException {
         super.setUp();
@@ -186,7 +203,7 @@ public class StudySerialisationTest extends SerialisationTest {
 
     @Test
     public void testMarshalUnmarshallStudy () throws Exception {
-        serialiseDeserialiseTest(STUDY_RESOURCE,ENAStudy.class,Study.class);
+        serialiseDeserialiseTest(STUDY_RESOURCE, ENAStudy.class, Study.class);
     }
 
 

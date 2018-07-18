@@ -13,5 +13,6 @@ public class TypeProcessingConfig {
     private boolean samplesEnabled = true;
     private boolean assaysEnabled = true;
     private boolean assayDataEnabled = true;
+    private boolean sequenceVariationEnabled = true;
 
 }

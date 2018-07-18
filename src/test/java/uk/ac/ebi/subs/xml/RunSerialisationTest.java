@@ -78,12 +78,13 @@ public class RunSerialisationTest extends SerialisationTest {
         AssayData assayData = createAssayData();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
+        team.getProfile().put("center name","EBI");
         assayData.setTeam(team);
         ENARun enaRun = new ENARun(assayData);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaRun,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,RUN_CENTER_NAME_XPATH);
-        assertThat("run center_name", team.getName(), equalTo(str));
+        assertThat("run center_name", team.getProfile().get("center name"), equalTo(str));
     }
 
     @Test

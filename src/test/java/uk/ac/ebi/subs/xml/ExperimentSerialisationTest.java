@@ -132,12 +132,13 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         Assay assay = createAssay();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
+        team.getProfile().put("center name","EBI");
         assay.setTeam(team);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,EXPERIMENT_CENTER_NAME_XPATH);
-        assertThat("experiment center_name to XML", team.getName(), equalTo(str));
+        assertThat("experiment center_name to XML", team.getProfile().get("center name"), equalTo(str));
     }
 
     @Test
