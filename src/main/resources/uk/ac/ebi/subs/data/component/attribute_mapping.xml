@@ -17,9 +17,6 @@
                 <xml-attribute java-attribute="alias" name="refname"/>
                 <xml-attribute java-attribute="accession" name="accession"/>
                 <xml-attribute java-attribute="team" name="refcenter"/>
-                <xml-element java-attribute="accession" name="IDENTIFIERS/PRIMARY_ID"/>
-                <xml-element java-attribute="alias" xml-path="IDENTIFIERS/SUBMITTER_ID/text()"/>
-                <xml-attribute java-attribute="team" xml-path="IDENTIFIERS/SUBMITTER_ID/@namespace"/>
             </java-attributes>
         </java-type>
         <java-type name="File" xml-accessor-type="NONE">
