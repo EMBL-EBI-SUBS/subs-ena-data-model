@@ -159,8 +159,7 @@ public class ENAProcessor {
         if (typeProcessingConfig.isSequenceVariationEnabled()) {
             final Analysis[] seqVarAnalysis = submissionEnvelope.getAnalyses().stream()
                     .filter(filter)
-                    .filter(analysis -> analysis.getAnalysisType() != null)
-                    .filter(analysis -> analysis.getAnalysisType().equals("sequence variation") )
+//TODO - add filter for analysis types once we have more than one
                     .toArray(Analysis[]::new);
 
             if (seqVarAnalysis.length > 0) {

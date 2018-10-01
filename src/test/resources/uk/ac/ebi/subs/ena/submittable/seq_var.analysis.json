@@ -3,7 +3,6 @@
   "team": {
     "name": "test team"
   },
-  "analysisType": "sequence variation",
   "title": "Variant calling of my favourite population",
   "description": "This set of variant calls were generated using some data and some software",
   "studyRefs": [
