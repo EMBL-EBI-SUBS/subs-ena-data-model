@@ -284,7 +284,6 @@ public class TestHelper {
         a.setTeam(team);
         a.setTitle("Analysis Title ");
         a.setDescription("Test analysis");
-        a.setAnalysisType("sequence variation");
         addAttribute(a,ENASequenceVariationAnalysis.ASSEMBLY_NAME_ATTRIBUTE,"GRCh38");
         addAttribute(a,ENASequenceVariationAnalysis.EXPERIMENT_TYPE_ATTRIBUTE,"Exome sequencing");
         addAttribute(a,ENASequenceVariationAnalysis.PROGRAM_ATRRIBUTE,"MiniMap");

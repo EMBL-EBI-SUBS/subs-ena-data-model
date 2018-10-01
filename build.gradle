@@ -1,5 +1,5 @@
 group 'uk.ac.ebi.subs'
-version '2.4.2-SNAPSHOT'
+version '2.5.0-SNAPSHOT'
 
 buildscript {
     repositories {
@@ -36,11 +36,11 @@ dependencies {
     compile ("org.eclipse.persistence:org.eclipse.persistence.moxy:2.6.4")
     compile ("commons-lang:commons-lang:2.6")
     compile ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
-    compile ("uk.ac.ebi.subs:validator-common:2.8.0-SNAPSHOT") {
+    compile ("uk.ac.ebi.subs:validator-common:3.3.0-SNAPSHOT") {
         exclude group: 'org.springframework.boot', module :'spring-boot-starter-data-mongodb'
     }
 
-    compile("uk.ac.ebi.subs:subs-processing-model:2.1.0-SNAPSHOT")
+    compile("uk.ac.ebi.subs:subs-processing-model:2.5.0-SNAPSHOT")
     compile("uk.ac.ebi.subs:subs-messaging:0.4.0-SNAPSHOT")
 
     compile 'uk.ac.ebi.ena.sra:sra-xml:1.5.+'
