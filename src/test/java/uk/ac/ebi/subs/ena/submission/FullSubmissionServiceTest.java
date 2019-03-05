@@ -185,6 +185,7 @@ public class FullSubmissionServiceTest {
     }
 
     @Test
+    @Ignore
     public void submitStudyExperimentAndRun() throws Exception {
         FTPClient ftpClient = connectToWebinFTP();
         parameterMap.put(StudyActionService.class, submittedStudies);
