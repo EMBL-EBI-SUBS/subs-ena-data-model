@@ -11,10 +11,4 @@ public class ValidationActionService implements ActionService<Boolean> {
         action.addNewVALIDATE();
         return action;
     }
-
-    @Override
-    public Class<Boolean> getSubmittableClass() {
-        return Boolean.class;
-    }
-
 }

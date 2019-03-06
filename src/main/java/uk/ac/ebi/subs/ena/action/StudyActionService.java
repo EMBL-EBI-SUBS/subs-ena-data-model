@@ -30,9 +30,4 @@ public class StudyActionService extends AbstractSubmittablesActionService<Study,
     String getSetElementName() {
         return "STUDY_SET";
     }
-
-    @Override
-    public Class<Study[]> getSubmittableClass() {
-        return Study[].class;
-    }
 }

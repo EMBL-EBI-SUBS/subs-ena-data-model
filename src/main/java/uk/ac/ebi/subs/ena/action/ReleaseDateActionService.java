@@ -32,10 +32,4 @@ public class ReleaseDateActionService implements ActionService<String> {
 
         return action;
     }
-
-    @Override
-    public Class<String> getSubmittableClass() {
-        return String.class;
-    }
-
 }

@@ -29,9 +29,4 @@ public class SampleActionService extends AbstractSubmittablesActionService<Sampl
     String getSetElementName() {
         return "SAMPLE_SET";
     }
-
-    @Override
-    public Class<Sample[]> getSubmittableClass() {
-        return Sample[].class;
-    }
 }

@@ -19,9 +19,4 @@ public class SequenceVariationAnalysisActionService extends AbstractSubmittables
     String getSetElementName() {
         return "ANALYSIS_SET";
     }
-
-    @Override
-    public Class<Analysis[]> getSubmittableClass() {
-        return Analysis[].class;
-    }
 }

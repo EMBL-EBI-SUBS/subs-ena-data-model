@@ -23,9 +23,4 @@ public class AssayDataActionService extends AbstractSubmittablesActionService<As
     String getSetElementName() {
         return "RUN_SET";
     }
-
-    @Override
-    public Class<AssayData[]> getSubmittableClass() {
-        return AssayData[].class;
-    }
 }

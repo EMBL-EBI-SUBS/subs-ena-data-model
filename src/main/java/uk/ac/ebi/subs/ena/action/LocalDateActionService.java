@@ -27,10 +27,4 @@ public class LocalDateActionService implements ActionService<LocalDate> {
             return null;
         }
     }
-
-    @Override
-    public Class<LocalDate> getSubmittableClass() {
-        return LocalDate.class;
-    }
-
 }
