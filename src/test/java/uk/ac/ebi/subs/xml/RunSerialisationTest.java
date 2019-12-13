@@ -6,8 +6,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
-import uk.ac.ebi.subs.data.component.*;
-import uk.ac.ebi.subs.data.submittable.*;
+import uk.ac.ebi.subs.data.component.AssayRef;
+import uk.ac.ebi.subs.data.component.File;
+import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.submittable.AssayData;
+import uk.ac.ebi.subs.data.submittable.ENAExperiment;
+import uk.ac.ebi.subs.data.submittable.ENARun;
+import uk.ac.ebi.subs.data.submittable.ENASubmittable;
+import uk.ac.ebi.subs.data.submittable.MappingHelper;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.dom.DOMResult;
@@ -17,8 +23,6 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 
@@ -78,13 +82,13 @@ public class RunSerialisationTest extends SerialisationTest {
         AssayData assayData = createAssayData();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
-        team.getProfile().put("center name","EBI");
+        team.getProfile().put("centre name","EBI");
         assayData.setTeam(team);
         ENARun enaRun = new ENARun(assayData);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaRun,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,RUN_CENTER_NAME_XPATH);
-        assertThat("run center_name", team.getProfile().get("center name"), equalTo(str));
+        assertThat("run center_name", team.getProfile().get("centre name"), equalTo(str));
     }
 
     @Test

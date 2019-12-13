@@ -10,11 +10,11 @@
         <java-type name="AssayData" xml-transient="true"/>
         <java-type name="ENARun" xml-accessor-type="NONE">
             <xml-root-element name="RUN"/>
-            <xml-type prop-order="accession alias centerName teamName title assayRef files enaAttributeList"/>
+            <xml-type prop-order="accession alias centreName teamName title assayRef files enaAttributeList"/>
             <java-attributes>
                 <xml-attribute java-attribute="accession"/>
                 <xml-attribute java-attribute="alias"/>
-                <xml-attribute java-attribute="centerName" name="center_name"/>
+                <xml-attribute java-attribute="centreName" name="center_name"/>
                 <xml-element java-attribute="accession" name="IDENTIFIERS/PRIMARY_ID"/>
                 <xml-element java-attribute="alias" xml-path="IDENTIFIERS/SUBMITTER_ID/text()"/>
                 <xml-attribute java-attribute="teamName" xml-path="IDENTIFIERS/SUBMITTER_ID/@namespace"/>

@@ -10,8 +10,15 @@ import uk.ac.ebi.ena.sra.xml.ID;
 import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
 import uk.ac.ebi.ena.sra.xml.SUBMISSIONSETDocument;
 import uk.ac.ebi.ena.sra.xml.SubmissionType;
-import uk.ac.ebi.subs.data.submittable.*;
-import uk.ac.ebi.subs.ena.action.*;
+import uk.ac.ebi.subs.data.submittable.ENASubmittable;
+import uk.ac.ebi.subs.data.submittable.Submittable;
+import uk.ac.ebi.subs.ena.action.ActionService;
+import uk.ac.ebi.subs.ena.action.AssayActionService;
+import uk.ac.ebi.subs.ena.action.AssayDataActionService;
+import uk.ac.ebi.subs.ena.action.SampleActionService;
+import uk.ac.ebi.subs.ena.action.SequenceVariationAnalysisActionService;
+import uk.ac.ebi.subs.ena.action.StudyActionService;
+import uk.ac.ebi.subs.ena.action.SubmittablesActionService;
 import uk.ac.ebi.subs.ena.http.UniRestWrapper;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
@@ -19,7 +26,11 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,9 +97,12 @@ public class FullSubmissionService {
                     }
                     schemaAliasMapMap.put(submittablesActionService.getSchemaName(),submittableMap);
 
-                    InputStream xmlInputStream = submittablesActionService.getXMLInputStream(submittables,singleValidationResults);parameterMap.put(submittablesActionService.getSchemaName().toUpperCase(), new UniRestWrapper.Field(
-                            submittablesActionService.getSchemaName() + ".xml", xmlInputStream)); }
+                    InputStream xmlInputStream = submittablesActionService.getXMLInputStream(submittables,singleValidationResults);
+
+                    parameterMap.put(submittablesActionService.getSchemaName().toUpperCase(),
+                            new UniRestWrapper.Field(submittablesActionService.getSchemaName() + ".xml", xmlInputStream));
                 }
+            }
         }
 
 

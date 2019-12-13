@@ -1,5 +1,6 @@
 package uk.ac.ebi.subs.ena.processor;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,15 +9,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import uk.ac.ebi.subs.data.Submission;
 import uk.ac.ebi.subs.data.component.Team;
-import uk.ac.ebi.subs.data.submittable.*;
+import uk.ac.ebi.subs.data.submittable.Analysis;
+import uk.ac.ebi.subs.data.submittable.Assay;
+import uk.ac.ebi.subs.data.submittable.ENAStudy;
+import uk.ac.ebi.subs.data.submittable.ENASubmittable;
+import uk.ac.ebi.subs.data.submittable.Sample;
+import uk.ac.ebi.subs.data.submittable.Study;
+import uk.ac.ebi.subs.data.submittable.Submittable;
 import uk.ac.ebi.subs.ena.EnaAgentApplication;
 import uk.ac.ebi.subs.ena.helper.TestHelper;
 import uk.ac.ebi.subs.ena.http.UniRestWrapper;
 import uk.ac.ebi.subs.processing.SubmissionEnvelope;
+import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -25,20 +37,23 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Mockito.doReturn;
-
-import org.apache.commons.beanutils.BeanUtils;
-import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {EnaAgentApplication.class})
@@ -85,11 +100,11 @@ public class ENAProcessorTest {
         transformer = transformerFactory.newTransformer();
 
         team = new Team();
-        centreName = UUID.randomUUID().toString();
-        team.setName("subs."+centreName);
+        centreName = "test-centre";
+        team.setName("test-team");
         team.getProfile().put("centre name",centreName);
         submission = new Submission();
-        submissionAlias = UUID.randomUUID().toString();
+        submissionAlias = "sub-alias-" + UUID.randomUUID().toString();
         submission.setTeam(team);
         submission.setId(submissionAlias);
 
@@ -97,7 +112,7 @@ public class ENAProcessorTest {
         originalStudies = new Study[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            String studyAlias = UUID.randomUUID().toString();
+            String studyAlias = "study-alias-" + UUID.randomUUID().toString();
             submittedStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing");
             originalStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing");
         }
@@ -106,7 +121,7 @@ public class ENAProcessorTest {
         originalSamples = new Sample[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            String sampleAlias = UUID.randomUUID().toString();
+            String sampleAlias = "sample-alias-" + UUID.randomUUID().toString();
             submittedSamples[i] = TestHelper.getSample(sampleAlias,team);
             originalSamples[i] = TestHelper.getSample(sampleAlias,team);
         }
@@ -115,7 +130,7 @@ public class ENAProcessorTest {
         originalAssays = new Assay[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            String assayAlias = UUID.randomUUID().toString();
+            String assayAlias = "assay-alias-" + UUID.randomUUID().toString();
             submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
             originalAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
         }
@@ -124,7 +139,7 @@ public class ENAProcessorTest {
         originalSeqVarAnalysis = new Analysis[SUBMITTABLE_COUNT];
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            String alias = UUID.randomUUID().toString();
+            String alias = "analysis-alias-" + UUID.randomUUID().toString();
             submittedSeqVarAnalysis[i] = TestHelper.getSeqVarAnalysis(alias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
             originalSeqVarAnalysis[i] = TestHelper.getSeqVarAnalysis(alias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
         }
