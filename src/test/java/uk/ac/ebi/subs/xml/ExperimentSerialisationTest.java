@@ -2,7 +2,6 @@ package uk.ac.ebi.subs.xml;
 
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.hamcrest.core.IsNull;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -132,13 +131,13 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         Assay assay = createAssay();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
-        team.getProfile().put("center name","EBI");
+        team.getProfile().put("centre name","EBI");
         assay.setTeam(team);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,EXPERIMENT_CENTER_NAME_XPATH);
-        assertThat("experiment center_name to XML", team.getProfile().get("center name"), equalTo(str));
+        assertThat("experiment center_name to XML", team.getProfile().get("centre name"), equalTo(str));
     }
 
     @Test

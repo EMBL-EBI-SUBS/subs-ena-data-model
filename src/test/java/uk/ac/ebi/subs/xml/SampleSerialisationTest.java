@@ -74,13 +74,13 @@ public class SampleSerialisationTest extends SerialisationTest {
         Sample sample = new Sample();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
-        team.getProfile().put("center name","EBI");
+        team.getProfile().put("centre name","EBI");
         sample.setTeam(team);
         ENASample enaSample = new ENASample(sample);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaSample,new DOMResult(document));
         String str = executeXPathQueryNodeValue(document,SAMPLE_CENTER_NAME_XPATH);
-        assertThat("sample center_name serialised to XML", team.getProfile().get("center name"), equalTo(str));
+        assertThat("sample center_name serialised to XML", team.getProfile().get("centre name"), equalTo(str));
     }
 
     @Test

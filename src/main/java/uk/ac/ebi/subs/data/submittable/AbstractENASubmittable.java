@@ -1,22 +1,25 @@
 package uk.ac.ebi.subs.data.submittable;
 
 import uk.ac.ebi.subs.data.component.Attribute;
-import uk.ac.ebi.subs.data.component.Attributes;
-import uk.ac.ebi.subs.data.component.ProjectRef;
+import uk.ac.ebi.subs.data.component.ENAAttribute;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.ena.annotation.ENAField;
 import uk.ac.ebi.subs.ena.annotation.ENAFieldAttribute;
 import uk.ac.ebi.subs.ena.annotation.ENAValidation;
-import uk.ac.ebi.subs.data.component.ENAAttribute;
 import uk.ac.ebi.subs.ena.validation.AttributeRequiredValidationResult;
 import uk.ac.ebi.subs.ena.validation.InvalidAttributeValue;
 import uk.ac.ebi.subs.ena.validation.SingleAttributeValidationResult;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
 import java.lang.reflect.Field;
-import java.util.*;
-
-import static uk.ac.ebi.subs.data.submittable.ENAStudy.USI_BIOSTUDY_ID;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Abstract implmentation for all ENA submittables.
@@ -26,7 +29,7 @@ import static uk.ac.ebi.subs.data.submittable.ENAStudy.USI_BIOSTUDY_ID;
  */
 public abstract class AbstractENASubmittable<T extends BaseSubmittable> implements ENASubmittable<T>  {
 
-    private static final String CENTER_NAME = "center name";
+    private static final String CENTRE_NAME = "centre name";
     protected Submittable baseSubmittable;
     private List<SingleValidationResult> validationResultList = new ArrayList<>();
 
@@ -290,15 +293,15 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
         }
     }
 
-    public String getCenterName(){
-        if (this.getBaseObject().getTeam() != null && this.getBaseObject().getTeam().getProfile().containsKey(CENTER_NAME)){
-            return this.getBaseObject().getTeam().getProfile().get(CENTER_NAME);
+    public String getCentreName(){
+        if (this.getBaseObject().getTeam() != null && this.getBaseObject().getTeam().getProfile().containsKey(CENTRE_NAME)){
+            return this.getBaseObject().getTeam().getProfile().get(CENTRE_NAME);
         }
         return null;
     }
-    public void setCenterName(String centerName){
+    public void setCentreName(String centerName){
         if (this.getBaseObject().getTeam() != null){
-            this.getBaseObject().getTeam().getProfile().put(CENTER_NAME, centerName);
+            this.getBaseObject().getTeam().getProfile().put(CENTRE_NAME, centerName);
         }
     }
 
