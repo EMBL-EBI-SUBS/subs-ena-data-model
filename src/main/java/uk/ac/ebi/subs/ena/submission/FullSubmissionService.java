@@ -11,6 +11,8 @@ import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
 import uk.ac.ebi.ena.sra.xml.SUBMISSIONSETDocument;
 import uk.ac.ebi.ena.sra.xml.SubmissionType;
 import uk.ac.ebi.subs.data.submittable.ENASubmittable;
+import uk.ac.ebi.subs.data.submittable.Sample;
+import uk.ac.ebi.subs.data.submittable.Study;
 import uk.ac.ebi.subs.data.submittable.Submittable;
 import uk.ac.ebi.subs.ena.action.ActionService;
 import uk.ac.ebi.subs.ena.action.AssayActionService;
@@ -26,11 +28,16 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,6 +69,7 @@ public class FullSubmissionService {
     public RECEIPTDocument.RECEIPT submit (
             String submissionAlias,
             String centerName,
+            Optional<LocalDate> submissionReleaseDate,
             Map<Class<? extends ActionService>,Object> paramMap,
             List<SingleValidationResult> singleValidationResults) throws XmlException, IOException, TransformerException {
         final SUBMISSIONSETDocument submissionsetDocument = SUBMISSIONSETDocument.Factory.newInstance();
@@ -72,9 +80,11 @@ public class FullSubmissionService {
         Map<String, UniRestWrapper.Field> parameterMap = new HashMap<>();
         Map<String, Map<String,Submittable>> schemaAliasMapMap = new HashMap<>();
 
-        int i = 0;
-
         List<SubmissionType.ACTIONS.ACTION> actionList = new ArrayList<>();
+
+        submissionReleaseDate.ifPresent(rd -> {
+            actionList.add(createHoldAction(rd, null));
+        });
 
         for (ActionService actionService : actionServiceList) {
 
@@ -82,7 +92,7 @@ public class FullSubmissionService {
 
             final SubmissionType.ACTIONS.ACTION actionXML = actionService.createActionXML(actionServiceParam);
             if (actionXML != null) {
-                    actionList.add(actionXML);
+                actionList.add(actionXML);
             }
 
             if (actionService instanceof SubmittablesActionService) {
@@ -94,6 +104,10 @@ public class FullSubmissionService {
 
                     for (Submittable submittable : submittables) {
                         submittableMap.put(ENASubmittable.getENAAlias(submittable.getAlias(),submittable.getTeam().getName()),submittable);
+
+                        if (submittable.isAccessioned()) {
+                            manageReleaseDate(actionList, submittable);
+                        }
                     }
                     schemaAliasMapMap.put(submittablesActionService.getSchemaName(),submittableMap);
 
@@ -104,8 +118,6 @@ public class FullSubmissionService {
                 }
             }
         }
-
-
 
         final SubmissionType.ACTIONS.ACTION[] newActions = actionList.toArray(new SubmissionType.ACTIONS.ACTION[actionList.size()]);
         actions.setACTIONArray(newActions);
@@ -134,4 +146,37 @@ public class FullSubmissionService {
         }
     }
 
+    private void manageReleaseDate(List<SubmissionType.ACTIONS.ACTION> actionList, Submittable submittable) {
+        LocalDate releaseDate = null;
+
+        if ((submittable instanceof Study)) {
+            releaseDate = ((Study)submittable).getReleaseDate();
+        } else if (submittable instanceof Sample) {
+            releaseDate = ((Sample)submittable).getReleaseDate();
+        }
+
+        if (releaseDate != null) {
+            actionList.add(createHoldAction(releaseDate, submittable.getAccession()));
+        }
+    }
+
+    private SubmissionType.ACTIONS.ACTION createHoldAction(LocalDate localDate, String target) {
+        Calendar calendar = Calendar.getInstance();
+        //Using UTC instead of GMT is preferred but does not have any effect.
+        //The calendar object returned by holdUntilDate always has its UTC timezone replaced with GMT for some reason.
+        //So its better to keep it predictable by setting timezone to GMT explicitly.
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT"));
+        calendar.setTimeInMillis(localDate.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli());
+
+        final SubmissionType.ACTIONS.ACTION.HOLD holdAction = SubmissionType.ACTIONS.ACTION.HOLD.Factory.newInstance();
+        holdAction.setHoldUntilDate(calendar);
+        if (target != null) {
+            holdAction.setTarget(target);
+        }
+
+        final SubmissionType.ACTIONS.ACTION action = SubmissionType.ACTIONS.ACTION.Factory.newInstance();
+        action.setHOLD(holdAction);
+
+        return action;
+    }
 }
