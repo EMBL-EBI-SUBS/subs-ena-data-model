@@ -47,7 +47,7 @@ public class FullSubmissionServiceTest {
     @Value("${ena.password}")
     String ftpPassword;
 
-    public static final int SUBMITTABLE_COUNT = 1;
+    public static final int SUBMITTABLE_COUNT = 10;
     private final String[] BIOSAMPLE_ACCESSIONS = {
             "SAMEA168881",
             "SAMEA168882",

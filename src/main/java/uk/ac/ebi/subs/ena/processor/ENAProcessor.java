@@ -194,7 +194,7 @@ public class ENAProcessor {
         Date subDate = submissionEnvelope.getSubmission().getSubmissionDate();
 
         if (subDate != null && !study.isAccessioned() && study.getReleaseDate() == null) {
-            study.setReleaseDate(convertSubmissionDate(submissionEnvelope.getSubmission().getSubmissionDate()));
+            study.setReleaseDate(convertSubmissionDate(subDate));
         }
 
         return study;
@@ -204,7 +204,7 @@ public class ENAProcessor {
         Date subDate = submissionEnvelope.getSubmission().getSubmissionDate();
 
         if (subDate != null && !sample.isAccessioned() && sample.getReleaseDate() == null) {
-            sample.setReleaseDate(convertSubmissionDate(submissionEnvelope.getSubmission().getSubmissionDate()));
+            sample.setReleaseDate(convertSubmissionDate(subDate));
         }
 
         return sample;
