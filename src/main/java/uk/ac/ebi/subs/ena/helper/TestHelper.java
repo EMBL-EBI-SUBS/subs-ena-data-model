@@ -21,6 +21,7 @@ import uk.ac.ebi.ena.sra.xml.TypeLibraryStrategy;
 import uk.ac.ebi.subs.data.component.AssayRef;
 import uk.ac.ebi.subs.data.component.Attribute;
 import uk.ac.ebi.subs.data.component.File;
+import uk.ac.ebi.subs.data.component.ProjectRef;
 import uk.ac.ebi.subs.data.component.SampleRef;
 import uk.ac.ebi.subs.data.component.SampleUse;
 import uk.ac.ebi.subs.data.component.StudyRef;
@@ -39,6 +40,7 @@ import uk.ac.ebi.subs.data.submittable.Submittable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -263,6 +265,24 @@ public class TestHelper {
         return study;
     }
 
+    public static Study getStudy (String alias, Team team, String studyAbstract, String studyType, LocalDate releaseDate) {
+        Study study = getStudy(alias, team, studyAbstract, studyType);
+        study.setReleaseDate(releaseDate);
+
+        return  study;
+    }
+
+    public static Study getStudy (String alias, Team team, String studyAbstract, String studyType, String projectAlias, String projectAccession) {
+        ProjectRef projRef = new ProjectRef();
+        projRef.setAlias(projectAlias);
+        projRef.setAccession(projectAccession);
+
+        Study study = getStudy(alias, team, studyAbstract, studyType);
+        study.setProjectRef(projRef);
+
+        return  study;
+    }
+
     public static Study getStudy (String alias, Team team) {
         return getStudy(alias,team,"study abstract","Whole Genome Sequencing");
     }
@@ -277,6 +297,14 @@ public class TestHelper {
         sample.setTitle("Sample title");
         return sample;
     }
+
+    public static Sample getSample(String alias, Team team, LocalDate releaseDate) {
+        Sample sample = getSample(alias, team);
+        sample.setReleaseDate(releaseDate);
+
+        return sample;
+    }
+
     public static Analysis getSeqVarAnalysis(String alias, Team team, String biosampleAccession, String studyAlias){
         Analysis a = new Analysis();
         a.setId(UUID.randomUUID().toString());
@@ -307,7 +335,6 @@ public class TestHelper {
 
         return a;
     }
-
 
     public static Assay getAssay(String alias, Team team, String biosampleAccession, String studyAlias) {
         Assay a = new Assay();
