@@ -69,7 +69,7 @@ public class FullSubmissionService {
     public RECEIPTDocument.RECEIPT submit (
             String submissionAlias,
             String centerName,
-            Optional<LocalDate> submissionReleaseDate,
+            Optional<LocalDate> defaultReleaseDate,
             Map<Class<? extends ActionService>,Object> paramMap,
             List<SingleValidationResult> singleValidationResults) throws XmlException, IOException, TransformerException {
         final SUBMISSIONSETDocument submissionsetDocument = SUBMISSIONSETDocument.Factory.newInstance();
@@ -82,7 +82,7 @@ public class FullSubmissionService {
 
         List<SubmissionType.ACTIONS.ACTION> actionList = new ArrayList<>();
 
-        submissionReleaseDate.ifPresent(rd -> {
+        defaultReleaseDate.ifPresent(rd -> {
             actionList.add(createHoldAction(rd, null));
         });
 
