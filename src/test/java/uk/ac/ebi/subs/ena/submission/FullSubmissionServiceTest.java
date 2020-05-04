@@ -12,22 +12,41 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.ena.sra.xml.RECEIPTDocument;
-import uk.ac.ebi.subs.data.component.Team;
-import uk.ac.ebi.subs.data.submittable.*;
-import uk.ac.ebi.subs.ena.EnaAgentApplication;
-import uk.ac.ebi.subs.ena.action.*;
-import uk.ac.ebi.subs.ena.helper.TestHelper;
 import uk.ac.ebi.subs.data.component.File;
+import uk.ac.ebi.subs.data.component.Team;
+import uk.ac.ebi.subs.data.submittable.Analysis;
+import uk.ac.ebi.subs.data.submittable.Assay;
+import uk.ac.ebi.subs.data.submittable.AssayData;
+import uk.ac.ebi.subs.data.submittable.Sample;
+import uk.ac.ebi.subs.data.submittable.Study;
+import uk.ac.ebi.subs.data.submittable.Submittable;
+import uk.ac.ebi.subs.ena.EnaAgentApplication;
+import uk.ac.ebi.subs.ena.action.ActionService;
+import uk.ac.ebi.subs.ena.action.AssayActionService;
+import uk.ac.ebi.subs.ena.action.AssayDataActionService;
+import uk.ac.ebi.subs.ena.action.SampleActionService;
+import uk.ac.ebi.subs.ena.action.SequenceVariationAnalysisActionService;
+import uk.ac.ebi.subs.ena.action.StudyActionService;
+import uk.ac.ebi.subs.ena.helper.TestHelper;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -83,20 +102,26 @@ public class FullSubmissionServiceTest {
         submissionAlias = UUID.randomUUID().toString();
         team = TestHelper.getTeam(UUID.randomUUID().toString());
 
+        LocalDate releaseDate = LocalDate.now();
         submittedStudies = new Study[SUBMITTABLE_COUNT];
         originalStudies = new Study[SUBMITTABLE_COUNT];
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
+            releaseDate = releaseDate.plusMonths(1);
+
             final String studyAlias = UUID.randomUUID().toString();
             submittedStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing");
-            originalStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing", LocalDate.now().plusMonths(1));
+            originalStudies[i] = TestHelper.getStudy(studyAlias, team, "abstract", "Whole Genome Sequencing", releaseDate);
         }
 
+        releaseDate = LocalDate.now();
         submittedSamples = new Sample[SUBMITTABLE_COUNT];
         originalSamples = new Sample[SUBMITTABLE_COUNT];
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
+            releaseDate = releaseDate.plusMonths(2);
+
             final String sampleAlias = UUID.randomUUID().toString();
             submittedSamples[i] = TestHelper.getSample(sampleAlias,team);
-            originalSamples[i] = TestHelper.getSample(sampleAlias,team, LocalDate.now().plusMonths(2));
+            originalSamples[i] = TestHelper.getSample(sampleAlias,team, releaseDate);
         }
 
         submittedAssays = new Assay[SUBMITTABLE_COUNT];

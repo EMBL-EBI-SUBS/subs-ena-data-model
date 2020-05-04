@@ -28,15 +28,15 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ENAProcessor {
@@ -60,9 +60,10 @@ public class ENAProcessor {
         final Map<Class<? extends ActionService>, Object> updateParamMap = createParamMap(
                 submissionEnvelope, (submittable -> submittable.isAccessioned()));
 
-        List<SingleValidationResult> singleValidationResults = processNew(submissionId, centerName, newParamMap);
+        List<SingleValidationResult> singleValidationResults = processNew(
+                submissionEnvelope, submissionId, centerName, newParamMap);
 
-        singleValidationResults.addAll(processUpdate(submissionId + "_UPDATE", centerName, updateParamMap));
+        singleValidationResults.addAll(process(submissionId + "_UPDATE", centerName, Optional.empty(), updateParamMap));
 
         return singleValidationResults;
     }
@@ -79,25 +80,51 @@ public class ENAProcessor {
         return team.toString();
     }
 
-    //See Notes in README.md for clarification.
-    private List<SingleValidationResult> processNew(String submissionId, String centerName, Map<Class<? extends ActionService>, Object> paramMap) {
-        List<SingleValidationResult> singleValidationResults = new ArrayList<>();
+    private List<SingleValidationResult> processNew(SubmissionEnvelope submissionEnvelope,
+            String submissionId, String centerName, Map<Class<? extends ActionService>, Object> paramMap) {
 
-        Map<Optional<LocalDate>, Map<Class<? extends ActionService>, Object>> releaseDateGroupedParamMaps = createReleaseDateGroups(paramMap);
+        Study[] studies = (Study[])paramMap.get(StudyActionService.class);
+        Sample[] samples = (Sample[])paramMap.get(SampleActionService.class);
 
-        releaseDateGroupedParamMaps.forEach((releaseDate, group) -> {
-            singleValidationResults.addAll(process(submissionId, centerName, releaseDate, group));
-        });
+        if (studies == null && samples == null) {
+            return process(submissionId, centerName, Optional.empty(), paramMap);
+        }
 
-        return singleValidationResults;
-    }
+        List<SingleValidationResult> res;
 
-    private List<SingleValidationResult> processUpdate(String submissionId, String centerName, Map<Class<? extends ActionService>, Object> paramMap) {
-        List<SingleValidationResult> singleValidationResults = new ArrayList<>();
+        List<LocalDate> allReleaseDates = Stream.concat(
+                studies == null ? Stream.empty() : Stream.of(studies).map(Study::getReleaseDate),
+                samples == null ? Stream.empty() : Stream.of(samples).map(Sample::getReleaseDate))
+                .collect(Collectors.toList());
 
-        singleValidationResults.addAll(process(submissionId, centerName, Optional.empty(), paramMap));
+        Date subReleaseDate = submissionEnvelope.getSubmission().getSubmissionDate();
+        Optional<LocalDate> defaultReleaseDate = subReleaseDate == null
+                ? Optional.empty()
+                : Optional.of(convertSubmissionDate(subReleaseDate));
 
-        return singleValidationResults;
+        //No release date specified in any submittable.
+        if (allReleaseDates.stream().allMatch(Objects::isNull)) {
+            //Submit with a default release date.
+            res = process(submissionId, centerName, defaultReleaseDate, paramMap);
+
+        //Some submittable have release dates and some don't.
+        } else if (allReleaseDates.stream().anyMatch(Objects::isNull)) {
+            //Submit with a default release date for submittables that don't have release dates.
+            res = process(submissionId, centerName, defaultReleaseDate, paramMap);
+            //Resubmit an update for submittables that have release dates (Per submittable release date is only allowed in updates).
+            res.addAll(process(submissionId, centerName, Optional.empty(), createNonNullReleaseDateUpdateParamMap(
+                    studies, samples)));
+
+        //All submittable have release dates.
+        } else {
+            //Submit all submittables without a default release date.
+            res = process(submissionId, centerName, Optional.empty(), paramMap);
+            //Resubmit an update for release dates (Per submittable release date is only allowed in updates).
+            res.addAll(process(submissionId, centerName, Optional.empty(), createNonNullReleaseDateUpdateParamMap(
+                    studies, samples)));
+        }
+
+        return res;
     }
 
     /**
@@ -107,13 +134,15 @@ public class ENAProcessor {
      * @param centerName
      * @param paramMap
      */
-    private List<SingleValidationResult> process(String submissionId, String centerName, Optional<LocalDate> releaseDate, Map<Class<? extends ActionService>, Object> paramMap) {
+    private List<SingleValidationResult> process(
+            String submissionId, String centerName, Optional<LocalDate> submissionReleaseDate,
+            Map<Class<? extends ActionService>, Object> paramMap) {
         List<SingleValidationResult> singleValidationResults = new ArrayList<>();
 
         try {
             if (paramMap.size() > 0) {
                 final RECEIPTDocument.RECEIPT receipt = fullSubmissionService.submit(
-                        submissionId, centerName, releaseDate, paramMap, singleValidationResults);
+                        submissionId, centerName, submissionReleaseDate, paramMap, singleValidationResults);
 
                 for (String infoMessage : receipt.getMESSAGES().getINFOArray()) {
                     logger.debug("Info message from the ENA submission for submissionId " + submissionId + " : " + infoMessage);
@@ -141,7 +170,6 @@ public class ENAProcessor {
         if (typeProcessingConfig.isStudiesEnabled()) {
             final Study[] studies = submissionEnvelope.getStudies().stream()
                     .filter(filter)
-                    .map(study -> setDefaultStudyReleaseDate(submissionEnvelope, study))
                     .toArray(Study[]::new);
 
             if (studies.length > 0) {
@@ -152,7 +180,6 @@ public class ENAProcessor {
         if (typeProcessingConfig.isSamplesEnabled()) {
             final Sample[] samples = submissionEnvelope.getSamples().stream()
                     .filter(filter)
-                    .map(sample -> setDefaultSampleReleaseDate(submissionEnvelope, sample))
                     .toArray(Sample[]::new);
 
             if (samples.length > 0) {
@@ -190,89 +217,35 @@ public class ENAProcessor {
         return paramMap;
     }
 
-    private Study setDefaultStudyReleaseDate(SubmissionEnvelope submissionEnvelope, Study study) {
-        Date subDate = submissionEnvelope.getSubmission().getSubmissionDate();
+    private Map<Class<? extends ActionService>, Object> createNonNullReleaseDateUpdateParamMap(
+            Study[] studies, Sample[] samples) {
+        Map<Class<? extends ActionService>, Object> resMap = new HashMap<>();
 
-        if (subDate != null && !study.isAccessioned() && study.getReleaseDate() == null) {
-            study.setReleaseDate(convertSubmissionDate(subDate));
+        //Studies and Samples should always have an accession at this point but they will still get checked for it
+        //to avoid making unnecessary update in case they could not get accession numbers due to some other error.
+
+        if (studies != null) {
+            Study[] filteredStudies = Stream.of(studies)
+                    .filter(study -> study.getReleaseDate() != null && study.getAccession() != null)
+                    .toArray(Study[]::new);
+            if (filteredStudies.length != 0) {
+                resMap.put(StudyActionService.class, filteredStudies);
+            }
         }
 
-        return study;
-    }
-
-    private Sample setDefaultSampleReleaseDate(SubmissionEnvelope submissionEnvelope, Sample sample) {
-        Date subDate = submissionEnvelope.getSubmission().getSubmissionDate();
-
-        if (subDate != null && !sample.isAccessioned() && sample.getReleaseDate() == null) {
-            sample.setReleaseDate(convertSubmissionDate(subDate));
+        if (samples != null) {
+            Sample[] filteredSamples = Stream.of(samples)
+                    .filter(sample -> sample.getReleaseDate() != null && sample.getAccession() != null)
+                    .toArray(Sample[]::new);
+            if (filteredSamples.length != 0) {
+                resMap.put(SampleActionService.class, filteredSamples);
+            }
         }
 
-        return sample;
+        return resMap;
     }
 
     private LocalDate convertSubmissionDate(Date submissionDate) {
         return LocalDate.ofInstant(Instant.ofEpochMilli(submissionDate.getTime()), ZoneId.of("UTC"));
-    }
-
-    /**
-     * Organize the action services and their submittables into groups with similar release dates.
-     *
-     * @param serviceSubmittableMap
-     * @return
-     */
-    private Map<Optional<LocalDate>, Map<Class<? extends ActionService>, Object>> createReleaseDateGroups(
-            Map<Class<? extends ActionService>, Object> serviceSubmittableMap) {
-
-        //Map with date as the key and its group as value.
-        Map<Optional<LocalDate>, Map<Class<? extends ActionService>, Object>> groups = new LinkedHashMap<>();
-
-        serviceSubmittableMap.entrySet().stream().forEach(serviceSubmittableEntry -> {
-
-            Class<? extends ActionService> service = serviceSubmittableEntry.getKey();
-            Object serviceSubmittable = serviceSubmittableEntry.getValue();
-
-            groupByReleaseDate(serviceSubmittable).entrySet().stream().forEach(dateSubmittableEntry -> {
-
-                Optional<LocalDate> date = dateSubmittableEntry.getKey();
-                Object dateSubmittable = dateSubmittableEntry.getValue();
-
-                Map<Class<? extends ActionService>, Object> group = groups.get(date);
-                if (group == null) {
-                    group = new HashMap<>();
-                    groups.put(date, group);
-                }
-
-                group.put(service, dateSubmittable);
-            });
-        });
-
-        //Data types like assay can reference a study. Due to grouping, it is possible that such dependent data types
-        //may get moved into a separate group that might get submitted before the group its referenced data is present in.
-        //Following will ensure that all non-null release date datatypes get submitted before the null ones.
-        Optional<LocalDate> emptyOpt = Optional.empty();
-        if (groups.containsKey(emptyOpt)) {
-            //Move the group with null release dates to bottom.
-            groups.put(emptyOpt, groups.remove(Optional.empty()));
-        }
-
-        return groups;
-    }
-
-    private Map<Optional<LocalDate>, Object> groupByReleaseDate(Object submittableObjects) {
-        Map<Optional<LocalDate>, Object> res = new HashMap<>();
-
-        if (submittableObjects instanceof Study[]) {
-            res.putAll(Arrays.asList((Study[])submittableObjects).stream().collect(Collectors.groupingBy(
-                    study -> Optional.ofNullable(study.getReleaseDate()),
-                    Collectors.collectingAndThen(Collectors.toList(), studies -> (Object)studies.toArray(new Study[studies.size()])))));
-        } else if (submittableObjects instanceof Sample[]) {
-            res.putAll(Arrays.asList((Sample[])submittableObjects).stream().collect(Collectors.groupingBy(
-                    sample -> Optional.ofNullable(sample.getReleaseDate()),
-                    Collectors.collectingAndThen(Collectors.toList(), samples -> (Object)samples.toArray(new Sample[samples.size()])))));
-        } else {
-            res.put(Optional.empty(), submittableObjects);
-        }
-
-        return res;
     }
 }
