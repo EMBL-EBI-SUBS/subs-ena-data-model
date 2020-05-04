@@ -226,7 +226,7 @@ public class ENAProcessor {
 
         if (studies != null) {
             Study[] filteredStudies = Stream.of(studies)
-                    .filter(study -> study.getReleaseDate() != null && study.getAccession() != null)
+                    .filter(study -> study.getReleaseDate() != null && study.getAccession() != null && !study.getAccession().isBlank())
                     .toArray(Study[]::new);
             if (filteredStudies.length != 0) {
                 resMap.put(StudyActionService.class, filteredStudies);
@@ -235,7 +235,7 @@ public class ENAProcessor {
 
         if (samples != null) {
             Sample[] filteredSamples = Stream.of(samples)
-                    .filter(sample -> sample.getReleaseDate() != null && sample.getAccession() != null)
+                    .filter(sample -> sample.getReleaseDate() != null && sample.getAccession() != null && !sample.getAccession().isBlank())
                     .toArray(Sample[]::new);
             if (filteredSamples.length != 0) {
                 resMap.put(SampleActionService.class, filteredSamples);
