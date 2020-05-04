@@ -299,10 +299,10 @@ public class ENAProcessorTest {
                 assertThat(defaultReleaseDate, CoreMatchers.equalTo(Optional.empty()));
                 assertThat(studies.size(), CoreMatchers.is(1));
                 assertThat(studies.stream()
-                        .allMatch(study -> study.getReleaseDate() != null), CoreMatchers.equalTo(true));
+                        .allMatch(study -> study.getReleaseDate() != null && !study.getAccession().isBlank()), CoreMatchers.equalTo(true));
                 assertThat(samples.size(), CoreMatchers.is(1));
                 assertThat(samples.stream()
-                        .allMatch(sample -> sample.getReleaseDate() != null), CoreMatchers.equalTo(true));
+                        .allMatch(sample -> sample.getReleaseDate() != null && !sample.getAccession().isBlank()), CoreMatchers.equalTo(true));
             }
 
             return emptyReceipt;
@@ -365,10 +365,10 @@ public class ENAProcessorTest {
                 assertThat(defaultReleaseDate, CoreMatchers.equalTo(Optional.empty()));
                 assertThat(studies.size(), CoreMatchers.is(1));
                 assertThat(studies.stream()
-                        .allMatch(study -> study.getReleaseDate() != null), CoreMatchers.equalTo(true));
+                        .allMatch(study -> study.getReleaseDate() != null && !study.getAccession().isBlank()), CoreMatchers.equalTo(true));
                 assertThat(samples.size(), CoreMatchers.is(1));
                 assertThat(samples.stream()
-                        .allMatch(sample -> sample.getReleaseDate() != null), CoreMatchers.equalTo(true));
+                        .allMatch(sample -> sample.getReleaseDate() != null && !sample.getAccession().isBlank()), CoreMatchers.equalTo(true));
             }
 
             return emptyReceipt;
