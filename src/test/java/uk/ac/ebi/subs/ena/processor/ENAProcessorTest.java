@@ -104,6 +104,9 @@ public class ENAProcessorTest {
     public static final String ANALYSIS_DATA_RECEIPT_XPATH_QUERY = "/RECEIPT/ANALYSIS";
     public static final String STUDY_SUBMISSION_RECEIPT_RESOURCE = "/receipts/study_submission_receipt.xml";
     public static final String MODIFY_STUDY_SUBMISSION_RECEIPT_RESOURCE = "/receipts/modify_study_submission_receipt.xml";
+
+    public static final String ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL = "Illumina Genome Analyzer";
+
     private Study[] submittedStudies;
     private Study[] originalStudies;
     private Sample[] submittedSamples;
@@ -155,8 +158,10 @@ public class ENAProcessorTest {
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
             String assayAlias = "assay-alias-" + UUID.randomUUID().toString();
-            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
-            originalAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(), submittedStudies[0].getAlias());
+            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(),
+                            submittedStudies[0].getAlias(), ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL);
+            originalAssays[i] = TestHelper.getAssay(assayAlias,team, submittedSamples[i].getAccession(),
+                    submittedStudies[0].getAlias(), ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL);
         }
 
         submittedSeqVarAnalysis = new Analysis[SUBMITTABLE_COUNT];
@@ -262,8 +267,10 @@ public class ENAProcessorTest {
         submissionEnvelope.setStudies(Arrays.asList(studyWithReleaseDate, studyWithoutReleaseDate));
         submissionEnvelope.setSamples(Arrays.asList(sampleWithReleaseDate, sampleWithoutReleaseDate));
         submissionEnvelope.setAssays(Arrays.asList(
-                TestHelper.getAssay(UUID.randomUUID().toString(),team, null, studyWithReleaseDate.getAlias()),
-                TestHelper.getAssay(UUID.randomUUID().toString(),team, null, studyWithoutReleaseDate.getAlias())));
+                TestHelper.getAssay(UUID.randomUUID().toString(),team, null,
+                        studyWithReleaseDate.getAlias(), ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL),
+                TestHelper.getAssay(UUID.randomUUID().toString(),team, null,
+                        studyWithoutReleaseDate.getAlias(), ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL)));
         submissionEnvelope.setSubmission(submission);
 
         LocalDate expectedDefaultReleaseDate = LocalDate.ofInstant(
@@ -332,7 +339,8 @@ public class ENAProcessorTest {
         submissionEnvelope.setStudies(Arrays.asList(studyWithReleaseDate));
         submissionEnvelope.setSamples(Arrays.asList(sampleWithReleaseDate));
         submissionEnvelope.setAssays(Arrays.asList(
-                TestHelper.getAssay(UUID.randomUUID().toString(),team, null, studyWithReleaseDate.getAlias())));
+                TestHelper.getAssay(UUID.randomUUID().toString(),team, null,
+                        studyWithReleaseDate.getAlias(), ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL)));
         submissionEnvelope.setSubmission(submission);
 
         AtomicInteger invocationCount = new AtomicInteger(0);

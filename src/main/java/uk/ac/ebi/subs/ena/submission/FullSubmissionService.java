@@ -125,7 +125,7 @@ public class FullSubmissionService {
         final InputStream submittableInputStream = IOUtils.toInputStream(submissionsetDocument.xmlText(), Charset.forName("UTF-8"));
         parameterMap.put("SUBMISSION", new UniRestWrapper.Field("submission.xml", submittableInputStream));
         final String receiptString = uniRestWrapper.postJson(parameterMap);
-        logger.info(receiptString);
+        logger.info("receiptString: {}", receiptString);
         final RECEIPTDocument receiptDocument = RECEIPTDocument.Factory.parse(receiptString);
         updateAccession(receiptDocument.getRECEIPT().getSTUDYArray(),schemaAliasMapMap.get(StudyActionService.SCHEMA));
         updateAccession(receiptDocument.getRECEIPT().getSAMPLEArray(),schemaAliasMapMap.get(SampleActionService.SCHEMA));

@@ -8,20 +8,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.ebi.ena.sra.xml.SubmissionType;
 import uk.ac.ebi.subs.data.component.Team;
 import uk.ac.ebi.subs.data.submittable.Assay;
-import uk.ac.ebi.subs.data.submittable.Study;
 import uk.ac.ebi.subs.ena.EnaAgentApplication;
 import uk.ac.ebi.subs.ena.helper.TestHelper;
 
-import java.util.Collections;
 import java.util.UUID;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {EnaAgentApplication.class})
 public class AssayActionServiceTest {
+
+    public static final String ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL = "Illumina Genome Analyzer";
 
     @Autowired
     AssayActionService assayActionService;
@@ -33,7 +32,8 @@ public class AssayActionServiceTest {
         String alias = UUID.randomUUID().toString();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
-        final Assay assay = TestHelper.getAssay(alias, team,"SAMEA4862012","alias");
+        final Assay assay = TestHelper.getAssay(alias, team,"SAMEA4862012","alias",
+                ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL);
         Assay [] assays = new Assay[]{assay};
         final SubmissionType.ACTIONS.ACTION actionXML = assayActionService.createActionXML(assays);
         assertThat(actionXML.isSetADD(), is(true));
@@ -44,7 +44,8 @@ public class AssayActionServiceTest {
         String alias = UUID.randomUUID().toString();
         Team team = new Team();
         team.setName(UUID.randomUUID().toString());
-        final Assay assay = TestHelper.getAssay(alias, team,"SAMEA4862012","alias");
+        final Assay assay = TestHelper.getAssay(alias, team,"SAMEA4862012","alias",
+                ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODELL);
         assay.setAccession(UUID.randomUUID().toString());
         Assay [] assays = new Assay[]{assay};
         final SubmissionType.ACTIONS.ACTION actionXML = assayActionService.createActionXML(assays);

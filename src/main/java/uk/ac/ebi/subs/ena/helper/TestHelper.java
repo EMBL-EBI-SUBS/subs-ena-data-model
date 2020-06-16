@@ -336,7 +336,8 @@ public class TestHelper {
         return a;
     }
 
-    public static Assay getAssay(String alias, Team team, String biosampleAccession, String studyAlias) {
+    public static Assay getAssay(String alias, Team team, String biosampleAccession, String studyAlias,
+                                 String instrumentModel) {
         Assay a = new Assay();
         a.setId(UUID.randomUUID().toString());
         a.setAlias(alias);
@@ -344,7 +345,7 @@ public class TestHelper {
         a.setTitle("Assay Title ");
         a.setDescription("Test assay");
         addAttribute(a,ENAExperiment.PLATFORM_TYPE,"ILLUMINA");
-        addAttribute(a,ENAExperiment.INSTRUMENT_MODEL,"Illumina Genome Analyzer");
+        addAttribute(a,ENAExperiment.INSTRUMENT_MODEL, instrumentModel);
         addAttribute(a,ENAExperiment.LIBRARY_LAYOUT,ENAExperiment.SINGLE);
         addAttribute(a,ENAExperiment.DESIGN_DESCRIPTION,"Design Description");
         addAttribute(a,ENAExperiment.LIBRARY_NAME,"Example Library");
