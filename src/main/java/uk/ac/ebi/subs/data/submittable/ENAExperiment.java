@@ -57,12 +57,14 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
 
 
 
-    @ENAField(name = LS454, attributeName = INSTRUMENT_MODEL ,values = {"454 GS 20", "454 GS FLX", "454 GS FLX+", "454 GS FLX Titanium", "454 GS Junior", "unspecified"})
+    @ENAField(name = LS454, attributeName = INSTRUMENT_MODEL ,values = {"454 GS", "454 GS 20", "454 GS FLX", "454 GS FLX+", "454 GS FLX Titanium", "454 GS Junior", "unspecified"})
     String ls454 ;
 
-    @ENAField(name = ILLUMINA, attributeName = INSTRUMENT_MODEL ,values = {"Illumina Genome Analyzer", "Illumina Genome Analyzer II", "Illumina Genome Analyzer IIx",
-            "Illumina HiSeq 2500", "Illumina HiSeq 2000", "Illumina HiSeq 1500", "Illumina HiSeq 1000", "Illumina MiSeq", "Illumina HiScanSQ",
-            "HiSeq X Ten", "NextSeq 500", "HiSeq X Five", "Illumina HiSeq 3000", "Illumina HiSeq 4000", "NextSeq 550", "unspecified"})
+    @ENAField(name = ILLUMINA, attributeName = INSTRUMENT_MODEL ,values = {"HiSeq X Five", "HiSeq X Ten",
+            "Illumina Genome Analyzer", "Illumina Genome Analyzer II", "Illumina Genome Analyzer IIx",
+            "Illumina HiScanSQ", "Illumina HiSeq 1000", "Illumina HiSeq 1500", "Illumina HiSeq 2000", "Illumina HiSeq 2500", "Illumina HiSeq 3000", "Illumina HiSeq 4000",
+            "Illumina iSeq 100", "Illumina MiSeq", "Illumina MiniSeq", "Illumina NovaSeq 6000",
+            "NextSeq 500",  "NextSeq 550", "unspecified"})
     String illumina ;
 
     @ENAField(name = HELICOS, attributeName = INSTRUMENT_MODEL ,values = {"Helicos HeliScope", "unspecified"})
@@ -76,20 +78,20 @@ public class    ENAExperiment extends AbstractENASubmittable<Assay> {
     @ENAField(name = COMPLETE_GENOMICS, attributeName = INSTRUMENT_MODEL ,values = {"Complete Genomics", "unspecified"})
     String completeGenomics;
 
-    @ENAField(name = BGISEQ, attributeName = INSTRUMENT_MODEL ,values = {"BGISEQ-500"})
+    @ENAField(name = BGISEQ, attributeName = INSTRUMENT_MODEL ,values = {"BGISEQ-500", "DNBSEQ-T7", "DNBSEQ-G400", "DNBSEQ-G50", "DNBSEQ-G400 FAST"})
     String bgiseq;
 
-    @ENAField(name = OXFORD_NANOPORE, attributeName = INSTRUMENT_MODEL ,values = {"MinION", "GridION", "unspecified"})
+    @ENAField(name = OXFORD_NANOPORE, attributeName = INSTRUMENT_MODEL ,values = {"MinION", "GridION", "PromethION", "unspecified"})
     String oxfordNanopore;
 
     @ENAField(name = PACBIO_SMRT, attributeName = INSTRUMENT_MODEL ,values = {"PacBio RS", "PacBio RS II", "Sequel", "unspecified"})
     String pacbioSMRT;
 
-    @ENAField(name = ION_TORRENT, attributeName = INSTRUMENT_MODEL ,values = {"Ion Torrent PGM", "Ion Torrent Proton", "unspecified"})
+    @ENAField(name = ION_TORRENT, attributeName = INSTRUMENT_MODEL ,values = {"Ion Torrent PGM", "Ion Torrent Proton", "Ion Torrent S5", "Ion Torrent S5 XL", "unspecified"})
     String ionTorrent;
 
     @ENAField(name = CAPILLARY, attributeName = INSTRUMENT_MODEL ,values = {"AB 3730xL Genetic Analyzer", "AB 3730 Genetic Analyzer", "AB 3500xL Genetic Analyzer",
-            "AB 3500 Genetic Analyzer", "AB 3130xL Genetic Analyzer", "AB 3130 Genetic Analyzer", "AB 3130 Genetic Analyzer", "AB 310 Genetic Analyzer",
+            "AB 3500 Genetic Analyzer", "AB 3130xL Genetic Analyzer", "AB 3130 Genetic Analyzer", "AB 310 Genetic Analyzer",
             "unspecified"})
     String capillary;
 

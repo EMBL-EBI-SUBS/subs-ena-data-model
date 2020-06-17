@@ -80,6 +80,12 @@ public class FullSubmissionServiceTest {
             "SAMEA168890"
     };
 
+    private final String[] INSTRUMENT_MODELS = {
+            "Illumina Genome Analyzer", "Illumina Genome Analyzer II",
+            "Illumina Genome Analyzer IIx", "Illumina HiScanSQ", "Illumina HiSeq 1000", "Illumina HiSeq 1500",
+            "Illumina iSeq 100", "Illumina MiSeq", "Illumina MiniSeq", "Illumina NovaSeq 6000"
+    };
+
     @Autowired
     FullSubmissionService fullSubmissionService;
 
@@ -127,7 +133,8 @@ public class FullSubmissionServiceTest {
         submittedAssays = new Assay[SUBMITTABLE_COUNT];
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
             String assayAlias = UUID.randomUUID().toString();
-            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, BIOSAMPLE_ACCESSIONS[i], submittedStudies[0].getAlias());
+            submittedAssays[i] = TestHelper.getAssay(assayAlias,team, BIOSAMPLE_ACCESSIONS[i],
+                    submittedStudies[0].getAlias(), INSTRUMENT_MODELS[i]);
         }
 
         analyses = new Analysis[SUBMITTABLE_COUNT];
@@ -311,7 +318,9 @@ public class FullSubmissionServiceTest {
         List<java.io.File> fileList = new ArrayList<>();
 
         for (int i = 0; i < SUBMITTABLE_COUNT; i++) {
-            submittedAssays[i] = TestHelper.getAssay(UUID.randomUUID().toString(),team, BIOSAMPLE_ACCESSIONS[i], submittedStudies[0].getAlias());
+            submittedAssays[i] =
+                    TestHelper.getAssay(UUID.randomUUID().toString(),team, BIOSAMPLE_ACCESSIONS[i],
+                            submittedStudies[0].getAlias(), INSTRUMENT_MODELS[i]);
             assayDatas[i] = TestHelper.getAssayData(UUID.randomUUID().toString(),team, submittedAssays[i].getAlias());
 
             File file = new File();

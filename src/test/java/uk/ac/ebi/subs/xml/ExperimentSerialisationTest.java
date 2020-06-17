@@ -78,6 +78,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     static String PAIRED_NOMINAL_SDEV_XPATH = "/EXPERIMENT[1]/DESIGN[1]/LIBRARY_DESCRIPTOR[1]/LIBRARY_LAYOUT[1]/PAIRED[1]/@NOMINAL_SDEV";
 
     public static final String ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL = "Illumina Genome Analyzer";
+    public static final String ILLUMINA_NOVASEQ_6000_INSTRUMENT_MODEL = "Illumina NovaSeq 6000";
     public static final String LS454_454_GS_20_INSTRUMENT_MODEL = "454 GS 20";
     public static final String HELICOS_HELISCOPE_INSTRUMENT_MODEL = "Helicos HeliScope";
     public static final String ABI_SOLID_SYSTEM_2_INSTRUMENT_MODEL = "AB SOLiD System 2.0";
@@ -167,6 +168,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     @Test
     public void testMarshalExperimentSingleLibraryLayout() throws Exception {
         Assay assay = createAssay();
+        assay.getAttributes().get("library_layout").clear();
         TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_LAYOUT,ENAExperiment.SINGLE);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
@@ -178,6 +180,7 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     @Test
     public void testMarshalExperimentPairedLibraryLayout() throws Exception {
         Assay assay = createAssay();
+        assay.getAttributes().get("library_layout").clear();
         Attribute libraryLayoutAttribute = new Attribute();
         TestHelper.addAttribute(assay,ENAExperiment.LIBRARY_LAYOUT,ENAExperiment.PAIRED);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
@@ -222,6 +225,11 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     @Test
     public void testExperimentIlluminaPlatform() throws Exception {
         testPlatform(ILLUMINA_INSTRUMENT_MODEL_XPATH,ILLUMINA, ILLUMINA_GENOME_ANALYZER_INSTRUMENT_MODEL);
+    }
+
+    @Test
+    public void testExperimentIlluminaPlatformWithIlluminaNovaSeq6000() throws Exception {
+        testPlatform(ILLUMINA_INSTRUMENT_MODEL_XPATH,ILLUMINA, ILLUMINA_NOVASEQ_6000_INSTRUMENT_MODEL);
     }
 
     @Test
@@ -272,6 +280,8 @@ public class ExperimentSerialisationTest extends SerialisationTest {
     public void testPlatform(String platformXpathQuery, String plaformType, String instrumentModel) throws Exception {
         Assay assay = createAssay(plaformType,instrumentModel);
         ENAExperiment enaExperiment = new ENAExperiment(assay);
+        final List<SingleValidationResult> validationResultList = enaExperiment.getValidationResultList();
+        assertThat(validationResultList.size(), is(equalTo(0)));
         final Document document = documentBuilderFactory.newDocumentBuilder().newDocument();
         marshaller.marshal(enaExperiment,new DOMResult(document));
         String returnedInstrumentModel = executeXPathQueryNodeValue(document,platformXpathQuery);
@@ -396,6 +406,14 @@ public class ExperimentSerialisationTest extends SerialisationTest {
         if (instrumentModel != null) {
             TestHelper.addAttribute(assay,ENAExperiment.INSTRUMENT_MODEL,instrumentModel);
         }
+
+        TestHelper.addAttribute(assay, ENAExperiment.DESIGN_DESCRIPTION, "test design");
+        TestHelper.addAttribute(assay, ENAExperiment.LIBRARY_NAME, "test library name");
+        TestHelper.addAttribute(assay, ENAExperiment.LIBRARY_STRATEGY, "test library strategy");
+        TestHelper.addAttribute(assay, ENAExperiment.LIBRARY_SOURCE, "test library source");
+        TestHelper.addAttribute(assay, ENAExperiment.LIBRARY_SELECTION, "test library selection");
+        TestHelper.addAttribute(assay, ENAExperiment.LIBRARY_LAYOUT, "test library layout");
+
         return assay;
     }
 
