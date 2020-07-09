@@ -313,13 +313,12 @@ public abstract class AbstractENASubmittable<T extends BaseSubmittable> implemen
 
         if (attributes.isEmpty()) return null;
 
-        for (String key : getAttributes().keySet()) {
-
-            for (Attribute attributeValue :  getAttributes().get(key)) {
+        for (String key : attributes.keySet()) {
+            for (Attribute attributeValue :  attributes.get(key)) {
+                if (attributeValue == null) continue;
                 ENAAttribute enaAttribute = new ENAAttribute(key,attributeValue.getValue(),attributeValue.getUnits());
                 enaAttributeList.add(enaAttribute);
             }
-
         }
 
         return enaAttributeList;
